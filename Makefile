@@ -1,13 +1,11 @@
 BINNAME = retrovol
-OBJS = main.o retro_slider.o
+OBJS = main.o retro_slider.o alsa_classes.o
 
 
-#INCLUDE = -I/usr/X11R7/include/
 INCLUDE = `pkg-config --cflags gtk+-2.0`
-#LIBDIR  =  -L/usr/local/lib -L/usr/X11R7/lib
 LIBDIR  =  `pkg-config --libs gtk+-2.0`
 
-LIBRARIES = 
+LIBRARIES = -lasound
 
 CFLAGS = -Wall -c
 
@@ -20,11 +18,14 @@ PP = g++ $(OPT)
 rvol: $(OBJS)
 	$(PP) $(LFLAGS) $(OBJS) -o $(BINNAME) $(LIBDIR) $(LIBRARIES)
 
-main.o: main.cpp retro_slider.c
+main.o: main.cpp retro_slider.h alsa_classes.h
 	$(PP) main.cpp $(CFLAGS) $(INCLUDE)
 
-retro_slider.o: retro_slider.c
+retro_slider.o: retro_slider.c retro_slider.h
 	$(CC) retro_slider.c $(CFLAGS) $(INCLUDE)
+
+alsa_classes.o: alsa_classes.cpp alsa_classes.h
+	$(PP) alsa_classes.cpp $(CFLAGS) $(INCLUDE)
 
 all: rvol
 
