@@ -1,3 +1,5 @@
+/* main.cpp */
+
 #include <gtk/gtk.h>
 #include "retro_slider.h"
 

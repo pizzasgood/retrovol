@@ -1,6 +1,5 @@
+/* alsa_classes.cpp */
 /*
- alsa_classes.cpp
-
  This file contains classes to load and manipulate the mixer settings through
  alsa using asoundlib.h.  Numbers are automatically scaled to a 0-100 range
  to simplify use with volume sliders.
