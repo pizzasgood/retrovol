@@ -204,14 +204,12 @@ gtk_rslider_paint(GtkWidget *widget)
   gint pos = GTK_rslider(widget)->sel;
   gint rect = pos * num_bars / 100;
 
-  cairo_set_source_rgb(cr, 0.2, 0.4, 0);
-
   gint i;
   for ( i = 0; i < num_bars; i++) {
       if (i > num_bars - rect - 1) {
-          cairo_set_source_rgb(cr, 0.6, 1.0, 0);
+          cairo_set_source_rgb(cr, 1.0, 0.8, 0.0);
       } else {
-          cairo_set_source_rgb(cr, 0.2, 0.4, 0);
+          cairo_set_source_rgb(cr, 0.6, 0.2, 0.0);
       }
       
       cairo_rectangle(cr, bar_margins, i*seg_spacing, bar_width-(2*bar_margins), seg_thickness);
