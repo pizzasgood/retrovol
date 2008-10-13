@@ -21,8 +21,8 @@ rvol: $(OBJS)
 main.o: main.cpp retro_slider.h alsa_classes.h
 	$(PP) main.cpp $(CFLAGS) $(INCLUDE)
 
-retro_slider.o: retro_slider.c retro_slider.h
-	$(CC) retro_slider.c $(CFLAGS) $(INCLUDE)
+retro_slider.o: retro_slider.cpp retro_slider.h
+	$(PP) retro_slider.cpp $(CFLAGS) $(INCLUDE)
 
 alsa_classes.o: alsa_classes.cpp alsa_classes.h
 	$(PP) alsa_classes.cpp $(CFLAGS) $(INCLUDE)
