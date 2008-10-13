@@ -49,8 +49,18 @@ class ElementList {
 		
 		char card[8];
 		
+		//elems holds the array of all elements
 		int num_elems;
 		Element *elems;
+		
+		//items is an ordered list of the specific elements desired
+		int num_items;
+		Element **items;
+		
+		//populates the items array by sorting elems and skipping switches that are associated with an element
+		void populate_items();
+		//populates the items array from a file
+		void populate_items_from_file(char *filename);
 };
 
 

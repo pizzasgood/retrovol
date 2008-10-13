@@ -4,13 +4,18 @@
 #include "retro_slider.h"
 
 
-//Constructor for retro_slider - takes care of all the annoying gtk initialization jazz, just supply the frame
+//Constructor/initializer for retro_slider - takes care of all the annoying gtk initialization jazz, just supply the frame
+retro_slider::retro_slider(){
+}
 retro_slider::retro_slider(GtkWidget *frame, int xpos, int ypos, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float)){
+	init(frame, xpos, ypos, _width, _height, _obj, _get_func, _set_func);
+}
+void retro_slider::init(GtkWidget *frame, int xpos, int ypos, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float)){
 	obj = _obj;
 	get_func = _get_func;
 	set_func = _set_func;
 
-	//I am a lazy bum, so I stuck all this crap in the constructor :)
+	//I am a lazy bum, so I stuck all this crap in here :)
 	GtkWidget *drawing_area;
 	drawing_area = gtk_drawing_area_new ();
 	gtk_fixed_put(GTK_FIXED(frame), drawing_area, xpos, ypos);
@@ -34,8 +39,9 @@ retro_slider::retro_slider(GtkWidget *frame, int xpos, int ypos, int _width, int
 	seg_spacing = 1;
 	
 	//total distance from the top of one segment to the top of the next
-	seg_offset = seg_thickness + seg_spacing;
-	
+	seg_offset = seg_thickness + seg_spacing;	
+
+
 	//load the initial value
 	val = get_func(obj);
 	

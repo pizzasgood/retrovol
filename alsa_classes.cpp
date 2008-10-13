@@ -282,8 +282,47 @@ ElementList::ElementList(char *_card){
 	snd_hctl_free(hctl);
 	snd_hctl_close(hctl);
 	
+	populate_items();
+	
 }
 
+void ElementList::populate_items(){
+	num_items=0;
+	//Since there aren't that many elements, I figure it's more efficient to just
+	//allocate enough space for every element now, and then later realloc it to
+	//shrink down to the needed size.  As opposed to constantly reallocing as we
+	//go, or looping through here twice to find out in advance how large the array
+	//will be.
+	items = (Element**)malloc(num_elems * sizeof(Element*));
+	
+	for (int i=0; i<num_elems; i++){
+		if (!elems[i].associated && (strstr(elems[i].name, "Switch") || strstr(elems[i].name, "Playback Volume"))){
+			items[num_items++] = &elems[i];
+		}
+	}
+	for (int i=0; i<num_elems; i++){
+		if (elems[i].switch_id > 0 && strstr(elems[i].name, "Playback Volume")){
+			items[num_items++] = &elems[i];
+		}
+	}
+	for (int i=0; i<num_elems; i++){
+		if (elems[i].switch_id > 0 && !strstr(elems[i].name, "Playback Volume") && !strstr(elems[i].name, "Capture Volume")){
+			items[num_items++] = &elems[i];
+		}
+	}
+	for (int i=0; i<num_elems; i++){
+		if (elems[i].switch_id > 0 && !strstr(elems[i].name, "Playback Volume") && strstr(elems[i].name, "Capture Volume")){
+			items[num_items++] = &elems[i];
+		}
+	}
+	for (int i=0; i<num_elems; i++){
+		if (!elems[i].associated && !(strstr(elems[i].name, "Switch") || strstr(elems[i].name, "Playback Volume"))){
+			items[num_items++] = &elems[i];
+		}
+	}
+	
+	items = (Element**)realloc(items, num_items * sizeof(Element*));
+}
 
 
 //this is just here for testing; used to be main()
