@@ -14,13 +14,20 @@ class Element {
 		char name[80];
 		char type[16];
 		int values;
+		int switch_id;
+		bool associated;
 		
 		int get();
 		int get(int n);
 		
-		void set(int num);
-		void set(int num, int n);
+		int set(int num);
+		int set(int num, int n);
 		void set_lr(int lvol, int rvol);
+		
+		static float get_callback(void *obj);
+		static float get_callback(void *obj, int n);
+		static float set_callback(void *obj, float num);
+		static float set_callback(void *obj, float num, int n);
 		
 		void print();
 		
@@ -31,7 +38,7 @@ class Element {
 		int scale_out(int num);
 		int scale_in(int num);
 		int _get(int n);
-		void _set(int num, int n);
+		int _set(int num, int n);
 };
 
 
@@ -45,4 +52,10 @@ class ElementList {
 		int num_elems;
 		Element *elems;
 };
+
+
+
+
+//this is just here for testing; used to be main()
+int test_alsa_stuff();
 

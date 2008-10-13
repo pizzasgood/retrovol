@@ -11,6 +11,7 @@
 #include <stdlib.h>
 #include <alsa/asoundlib.h>
 #include <math.h>
+#include <string.h>
 
 #include "alsa_classes.h"
 
@@ -21,6 +22,8 @@ Element::Element(char *_card, int _numid, const char *_name){
 	card = _card;
 	numid = _numid;
 	strcpy(name, _name);
+	switch_id = 0; //this will be changed later if there is an associated switch
+	associated = false; //this one is also handled later
 	
 	int err;
 	snd_ctl_t *handle;
@@ -50,6 +53,7 @@ Element::Element(char *_card, int _numid, const char *_name){
 	
 	//set what datatype the element holds
 	strcpy(type, snd_ctl_elem_type_name(snd_ctl_elem_info_get_type(info)));
+	
 	//only use max and min if it's an integer, otherwise set to 0
 	if (strcmp(type, "INTEGER") == 0){
 		min = snd_ctl_elem_info_get_min(info);
@@ -68,9 +72,9 @@ void Element::print(){
 	printf("numid: %d  name: %s\n", numid, name);
 	printf("type: %s, values: %d\n", type, values);
 	printf("min: %d, max: %d\n", min, max);
-	printf("values: %d", get(0));
+	printf("value: %d", get(0));
 	for (int i=1; i<values; i++){
-		printf(",%d", get(i));
+		printf(", %d", get(i));
 	}
 	printf("\n");
 }
@@ -78,17 +82,64 @@ void Element::print(){
 
 //this is used internally to scale a number to be from 0-100
 int Element::scale_out(int num){
+	if(max-min==0){ return(num); }
 	return(ceil(100.0*(num-min)/(max-min)));
 }
 //this is the inverse of scale_out; it's used to take a 0-100 number and put it
 //into the proper scale for the element to understand
 int Element::scale_in(int num){
+	if(max-min==0){ return(num); }
 	return(floor((num*(max-min)/(100))+min));
 }
+//this will grab the highest value in the element
+int Element::get(){
+	int ret = scale_out(_get(0));
+	for (int i=1; i<values; i++){
+		if(ret < scale_out(_get(i))){ ret = scale_out(_get(i)); }
+	}
+	return(ret);
+}
+//this gets the value of value n
+int Element::get(int n){
+	return(scale_out(_get(n)));
+}
 
+//this is a shorthand for setting values 0 and 1 to l and r
+void Element::set_lr(int l, int r){
+	set(l, 0);
+	set(r, 1);
+}
+//this sets all values to num
+int Element::set(int num){
+	int ret;
+	for (int i=0; i<values; i++){
+		ret = set(num, i);
+	}
+	return(ret);
+}
+//this sets value n to num
+int Element::set(int num, int n){
+	return(scale_out(_set(scale_in(num), n)));
+}
+
+//these are callback functions for get() and set(), so they can be used with function pointers
+float Element::get_callback(void *obj){
+	return( (float)( ((Element*)obj)->get() ) );
+}
+float Element::get_callback(void *obj, int n){
+	return( (float)( ((Element*)obj)->get(n) ) );
+}
+float Element::set_callback(void *obj, float num){
+	return( (float)( ((Element*)obj)->set((int)num) ) );
+}
+float Element::set_callback(void *obj, float num, int n){
+	return( (float)( ((Element*)obj)->set((int)num, n) ) );
+}
+		
 //this is used internally to get the unscaled value of value n
 int Element::_get(int n){
-	if (n >= values || strcmp(type, "INTEGER") != 0){
+	//if (n >= values || strcmp(type, "INTEGER") != 0){
+	if (n >= values){
 		return(0);
 	}
 	
@@ -115,8 +166,19 @@ int Element::_get(int n){
 	
 	snd_ctl_elem_read(handle, control);
 	
-	//grab the value
-	int ret = snd_ctl_elem_value_get_integer(control, n);
+	//grab the value - note: you could get away with not checking the type and just using the get_integer one
+	int ret;
+	if (strcmp(type, "INTEGER") != 0){
+		ret = (int)snd_ctl_elem_value_get_integer(control, n);
+	} else if (strcmp(type, "ENUMERATED") != 0){
+		ret = (int)snd_ctl_elem_value_get_enumerated(control, n);
+	} else if (strcmp(type, "BYTE") != 0){
+		ret = (int)snd_ctl_elem_value_get_byte(control, n);
+	} else if (strcmp(type, "BOOLEAN") != 0){
+		ret = (int)snd_ctl_elem_value_get_boolean(control, n);
+	} else {
+		ret = (int)snd_ctl_elem_value_get_integer(control, n);
+	}
 	
 	//don't need the handle open anymore, so close it
 	snd_ctl_close(handle);
@@ -125,37 +187,8 @@ int Element::_get(int n){
 	
 }
 
-//this will grab the highest value in the element
-int Element::get(){
-	int ret = scale_out(_get(0));
-	for (int i=1; i<values; i++){
-		if(ret < scale_out(_get(i))){ ret = scale_out(_get(i)); }
-	}
-	return(ret);
-}
-//this gets the value of value n
-int Element::get(int n){
-	return(scale_out(_get(n)));
-}
-
-//this is a shorthand for setting values 0 and 1 to l and r
-void Element::set_lr(int l, int r){
-	set(l, 0);
-	set(r, 1);
-}
-//this sets all values to num
-void Element::set(int num){
-	for (int i=0; i<values; i++){
-		set(num, i);
-	}
-}
-//this sets value n to num
-void Element::set(int num, int n){
-	_set(scale_in(num), n);
-}
-
 //this is used internally to set value n to num (unscaled)
-void Element::_set(int num, int n){
+int Element::_set(int num, int n){
 	
 	int err;
 	snd_ctl_t *handle;
@@ -181,10 +214,11 @@ void Element::_set(int num, int n){
 	
 	//set the values
 	for (int i=0; i<values; i++){
-		if(i!=n){
-			snd_ctl_elem_value_set_integer(control, i, _get(i));
-		} else {	
+		if(i==n){
 			snd_ctl_elem_value_set_integer(control, i, num);
+		} else {
+			//when we set 'n', it resets the other values, so let's be sure to preserve them
+			snd_ctl_elem_value_set_integer(control, i, _get(i));
 		}
 	}
 	
@@ -194,7 +228,7 @@ void Element::_set(int num, int n){
 	//don't need the handle open anymore, so close it
 	snd_ctl_close(handle);
 	
-	
+	return(num);
 	
 }
 
@@ -225,6 +259,24 @@ ElementList::ElementList(char *_card){
 		delete(tmpptr);
 		
 	}
+
+	//want to track down all "Switch" elements and look to see if they have an associated value elsewhere
+	for (int i=0; i<num_elems; i++){
+		if (strstr(elems[i].name, "Switch")){
+			//okay, we need to grab the name, minus the "Switch", and loop through to
+			//find any elements with that as the first portion of their name
+			char buffer[80];
+			strncpy(buffer, elems[i].name, strlen(elems[i].name) - 6);
+			buffer[strlen(elems[i].name) - 6] = '\0';
+			for (int j=0; j<num_elems; j++){
+				if (strstr(elems[j].name, buffer) && !strstr(elems[j].name, "Switch")){
+					elems[j].switch_id = i;
+					elems[j].associated = elems[i].associated = true;
+				}
+			}
+			
+		}
+	}
 	
 	//clean up
 	snd_hctl_free(hctl);
@@ -235,12 +287,41 @@ ElementList::ElementList(char *_card){
 
 
 //this is just here for testing; used to be main()
-int test_alsa_stuff(int argc, char *argv[]){
+int test_alsa_stuff(){
 	char card[] = "hw:0";
 	ElementList list(card);
-	list.elems[1].print();
-	list.elems[1].set(66);
-	list.elems[1].print();
-
+	
+	for (int i=0; i<list.num_elems; i++){
+		if (!list.elems[i].associated && (strstr(list.elems[i].name, "Switch") || strstr(list.elems[i].name, "Playback Volume"))){
+			printf("%d\t%d\t%s\n", list.elems[i].numid, list.elems[i].switch_id,list.elems[i].name);
+		}
+	}
+	printf("\n");
+	for (int i=0; i<list.num_elems; i++){
+		if (list.elems[i].switch_id > 0 && strstr(list.elems[i].name, "Playback Volume")){
+			printf("%d\t%d\t%s\n", list.elems[i].numid, list.elems[i].switch_id,list.elems[i].name);
+		}
+	}
+	printf("\n");
+	for (int i=0; i<list.num_elems; i++){
+		if (list.elems[i].switch_id > 0 && !strstr(list.elems[i].name, "Playback Volume") && !strstr(list.elems[i].name, "Capture Volume")){
+			printf("%d\t%d\t%s\n", list.elems[i].numid, list.elems[i].switch_id,list.elems[i].name);
+		}
+	}
+	printf("\n");
+	for (int i=0; i<list.num_elems; i++){
+		if (list.elems[i].switch_id > 0 && !strstr(list.elems[i].name, "Playback Volume") && strstr(list.elems[i].name, "Capture Volume")){
+			printf("%d\t%d\t%s\n", list.elems[i].numid, list.elems[i].switch_id,list.elems[i].name);
+		}
+	}
+	printf("\n");
+	for (int i=0; i<list.num_elems; i++){
+		if (!list.elems[i].associated && !(strstr(list.elems[i].name, "Switch") || strstr(list.elems[i].name, "Playback Volume"))){
+			printf("%d\t%d\t%s\n", list.elems[i].numid, list.elems[i].switch_id,list.elems[i].name);
+		}
+	}
+	
+	
+	
 	return(0);
 }

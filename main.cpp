@@ -2,6 +2,7 @@
 
 #include <gtk/gtk.h>
 #include "retro_slider.h"
+#include "alsa_classes.h"
 
 
 gint count = 0;
@@ -33,34 +34,44 @@ void decrease(GtkWidget *widget, GtkWidget *fancy_bar){
 }
 
 int main(int argc, char** argv) {
-
+	//do the alsa stuff
+	//test_alsa_stuff();
+	
+	char card[] = "hw:0";
+	ElementList list(card);
+	list.elems[1].print();
+	
+	
+	//do the gtk stuff
+	
 	GtkWidget *window;
 	GtkWidget *frame;
-
+	
 	gtk_init(&argc, &argv);
-
+	
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_default_size(GTK_WINDOW(window), 190, 160);
 	gtk_window_set_title(GTK_WINDOW(window), "custom slider test");
-
+	
 	frame = gtk_fixed_new();
 	gtk_container_add(GTK_CONTAINER(window), frame);
 
-	retro_slider slider_a(frame, 10, 10, 20, 100);
-	retro_slider slider_b(frame, 40, 10, 20, 100);
-	retro_slider slider_c(frame, 70, 10, 20, 100);
-	retro_slider slider_d(frame, 100, 10, 20, 100);
-	retro_slider slider_e(frame, 130, 10, 20, 100);
-	retro_slider slider_f(frame, 160, 10, 20, 100);
-
-
+	retro_slider slider_a(frame, 10, 10, 20, 102, (void*)&list.elems[1], &Element::get_callback, &Element::set_callback);
+	/*
+	retro_slider slider_b(frame, 40, 10, 20, 102);
+	retro_slider slider_c(frame, 70, 10, 20, 102);
+	retro_slider slider_d(frame, 100, 10, 20, 102);
+	retro_slider slider_e(frame, 130, 10, 20, 102);
+	retro_slider slider_f(frame, 160, 10, 20, 102);
+	*/
+	
 	gtk_widget_show_all(window);
-
+	
 	g_signal_connect(window, "destroy",
 		G_CALLBACK (gtk_main_quit), NULL);
-
+	
 	gtk_main();
-
+	
 	return(0);
 }

@@ -3,13 +3,18 @@
 #ifndef __RETRO_SLIDER__
 #define __RETRO_SLIDER__
 
+
 class retro_slider{
 	private:
 		int y_to_seg(int ypos);
+		int y_to_val(int ypos);
 		int val_to_seg(float _val);
 		float seg_to_val(int _seg);
+		void *obj;
+		float (*get_func)(void*);
+		float (*set_func)(void*,float);
 	public:
-		retro_slider(GtkWidget *frame, int xpos, int ypos, int _width, int _height);
+		retro_slider(GtkWidget *frame, int xpos, int ypos, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float));
 		
 		float val;			//the current value
 		int seg;			//index of the highest segment to be 'lit', with 0 at the top
