@@ -9,8 +9,7 @@ class retro_slider{
 		int val_to_seg(float _val);
 		float seg_to_val(int _seg);
 	public:
-		retro_slider();
-		retro_slider(int _val);
+		retro_slider(GtkWidget *frame, int xpos, int ypos, int _width, int _height);
 		
 		float val;			//the current value
 		int seg;			//index of the highest segment to be 'lit', with 0 at the top
@@ -20,24 +19,26 @@ class retro_slider{
 		int seg_thickness;	//thickness of each line
 		int seg_spacing;	//space between the bottom of one segment and the top of the next
 		
-		int seg_offset;
-		int height;
-		int width;
+		int seg_offset;		//distance from the top of one segment to the top of the next
+		int height;			//height of the widget
+		int width;			//width of the widget
 		
-		int num_segs;
-		int slider_height;
-		float val_per_seg;
-		
-		
+		int num_segs;		//number of segments
+		int slider_height;	//the height of the slider itself (no margins and no "slack" from funny-sized widgets)
+		float val_per_seg;  //how much each segment is "worth"
 		
 		
-		//translates the y-coord of a click into a value and updates the val variable
-		void translate_to_val(float ypos);
+		
+		
+		//slides the slider, updates the val and seg variables
+		void slide_the_slider(float ypos);
+		
+		//all the callbacks for button presses and whatnot
 		static gboolean button_press_event_callback (GtkWidget *widget, GdkEventButton *event, retro_slider *slider);
 		static gboolean motion_notify_event_callback( GtkWidget *widget, GdkEventMotion *event, retro_slider *slider);
+		static gboolean scroll_event_callback (GtkWidget *widget, GdkEventScroll *event, retro_slider *slider);
+		static gboolean configure_event_callback (GtkWidget *widget, GdkEventConfigure *event, retro_slider *slider);
 		static gboolean expose_event_callback (GtkWidget *widget, GdkEventExpose *event, retro_slider *slider);
-		gboolean expose_event (GtkWidget *widget, GdkEventExpose *event);
-		
 		
 		
 };

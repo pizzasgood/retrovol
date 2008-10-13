@@ -4,44 +4,95 @@
 #include "retro_slider.h"
 
 
+//Constructor for retro_slider - takes care of all the annoying gtk initialization jazz, just supply the frame
+retro_slider::retro_slider(GtkWidget *frame, int xpos, int ypos, int _width, int _height){
 
-retro_slider::retro_slider(){
-	val = 0;
+	//I am a lazy bum, so I stuck all this crap in the constructor :)
+	GtkWidget *drawing_area;
+	drawing_area = gtk_drawing_area_new ();
+	gtk_fixed_put(GTK_FIXED(frame), drawing_area, xpos, ypos);
+	gtk_widget_set_size_request (drawing_area, _width, _height);
 
-	margin = 0;
+	g_signal_connect (G_OBJECT (drawing_area), "button_press_event", G_CALLBACK (&retro_slider::button_press_event_callback), this);
+	g_signal_connect (G_OBJECT (drawing_area), "motion_notify_event", G_CALLBACK (&retro_slider::motion_notify_event_callback), this);
+	g_signal_connect (G_OBJECT (drawing_area), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), this);
+	g_signal_connect (G_OBJECT (drawing_area), "expose_event", G_CALLBACK (retro_slider::expose_event_callback), this);
+	g_signal_connect (G_OBJECT (drawing_area), "configure_event", G_CALLBACK (retro_slider::configure_event_callback), this);
+	gtk_widget_set_events (drawing_area, GDK_EXPOSURE_MASK
+							| GDK_LEAVE_NOTIFY_MASK
+							| GDK_BUTTON_PRESS_MASK
+							| GDK_POINTER_MOTION_MASK
+							| GDK_POINTER_MOTION_HINT_MASK
+							| GDK_SCROLL_MASK);
+
+
+	//some initial values
+	val = 100;
+	seg = 0;
+
+	margin = 2;
 	seg_thickness = 2;
 	seg_spacing = 1;
 	
 	//total distance from the top of one segment to the top of the next
 	seg_offset = seg_thickness + seg_spacing;
 }
-retro_slider::retro_slider(int _val){
-	val = _val;
 
-	margin = 0;
-	seg_thickness = 1;
-	seg_spacing = 1;
 
-	//total distance from the top of one segment to the top of the next
-	seg_offset = seg_thickness + seg_spacing;
+
+//this translates from the y coordinate above the widget to the index of a segment
+//segments are indexed from 0, starting at the top
+int retro_slider::y_to_seg(int ypos){
+	int ret = (ypos - margin + 0.5*seg_spacing)/seg_offset;
+	if (ret > num_segs){
+		ret = num_segs;
+	} else if (ret < 0){
+		ret = 0;
+	}
+	return(ret);
+}
+
+//translates from a 0-100 float to the index of the corresponding segment
+int retro_slider::val_to_seg(float _val){
+	int ret = (100-_val)/val_per_seg;
+	if (ret > num_segs){
+		ret = num_segs;
+	} else if (ret < 0){
+		ret = 0;
+	}
+	return(ret);
+}
+
+//translates from the index of a segment to the value it corresponds to
+float retro_slider::seg_to_val(int _seg){
+	float ret = 100-val_per_seg*_seg;
+	if (ret > 100){
+		ret = 100;
+	} else if (ret < 0){
+		ret = 0;
+	}
+	return(ret);
 }
 
 
 
 
-
-void retro_slider::translate_to_val(float ypos){
+//slide that slider!
+void retro_slider::slide_the_slider(float ypos){
 	seg = y_to_seg(ypos);
 	val = seg_to_val(seg);
-	printf("Y: %f\tval: %f\t seg: %d\n", ypos, val, seg);
 }
 
+
+
+//if there was a button press, update the slider
 gboolean retro_slider::button_press_event_callback (GtkWidget *widget, GdkEventButton *event, retro_slider *slider){
-	
-	slider->translate_to_val(event->y);
+	slider->slide_the_slider(event->y);
+	gtk_widget_queue_draw_area(widget, 0, 0, widget->allocation.width, widget->allocation.height);
 	return(true);
 }
 
+//if there is clicking and dragging, update the slider
 gboolean retro_slider::motion_notify_event_callback( GtkWidget *widget, GdkEventMotion *event, retro_slider *slider){
 	int x, y;
 	GdkModifierType state;
@@ -55,45 +106,71 @@ gboolean retro_slider::motion_notify_event_callback( GtkWidget *widget, GdkEvent
 	}
 	
 	if (state & GDK_BUTTON1_MASK || state & GDK_BUTTON2_MASK || state & GDK_BUTTON3_MASK){
-		slider->translate_to_val(event->y);
-		g_signal_emit_by_name(widget, "expose_event");
+		slider->slide_the_slider(event->y);
+		gtk_widget_queue_draw_area(widget, 0, 0, widget->allocation.width, widget->allocation.height);
   	}
 
 	return(true);
 }
 
-
-gboolean retro_slider::expose_event_callback (GtkWidget *widget, GdkEventExpose *event, retro_slider *slider){
-	return(slider->expose_event(widget, event));
+//handle scrolling
+gboolean retro_slider::scroll_event_callback (GtkWidget *widget, GdkEventScroll *event, retro_slider *slider){
+	int ret;
+	
+	switch(event->direction){
+		case GDK_SCROLL_UP:
+		case GDK_SCROLL_RIGHT:
+			ret = slider->seg - 1;
+			break;
+		default:
+			ret = slider->seg + 1;
+			break;
+	}
+	
+	if (ret > slider->num_segs){
+		ret = slider->num_segs;
+	} else if (ret < 0){
+		ret = 0;
+	}
+	
+	slider->seg = ret;
+	slider->val = slider->seg_to_val(slider->seg);
+	
+	gtk_widget_queue_draw_area(widget, 0, 0, widget->allocation.width, widget->allocation.height);
+	return(true);
 }
 
-gboolean retro_slider::expose_event (GtkWidget *widget, GdkEventExpose *event){
 
-	/* need to put these into a better spot */
+//set the size and calculate how many segments there should be and what-not
+gboolean retro_slider::configure_event_callback (GtkWidget *widget, GdkEventConfigure *event, retro_slider *slider){
 	//width and height of the widget, margin included
-	width = widget->allocation.width;
-	height = widget->allocation.height;
+	slider->width = widget->allocation.width;
+	slider->height = widget->allocation.height;
+	
 	//need to find out how many segments will be used
-	num_segs = (height - 2*margin + seg_spacing) / seg_offset;
-	slider_height = num_segs * seg_offset;
+	slider->num_segs = (slider->height - 2*slider->margin + slider->seg_spacing) / slider->seg_offset;
+	slider->slider_height = slider->num_segs * slider->seg_offset;
+	
 	//and find how much value each segment is worth
-	val_per_seg = 100/((float)num_segs);
-	
-	
-	
+	slider->val_per_seg = 100/((float)slider->num_segs);
+
+	return(true);
+}
+
+//draw the slider
+gboolean retro_slider::expose_event_callback (GtkWidget *widget, GdkEventExpose *event, retro_slider *slider){
 	cairo_t *cr;
-	
 	cr = gdk_cairo_create(widget->window);
 	cairo_set_source_rgb(cr, 0, 0, 0);
-	//cairo_paint(cr);
+	cairo_paint(cr);
 	
-	for (int i=0; i<num_segs; i++){
-		if (i < seg){
-			cairo_set_source_rgb(cr, 0.6, 0.2, 0.0);
+	for (int i=0; i<slider->num_segs; i++){
+		if (i < slider->seg){
+			cairo_set_source_rgb(cr, 0.6, 0.2, 0.0); //unlit
 		} else {
-			cairo_set_source_rgb(cr, 1.0, 0.8, 0.0);
+			cairo_set_source_rgb(cr, 1.0, 0.8, 0.0); //lit
 		}
-		cairo_rectangle(cr, margin, margin+i*seg_offset, width-2*margin, seg_thickness);
+		cairo_rectangle(cr, slider->margin, slider->margin+i*slider->seg_offset, slider->width-2*slider->margin, slider->seg_thickness);
 		cairo_fill(cr);
 	}
 		
@@ -103,33 +180,8 @@ gboolean retro_slider::expose_event (GtkWidget *widget, GdkEventExpose *event){
 }
 
 
-int retro_slider::y_to_seg(int ypos){
-	int ret = (ypos - margin + 0.5*seg_spacing)/seg_offset;
-	if (ret > num_segs){
-		ret = num_segs;
-	} else if (ret < 0){
-		ret = 0;
-	}
-	return(ret);
-}
 
-int retro_slider::val_to_seg(float _val){
-	int ret = (100-_val)/val_per_seg;
-	if (ret > num_segs){
-		ret = num_segs;
-	} else if (ret < 0){
-		ret = 0;
-	}
-	return(ret);
-}
 
-float retro_slider::seg_to_val(int _seg){
-	float ret = 100-val_per_seg*_seg;
-	if (ret > 100){
-		ret = 100;
-	} else if (ret < 0){
-		ret = 0;
-	}
-	return(ret);
-}
+
+
 
