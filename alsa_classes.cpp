@@ -25,6 +25,21 @@ Element::Element(char *_card, int _numid, const char *_name){
 	switch_id = 0; //this will be changed later if there is an associated switch
 	associated = false; //this one is also handled later
 	
+	//set the short name by dropping any trailing "Playback*", "Volume*", or "Switch*"
+	strcpy(short_name, name);
+	char *space = strstr(short_name, " Playback");
+	if (!space){
+		space = strstr(short_name, " Volume");
+	}
+	if (!space){
+		space = strstr(short_name, " Switch");
+	}
+	if (space){
+		space[0]='\0';
+	}
+	
+	
+	//some needed pointers
 	int err;
 	snd_ctl_t *handle;
 	snd_ctl_elem_id_t *id;

@@ -36,10 +36,11 @@ void decrease(GtkWidget *widget, GtkWidget *fancy_bar){
 }
 
 int main(int argc, char** argv) {
-	//do the alsa stuff
+	//do the alsa stuff, load the controls into list
 	char card[] = "hw:0";
 	ElementList list(card);
 	
+	int slider_width=80; //will prolly want to make this dynamic, based on longest name
 	
 	//start the gtk stuff
 	GtkWidget *window;
@@ -47,17 +48,19 @@ int main(int argc, char** argv) {
 	gtk_init(&argc, &argv);
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size(GTK_WINDOW(window), 10+list.num_items*30, 160);
+	gtk_window_set_default_size(GTK_WINDOW(window), 10+list.num_items*slider_width, 160);
 	gtk_window_set_title(GTK_WINDOW(window), "custom slider test");
 	frame = gtk_fixed_new();
 	gtk_container_add(GTK_CONTAINER(window), frame);
-	
-	
+		
 	//add the sliders
 	retro_slider *sliders = new retro_slider[list.num_items];
 	for(int i=0; i<list.num_items; i++){
 		if (strcmp(list.items[i]->type, "INTEGER") == 0){
-			sliders[i].init(frame, 10+i*30, 10, 20, 102, (void*)list.items[i], &Element::get_callback, &Element::set_callback);
+			//make the slider and associate with a control
+			sliders[i].init(frame, 10+i*slider_width, 10, 20, 102, (void*)list.items[i], &Element::get_callback, &Element::set_callback);
+			//display the name of the control
+			sliders[i].set_label(list.items[i]->short_name);
 		}
 	}
 	

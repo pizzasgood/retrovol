@@ -13,23 +13,37 @@ class retro_slider{
 		void *obj;
 		float (*get_func)(void*);
 		float (*set_func)(void*,float);
+		
+		//pointers to the GtkWidgets
+		GtkWidget *frame;
+		GtkWidget *drawing_area;
+		GtkWidget *label;
+		
 	public:
 		retro_slider();
-		retro_slider(GtkWidget *frame, int xpos, int ypos, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float));
-		void init(GtkWidget *frame, int xpos, int ypos, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float));
+		retro_slider(GtkWidget *_frame, int xpos, int ypos, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float));
+		void init(GtkWidget *_frame, int xpos, int ypos, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float));
 		
 		
 		float val;			//the current value
 		int seg;			//index of the highest segment to be 'lit', with 0 at the top
-		
 		
 		int margin;
 		int seg_thickness;	//thickness of each line
 		int seg_spacing;	//space between the bottom of one segment and the top of the next
 		
 		int seg_offset;		//distance from the top of one segment to the top of the next
-		int height;			//height of the widget
-		int width;			//width of the widget
+		
+		int height;			//dimensions of the slider
+		int width;			//
+		int x_coord;		//coordinates of the slider
+		int y_coord;		//
+		
+		int label_x_offset;	//offset from the top left of the slider
+		int label_y_offset;	//
+
+		int total_width;	//the maximum of the width of the slider and width of the label
+		
 		
 		int num_segs;		//number of segments
 		int slider_height;	//the height of the slider itself (no margins and no "slack" from funny-sized widgets)
@@ -40,6 +54,9 @@ class retro_slider{
 		
 		//slides the slider, updates the val and seg variables
 		void slide_the_slider(float ypos);
+		
+		//sets the label, centers it, and returns the larger of the slider's width and the label's width
+		int set_label(char *str);
 		
 		//all the callbacks for button presses and whatnot
 		static gboolean button_press_event_callback (GtkWidget *widget, GdkEventButton *event, retro_slider *slider);

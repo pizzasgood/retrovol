@@ -12,6 +12,7 @@ class Element {
 		int numid;
 		int index;
 		char name[80];
+		char short_name[80];
 		char type[16];
 		int values;
 		int switch_id;
