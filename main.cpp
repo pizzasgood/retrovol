@@ -48,8 +48,7 @@ int main(int argc, char** argv) {
 	gtk_init(&argc, &argv);
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	//gtk_window_set_default_size(GTK_WINDOW(window), 10+list.num_items*slider_width, 160);
-	gtk_window_set_default_size(GTK_WINDOW(window), 500, 160);
+	gtk_window_set_default_size(GTK_WINDOW(window), 10+list.num_items*slider_width, 160);
 	gtk_window_set_title(GTK_WINDOW(window), "custom slider test");
 	frame = gtk_fixed_new();
 	gtk_container_add(GTK_CONTAINER(window), frame);
