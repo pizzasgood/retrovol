@@ -4,27 +4,24 @@
 #include "retro_slider.h"
 
 
-//Constructor/initializer for retro_slider - takes care of all the annoying gtk initialization jazz, just supply the frame
+//Constructor/initializer for retro_slider - takes care of all the annoying gtk initialization jazz,
+//just supply the frame (a GtkContaier of some sort, like GtkAlign)
 retro_slider::retro_slider(){
 }
-retro_slider::retro_slider(GtkWidget *_frame, int xpos, int ypos, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float)){
-	init(_frame, xpos, ypos, _width, _height, _obj, _get_func, _set_func);
+retro_slider::retro_slider(GtkWidget *_frame, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float)){
+	init(_frame, _width, _height, _obj, _get_func, _set_func);
 }
-void retro_slider::init(GtkWidget *_frame, int xpos, int ypos, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float)){
+void retro_slider::init(GtkWidget *_frame, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float)){
 	obj = _obj;
 	get_func = _get_func;
 	set_func = _set_func;
 	frame = _frame;
-
-	x_coord = xpos;
-	y_coord = ypos;
 	width = _width;
 	height = _height;
-	total_width = width;
 
 	//add the slider itself
 	drawing_area = gtk_drawing_area_new ();
-	gtk_fixed_put(GTK_FIXED(frame), drawing_area, x_coord, y_coord);
+	gtk_container_add(GTK_CONTAINER(frame), drawing_area);
 	gtk_widget_set_size_request (drawing_area, width, height);
 	g_signal_connect (G_OBJECT (drawing_area), "button_press_event", G_CALLBACK (&retro_slider::button_press_event_callback), this);
 	g_signal_connect (G_OBJECT (drawing_area), "motion_notify_event", G_CALLBACK (&retro_slider::motion_notify_event_callback), this);
@@ -37,14 +34,6 @@ void retro_slider::init(GtkWidget *_frame, int xpos, int ypos, int _width, int _
 							| GDK_POINTER_MOTION_MASK
 							| GDK_POINTER_MOTION_HINT_MASK
 							| GDK_SCROLL_MASK);
-
-	
-	//add the label
-	label = gtk_label_new("");
-	label_x_offset = 0;
-	label_y_offset = height+5;
-	gtk_fixed_put(GTK_FIXED(frame), label, x_coord+label_x_offset, y_coord+label_y_offset); 
-
 
 	//default values
 	margin = 2;
@@ -108,26 +97,6 @@ float retro_slider::seg_to_val(int _seg){
 void retro_slider::slide_the_slider(float ypos){
 	val = set_func(obj, y_to_val(ypos));
 	seg = val_to_seg(val);
-}
-
-
-//sets the label, centers it, and returns the larger of the slider's width and the label's width
-int retro_slider::set_label(char *str){
-	//update the text
-	gtk_label_set_text((GtkLabel*)label, str);
-	//recenter the label
-	GtkRequisition req;
-	gtk_widget_size_request(label, &req);
-	label_x_offset = (width - req.width)/2;
-	gtk_fixed_move(GTK_FIXED(frame), label, x_coord+label_x_offset, y_coord+label_y_offset);
-	//reevaluate the total width
-	if (req.width > width){
-		total_width = req.width;
-	} else {
-		total_width = width;
-	}
-	return(total_width);
-	
 }
 
 
