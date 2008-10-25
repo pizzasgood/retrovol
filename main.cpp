@@ -39,7 +39,6 @@ int main(int argc, char** argv) {
 	//do the alsa stuff, load the controls into list
 	char card[] = "hw:0";
 	ElementList list(card);
-	
 
 	
 	//set up the window
@@ -72,12 +71,12 @@ int main(int argc, char** argv) {
 	//add the sliders
 	retro_slider *sliders = new retro_slider[list.num_items];
 	for(int i=0; i<list.num_items; i++){
+		//use a vbox w/ slider on top and label on bottom
+		GtkWidget *vbox;
+		vbox = gtk_vbox_new(FALSE, 2);
+		gtk_box_pack_start(GTK_BOX(hbox), vbox, false, false, 0);
+		
 		if (strcmp(list.items[i]->type, "INTEGER") == 0){
-			//use a vbox w/ slider on top and label on bottom
-			GtkWidget *vbox;
-			vbox = gtk_vbox_new(FALSE, 2);
-			gtk_box_pack_start(GTK_BOX(hbox), vbox, false, false, 0);
-			
 			//the rslider pseudo-widget likes to be inside a container, lets use a GtkAlignment
 			GtkWidget *alignment;
 			alignment = gtk_alignment_new(0.5,0.5,0,0);
@@ -85,12 +84,11 @@ int main(int argc, char** argv) {
 			
 			//make the slider and associate with a control
 			sliders[i].init(alignment, 20, 102, (void*)list.items[i], &Element::get_callback, &Element::set_callback);
-			
-			//display the name of the control
-			GtkWidget *label;
-			label = gtk_label_new(list.items[i]->short_name);
-			gtk_box_pack_start(GTK_BOX(vbox), label, false, false, 0);
 		}
+		//display the name of the control
+		GtkWidget *label;
+		label = gtk_label_new(list.items[i]->short_name);
+		gtk_box_pack_start(GTK_BOX(vbox), label, false, false, 0);
 	}
 	
 	

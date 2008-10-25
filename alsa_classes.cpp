@@ -22,7 +22,7 @@ Element::Element(char *_card, int _numid, const char *_name){
 	card = _card;
 	numid = _numid;
 	strcpy(name, _name);
-	switch_id = 0; //this will be changed later if there is an associated switch
+	switch_id = -1; //this will be changed later if there is an associated switch
 	associated = false; //this one is also handled later
 	
 	//set the short name by dropping any trailing "Playback*", "Volume*", or "Switch*"
@@ -87,9 +87,9 @@ void Element::print(){
 	printf("numid: %d  name: %s\n", numid, name);
 	printf("type: %s, values: %d\n", type, values);
 	printf("min: %d, max: %d\n", min, max);
-	printf("value: %d", get(0));
+	printf("value: %d", _get(0));
 	for (int i=1; i<values; i++){
-		printf(", %d", get(i));
+		printf(", %d", _get(i));
 	}
 	printf("\n");
 }
@@ -313,26 +313,36 @@ void ElementList::populate_items(){
 	for (int i=0; i<num_elems; i++){
 		if (!elems[i].associated && (strstr(elems[i].name, "Switch") || strstr(elems[i].name, "Playback Volume"))){
 			items[num_items++] = &elems[i];
+			printf("A\n");
+			elems[i].print();
 		}
 	}
 	for (int i=0; i<num_elems; i++){
-		if (elems[i].switch_id > 0 && strstr(elems[i].name, "Playback Volume")){
+		if (elems[i].switch_id >= 0 && strstr(elems[i].name, "Playback Volume")){
 			items[num_items++] = &elems[i];
+			printf("B\n");
+			elems[i].print();
 		}
 	}
 	for (int i=0; i<num_elems; i++){
-		if (elems[i].switch_id > 0 && !strstr(elems[i].name, "Playback Volume") && !strstr(elems[i].name, "Capture Volume")){
+		if (elems[i].switch_id >= 0 && !strstr(elems[i].name, "Playback Volume") && !strstr(elems[i].name, "Capture Volume")){
 			items[num_items++] = &elems[i];
+			printf("C\n");
+			elems[i].print();
 		}
 	}
 	for (int i=0; i<num_elems; i++){
-		if (elems[i].switch_id > 0 && !strstr(elems[i].name, "Playback Volume") && strstr(elems[i].name, "Capture Volume")){
+		if (elems[i].switch_id >= 0 && !strstr(elems[i].name, "Playback Volume") && strstr(elems[i].name, "Capture Volume")){
 			items[num_items++] = &elems[i];
+			printf("D\n");
+			elems[i].print();
 		}
 	}
 	for (int i=0; i<num_elems; i++){
 		if (!elems[i].associated && !(strstr(elems[i].name, "Switch") || strstr(elems[i].name, "Playback Volume"))){
 			items[num_items++] = &elems[i];
+			printf("E\n");
+			elems[i].print();
 		}
 	}
 	
