@@ -1,5 +1,9 @@
 /* main.cpp */
 
+/*
+    retrovol - a retro-styled volume mixer, by Pizzasgood
+*/
+
 #include <stdlib.h>
 #include <gtk/gtk.h>
 #include <string.h>
@@ -7,36 +11,18 @@
 #include "alsa_classes.h"
 
 
-gint count = 0;
-char buf[5];
 
-
-
-void increase(GtkWidget *widget, GtkWidget *fancy_bar){
-	count+=4;
-	if (count > 100){
-		count=100;
-	}
-
-	sprintf(buf, "%d", count);
-	//gtk_label_set_text(label, buf);
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(fancy_bar), buf);
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(fancy_bar), count/100.0);
+//callback that handles muting/unmuting a control
+void toggle_it(GtkWidget *chkbx, Element *elem){
+	bool state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(chkbx));
+	elem->set((int)state);
 }
 
-void decrease(GtkWidget *widget, GtkWidget *fancy_bar){
-	count-=4;
-	if (count < 0){
-		count=0;
-	}
-	sprintf(buf, "%d", count);
-	//gtk_label_set_text(label, buf);
-	gtk_progress_bar_set_text(GTK_PROGRESS_BAR(fancy_bar), buf);
-	gtk_progress_bar_set_fraction(GTK_PROGRESS_BAR(fancy_bar), count/100.0);
-}
+
+
 
 int main(int argc, char** argv) {
-	//do the alsa stuff, load the controls into list
+	//load the controls into list
 	char card[] = "hw:0";
 	ElementList list(card);
 
@@ -46,7 +32,7 @@ int main(int argc, char** argv) {
 	gtk_init(&argc, &argv);
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size(GTK_WINDOW(window), 480, 160);
+	gtk_window_set_default_size(GTK_WINDOW(window), 480, 164);
 	gtk_window_set_title(GTK_WINDOW(window), "Retrovol");
 	
 	//use a scrolled window
@@ -77,18 +63,49 @@ int main(int argc, char** argv) {
 		gtk_box_pack_start(GTK_BOX(hbox), vbox, false, false, 0);
 		
 		if (strcmp(list.items[i]->type, "INTEGER") == 0){
+			//integers need sliders
 			//the rslider pseudo-widget likes to be inside a container, lets use a GtkAlignment
-			GtkWidget *alignment;
-			alignment = gtk_alignment_new(0.5,0.5,0,0);
-			gtk_box_pack_start(GTK_BOX(vbox), alignment, false, false, 0);
-			
+			GtkWidget *frame;
+			frame = gtk_alignment_new(0.5,0.0,0,0);
+			gtk_box_pack_start(GTK_BOX(vbox), frame, false, false, 0);
 			//make the slider and associate with a control
-			sliders[i].init(alignment, 20, 102, (void*)list.items[i], &Element::get_callback, &Element::set_callback);
+			sliders[i].init(frame, 20, 102, (void*)list.items[i], &Element::get_callback, &Element::set_callback);
+		
+		} else if (strcmp(list.items[i]->type, "BOOLEAN") == 0){
+			//booleans need checkboxes
+			GtkWidget *alignment;
+			alignment = gtk_alignment_new(0.5,1.0,0,0);
+			gtk_box_pack_start(GTK_BOX(vbox), alignment, true, true, 0);
+			GtkWidget *chkbx;
+			chkbx = gtk_check_button_new();
+			//set it to the current state
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbx), (bool)list.items[i]->get());
+			//bind to the toggle_it function
+			g_signal_connect (GTK_TOGGLE_BUTTON(chkbx), "toggled", G_CALLBACK (toggle_it), list.items[i]);
+			gtk_container_add(GTK_CONTAINER(alignment), chkbx);
 		}
+		
+		//add a checkbox for sliders that are muteable
+		if (list.items[i]->switch_id >= 0){
+			GtkWidget *alignment;
+			alignment = gtk_alignment_new(0.5,1.0,0,0);
+			gtk_box_pack_start(GTK_BOX(vbox), alignment, true, true, 0);
+			GtkWidget *chkbx;
+			chkbx = gtk_check_button_new();
+			//set it to the current state
+			gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(chkbx), (bool)list.elems[list.items[i]->switch_id].get());
+			//bind to the toggle_it function
+			g_signal_connect (GTK_TOGGLE_BUTTON(chkbx), "toggled", G_CALLBACK (toggle_it), &(list.elems[list.items[i]->switch_id]));
+			gtk_container_add(GTK_CONTAINER(alignment), chkbx);
+		}
+		
 		//display the name of the control
+		GtkWidget *alignment;
+		alignment = gtk_alignment_new(0.5,1.0,0,0);
+		gtk_box_pack_end(GTK_BOX(vbox), alignment, false, false, 0);
 		GtkWidget *label;
 		label = gtk_label_new(list.items[i]->short_name);
-		gtk_box_pack_start(GTK_BOX(vbox), label, false, false, 0);
+		gtk_container_add(GTK_CONTAINER(alignment), label);
 	}
 	
 	
