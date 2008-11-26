@@ -83,6 +83,16 @@ int main(int argc, char** argv) {
 			//bind to the toggle_it function
 			g_signal_connect (GTK_TOGGLE_BUTTON(chkbx), "toggled", G_CALLBACK (toggle_it), list.items[i]);
 			gtk_container_add(GTK_CONTAINER(alignment), chkbx);
+		} else if (strcmp(list.items[i]->type, "ENUMERATED") == 0){
+			//tempory stuff - put label for enumerated
+			GtkWidget *alignment;
+			alignment = gtk_alignment_new(0.5,1.0,0,0);
+			gtk_box_pack_start(GTK_BOX(vbox), alignment, true, true, 0);
+			GtkWidget *label;
+			char text[16];
+			list.items[i]->sget(text);
+			label = gtk_label_new(text);
+			gtk_container_add(GTK_CONTAINER(alignment), label);
 		}
 		
 		//add a checkbox for sliders that are muteable

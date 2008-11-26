@@ -126,7 +126,7 @@ void Element::set_lr(int l, int r){
 }
 //this sets all values to num
 int Element::set(int num){
-	int ret;
+	int ret=0;
 	for (int i=0; i<values; i++){
 		ret = set(num, i);
 	}
@@ -183,13 +183,13 @@ int Element::_get(int n){
 	
 	//grab the value - note: you could get away with not checking the type and just using the get_integer one
 	int ret;
-	if (strcmp(type, "INTEGER") != 0){
+	if (strcmp(type, "INTEGER") == 0){
 		ret = (int)snd_ctl_elem_value_get_integer(control, n);
-	} else if (strcmp(type, "ENUMERATED") != 0){
+	} else if (strcmp(type, "ENUMERATED") == 0){
 		ret = (int)snd_ctl_elem_value_get_enumerated(control, n);
-	} else if (strcmp(type, "BYTE") != 0){
+	} else if (strcmp(type, "BYTE") == 0){
 		ret = (int)snd_ctl_elem_value_get_byte(control, n);
-	} else if (strcmp(type, "BOOLEAN") != 0){
+	} else if (strcmp(type, "BOOLEAN") == 0){
 		ret = (int)snd_ctl_elem_value_get_boolean(control, n);
 	} else {
 		ret = (int)snd_ctl_elem_value_get_integer(control, n);
@@ -199,6 +199,52 @@ int Element::_get(int n){
 	snd_ctl_close(handle);
 	
 	return(ret);
+	
+}
+
+//this is used internally to get the string value from an enumerated list
+void Element::sget(char *ret){
+	
+	int err;
+	snd_ctl_t *handle;
+	snd_ctl_elem_id_t *id;
+	snd_ctl_elem_info_t *info;
+	snd_ctl_elem_value_t *control;
+	
+	//allocate the items
+	snd_ctl_elem_id_alloca(&id);
+	snd_ctl_elem_info_alloca(&info);
+	snd_ctl_elem_value_alloca(&control);
+	
+
+	//set the interface and numid to grab the device which we're interested in
+	snd_ctl_elem_id_set_interface(id, SND_CTL_ELEM_IFACE_MIXER);
+	snd_ctl_elem_id_set_numid(id, numid);
+	//use the id to set the control
+	snd_ctl_elem_value_set_id(control, id);
+	
+	//open a handle to use with the card
+	if ((err = snd_ctl_open(&handle, card, 0)) < 0) {
+		fprintf(stderr, "Control %s open error: %s\n", card, snd_strerror(err));
+	}
+	
+	snd_ctl_elem_read(handle, control);
+	
+	//grab the value
+	if (strcmp(type, "ENUMERATED") == 0){
+		//use the id to set the info
+		snd_ctl_elem_info_set_id(info, id);
+		//set which item in the enumerated list we're interested in
+		snd_ctl_elem_info_set_item(info, snd_ctl_elem_value_get_enumerated(control, 0));
+		//hook it up with the handle
+		snd_ctl_elem_info(handle, info);
+		strcpy(ret,snd_ctl_elem_info_get_item_name(info));
+	} else {
+		sprintf(ret, "%d",snd_ctl_elem_value_get_integer(control, 0));
+	}
+	
+	//don't need the handle open anymore, so close it
+	snd_ctl_close(handle);
 	
 }
 

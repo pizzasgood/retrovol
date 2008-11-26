@@ -20,6 +20,7 @@ class Element {
 		
 		int get();
 		int get(int n);
+		void sget(char *ret);
 		
 		int set(int num);
 		int set(int num, int n);
