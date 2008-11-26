@@ -311,12 +311,22 @@ void ElementList::populate_items(){
 	items = (Element**)malloc(num_elems * sizeof(Element*));
 	
 	for (int i=0; i<num_elems; i++){
-		if (!elems[i].associated && (strstr(elems[i].name, "Switch") || strstr(elems[i].name, "Playback Volume"))){
+		if (!elems[i].associated && strstr(elems[i].name, "Switch")){
 			items[num_items++] = &elems[i];
 		}
 	}
 	for (int i=0; i<num_elems; i++){
-		if (elems[i].switch_id >= 0 && strstr(elems[i].name, "Playback Volume")){
+		if (elems[i].switch_id >= 0 && strstr(elems[i].name, "Master Playback Volume")){
+			items[num_items++] = &elems[i];
+		}
+	}
+	for (int i=0; i<num_elems; i++){
+		if (!elems[i].associated && strstr(elems[i].name, "Playback Volume")){
+			items[num_items++] = &elems[i];
+		}
+	}
+	for (int i=0; i<num_elems; i++){
+		if (elems[i].switch_id >= 0 && strstr(elems[i].name, "Playback Volume") && !strstr(elems[i].name, "Master Playback Volume")){
 			items[num_items++] = &elems[i];
 		}
 	}
