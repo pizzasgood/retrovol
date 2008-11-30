@@ -39,6 +39,7 @@ void retro_slider::init(GtkWidget *_frame, int _width, int _height, void *_obj, 
 	margin = 2;
 	seg_thickness = 2;
 	seg_spacing = 1;
+	vertical = true;
 	
 	//total distance from the top of one segment to the top of the next
 	seg_offset = seg_thickness + seg_spacing;	
@@ -104,7 +105,11 @@ void retro_slider::slide_the_slider(float ypos){
 
 //if there was a button press, update the slider
 gboolean retro_slider::button_press_event_callback (GtkWidget *widget, GdkEventButton *event, retro_slider *slider){
-	slider->slide_the_slider(event->y);
+	if (slider->vertical){
+		slider->slide_the_slider(event->y);
+	} else {
+		slider->slide_the_slider(slider->width - event->x - 1);
+	}
 	gtk_widget_queue_draw_area(widget, 0, 0, widget->allocation.width, widget->allocation.height);
 	return(true);
 }
@@ -125,7 +130,11 @@ gboolean retro_slider::motion_notify_event_callback( GtkWidget *widget, GdkEvent
 	
 	//only do anything if a mouse button is pressed
 	if (state & GDK_BUTTON1_MASK || state & GDK_BUTTON2_MASK || state & GDK_BUTTON3_MASK){
-		slider->slide_the_slider(event->y);
+		if (slider->vertical){
+			slider->slide_the_slider(event->y);
+		} else {
+			slider->slide_the_slider(slider->width - event->x - 1);
+		}
 		gtk_widget_queue_draw_area(widget, 0, 0, widget->allocation.width, widget->allocation.height);
   	}
 
@@ -134,30 +143,35 @@ gboolean retro_slider::motion_notify_event_callback( GtkWidget *widget, GdkEvent
 
 //handle scrolling
 gboolean retro_slider::scroll_event_callback (GtkWidget *widget, GdkEventScroll *event, retro_slider *slider){
-	int ret;
+	int ret, delta;
 	
 	//check direction
 	switch(event->direction){
 		case GDK_SCROLL_UP:
 		case GDK_SCROLL_RIGHT:
-			ret = slider->seg - 1;
+			delta = -1;
 			break;
 		default:
-			ret = slider->seg + 1;
+			delta = 1;
 			break;
 	}
 	
-	//limit to between 0 and num_segs
-	if (ret > slider->num_segs){
-		ret = slider->num_segs;
-	} else if (ret < 0){
-		ret = 0;
+	ret=slider->seg;
+	int n=1;
+	while (ret==slider->seg && delta*ret < slider->num_segs && delta+ret >= 0){
+		ret+=n*delta;
+		//limit to between 0 and num_segs
+		if (ret > slider->num_segs){
+			ret = slider->num_segs;
+		} else if (ret < 0){
+			ret = 0;
+		}
+		//update values
+		slider->val = slider->set_func(slider->obj, slider->seg_to_val(ret));
+		ret = slider->val_to_seg(slider->val);
+		n++;
 	}
-	
-	//update values
-	slider->val = slider->set_func(slider->obj, slider->seg_to_val(ret));
-	slider->seg = slider->val_to_seg(slider->val);
-	
+	slider->seg=ret;
 	gtk_widget_queue_draw_area(widget, 0, 0, widget->allocation.width, widget->allocation.height);
 	return(true);
 }
@@ -170,8 +184,13 @@ gboolean retro_slider::configure_event_callback (GtkWidget *widget, GdkEventConf
 	slider->height = widget->allocation.height;
 	
 	//need to find out how many segments will be used
-	slider->num_segs = (slider->height - 2*slider->margin + slider->seg_spacing) / slider->seg_offset;
-	slider->slider_height = slider->num_segs * slider->seg_offset;
+	if (slider->vertical){
+		slider->num_segs = (slider->height - 2*slider->margin + slider->seg_spacing) / slider->seg_offset;
+		slider->slider_height = slider->num_segs * slider->seg_offset;
+	} else {
+		slider->num_segs = (slider->width - 2*slider->margin + slider->seg_spacing) / slider->seg_offset;
+		slider->slider_height = slider->num_segs * slider->seg_offset;
+	}
 	
 	//and find how much value each segment is worth
 	slider->val_per_seg = 100/((float)slider->num_segs);
@@ -202,7 +221,12 @@ gboolean retro_slider::expose_event_callback (GtkWidget *widget, GdkEventExpose 
 		} else {
 			cairo_set_source_rgb(cr, 1.0, 0.8, 0.0); //lit
 		}
-		cairo_rectangle(cr, slider->margin, slider->margin+i*slider->seg_offset, slider->width-2*slider->margin, slider->seg_thickness);
+		if (slider->vertical){
+			cairo_rectangle(cr, slider->margin, slider->margin+i*slider->seg_offset, slider->width-2*slider->margin, slider->seg_thickness);
+		} else {
+			//cairo_rectangle(cr, slider->margin+(slider->num_segs-i-1)*slider->seg_offset, slider->margin, slider->seg_thickness, slider->height-2*slider->margin);
+			cairo_rectangle(cr, slider->width-slider->margin-(i+1)*slider->seg_offset+1, slider->margin, slider->seg_thickness, slider->height-2*slider->margin);
+		}
 		cairo_fill(cr);
 	}
 	

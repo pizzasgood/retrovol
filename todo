@@ -1,0 +1,18 @@
+main window
+	add editable numeric display
+	add dropdowns for enumerated displays
+	improve layout of horizontal-mode
+	option to change dimensions of sliders and window
+	option to change colors of sliders and window - including gradients
+	commandline options to override the config file
+	commandline option to specify config file, else use ~/.retrovolrc
+	menu-bar w/ preferences
+	gui to change order of sliders and enable/disable
+	keyboard controls
+
+tray icon
+	*left-click: mini-slider
+	*middle-click: toggle mute
+	*right-click: full window
+	*scroll-button: adjust volume
+	make icon change to reflect volume

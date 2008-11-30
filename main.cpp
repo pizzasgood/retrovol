@@ -10,9 +10,12 @@
 #include <string.h>
 #include "retro_slider.h"
 #include "alsa_classes.h"
+#include "main.h"
 
 
-const char config_file[] = "/root/.retrovolrc"; //CHANGE this to use the home-dir!
+
+static ConfigSetttings settings;
+char config_file[] = "/root/.retrovolrc"; //CHANGE this to use the home-dir!
 
 
 //callback that handles muting/unmuting a control
@@ -47,71 +50,118 @@ void word_wrap(char *wrapped, char *orig){
 }
 
 
-//reorder the list to match the config file
-void reorder_from_config(ElementList *list){
-	int *order = new int[list->num_items];
-	
-	FILE *cfile = fopen(config_file, "r");
+
+
+ConfigSetttings::ConfigSetttings(){
+	strcpy(card, "hw:0");
+	num_names = 0;
+	vertical = true;
+	window_width=480;
+	window_height=180;
+	slider_width=20;
+	slider_height=102;
+}
+
+
+//parse the config file
+void ConfigSetttings::parse_config(char *config_file){
+	FILE *cfile = fopen(config_file, "r");	
 	if (!cfile){
-		cfile = fopen(config_file, "w");
-		if (!cfile){
-			fprintf(stderr, "ERROR: cannot create file: %s\n", config_file);
-		} else {
-			for(int i=0; i<list->num_items; i++){
-				fprintf(cfile, "\"%s\"\n", list->items[i]->name);
-			}
-			fclose(cfile);
-		}
-		cfile = fopen(config_file, "r");
-	}
-	
-	if (!cfile){
-		fprintf(stderr, "ERROR: cannot read file: %s\nUsing defaults...\n", config_file);
+		fprintf(stdout, "Cannot read file: %s\nUsing defaults...\n", config_file);
 		return;
 	}
 	
 	char buffer[80];
-	int n;
-	for (n=0; fgets(buffer, 80, cfile); n++){
-		//trim off the two quotation marks and terminating newline if it exists
-		char *buffer2 = strchr(buffer, '"')+1;
-		while (buffer[strlen(buffer)-1] == '\n' || buffer[strlen(buffer)-1] == '"'){
-			buffer[strlen(buffer)-1]='\0';
+	char *tmpptr;
+	while (fgets(buffer, 80, cfile)){
+		//use the # as a comment, and ignore newlines
+		if (buffer[0] == '#' || buffer[0] == '\n'){
+			continue;
 		}
-		//find the index
-		for (int i=0; i<list->num_items; i++){
-			if (strcmp(buffer2, list->items[i]->name) == 0){
-				order[n]=i;
-				break;
+		tmpptr=strtok(buffer, "=\n");
+		if (strcmp(tmpptr, "vertical")==0){
+			tmpptr=strtok(NULL, "=\n");
+			vertical=(bool)atoi(tmpptr);
+		} else if (strcmp(tmpptr, "window_width")==0){
+			tmpptr=strtok(NULL, "=\n");
+			window_width=atoi(tmpptr);
+		} else if (strcmp(tmpptr, "window_height")==0){
+			tmpptr=strtok(NULL, "=\n");
+			window_height=atoi(tmpptr);
+		} else if (strcmp(tmpptr, "slider_width")==0){
+			tmpptr=strtok(NULL, "=\n");
+			slider_width=atoi(tmpptr);
+		} else if (strcmp(tmpptr, "slider_height")==0){
+			tmpptr=strtok(NULL, "=\n");
+			slider_height=atoi(tmpptr);
+		} else if (strcmp(tmpptr, "sliders:")==0){
+			int n;
+			for (n=0; fgets(buffer, 80, cfile); n++){
+				//ignore blank lines, comments, and erroneous junk
+				if(buffer[0] != '\t' || buffer[1] == '#' || buffer[1] == '\n'){
+					n--;
+					continue;
+				}
+				//trim off the tab, two quotation marks and terminating newline if it exists
+				char *buffer2 = strchr(buffer, '"')+1;
+				while (buffer[strlen(buffer)-1] == '\n' || buffer[strlen(buffer)-1] == '"'){
+					buffer[strlen(buffer)-1]='\0';
+				}
+				
+				//put it into the array
+				strcpy(name_list[n], buffer2);
+				
 			}
+			num_names=n;
 		}
 	}
 	
 	fclose(cfile);
-	list->reorder_items(order, n);
-	delete order;
+	
+}
+
+
+//reorder the items in list to match name_list, omitting any that are not in name_list
+void ConfigSetttings::reorder_list(ElementList *list){
+	
+	//this function is not needed unless an order has been defined somewhere
+	if (num_names!=0){
+		
+		int *order = new int[list->num_items];
+
+		//find the indexes
+		for (int n=0; n<num_names; n++){
+			for (int i=0; i<list->num_items; i++){
+				if (strcmp(name_list[n], list->items[i]->name) == 0){
+					order[n]=i;
+					break;
+				}
+			}
+		}
+
+		list->reorder_items(order, num_names);
+		delete order;
+		
+	}
+	
 }
 
 
 
-
-
-
-
-
-
 int main(int argc, char** argv) {
+	//parse the config file
+	settings.parse_config(config_file);
 	//load the controls into list
-	char card[] = "hw:0";
-	ElementList list(card);
-	
+	ElementList list(settings.card);
+	//reorder the controls to the order specified in the config file
+	settings.reorder_list(&list);
 	
 	//set up the window
 	GtkWidget *window;
 	gtk_init(&argc, &argv);
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size(GTK_WINDOW(window), 480, 180);
+	gtk_window_set_default_size(GTK_WINDOW(window), settings.window_width, settings.window_height);
 	gtk_window_set_title(GTK_WINDOW(window), "Retrovol");
 	
 	//use a scrolled window
@@ -129,11 +179,13 @@ int main(int argc, char** argv) {
 			
 	//and create an Hbox to hold all the stuff
 	GtkWidget *hbox;
-	hbox = gtk_hbox_new(TRUE, 2);
-	gtk_container_add(GTK_CONTAINER(viewport), hbox);
-	
-	reorder_from_config(&list);
-
+	if (settings.vertical){
+		hbox = gtk_hbox_new(TRUE, 2);
+		gtk_container_add(GTK_CONTAINER(viewport), hbox);
+	} else {
+		hbox = gtk_vbox_new(TRUE, 2);
+		gtk_container_add(GTK_CONTAINER(viewport), hbox);
+	}
 			
 	//add the sliders
 	retro_slider *sliders = new retro_slider[list.num_items];
@@ -141,23 +193,37 @@ int main(int argc, char** argv) {
 	for(int i=0; i<list.num_items; i++){
 		//use a vbox w/ slider on top and label on bottom
 		GtkWidget *vbox;
-		vbox = gtk_vbox_new(FALSE, 2);
+		if (settings.vertical){
+			vbox = gtk_vbox_new(FALSE, 2);
+		} else {
+			vbox = gtk_hbox_new(FALSE, 2);
+		}
 		gtk_box_pack_start(GTK_BOX(hbox), vbox, false, false, 0);
 		
 		if (strcmp(list.items[i]->type, "INTEGER") == 0){
 			//integers need sliders
 			//the rslider pseudo-widget likes to be inside a container, lets use a GtkAlignment
 			GtkWidget *frame;
-			frame = gtk_alignment_new(0.5,0.0,0,0);
-			gtk_box_pack_start(GTK_BOX(vbox), frame, false, false, 0);
+			if (settings.vertical){
+				frame = gtk_alignment_new(0.5,0.0,0,0);
+				gtk_box_pack_start(GTK_BOX(vbox), frame, false, false, 0);
+			} else {
+				frame = gtk_alignment_new(0.0,0.5,0,0);
+				gtk_box_pack_end(GTK_BOX(vbox), frame, false, false, 0);
+			}
 			//make the slider and associate with a control
-			sliders[i].init(frame, 20, 102, (void*)list.items[i], &Element::get_callback, &Element::set_callback);
+			sliders[i].init(frame, settings.slider_width, settings.slider_height, (void*)list.items[i], &Element::get_callback, &Element::set_callback);
 		
 		} else if (strcmp(list.items[i]->type, "BOOLEAN") == 0){
 			//booleans need checkboxes
 			GtkWidget *alignment;
-			alignment = gtk_alignment_new(0.5,1.0,0,0);
-			gtk_box_pack_start(GTK_BOX(vbox), alignment, true, true, 0);
+			if (settings.vertical){
+				alignment = gtk_alignment_new(0.5,1.0,0,0);
+				gtk_box_pack_start(GTK_BOX(vbox), alignment, true, true, 0);
+			} else {
+				alignment = gtk_alignment_new(1.0,0.5,0,0);
+				gtk_box_pack_end(GTK_BOX(vbox), alignment, true, true, 0);
+			}
 			GtkWidget *chkbx;
 			chkbx = gtk_check_button_new();
 			//set it to the current state
@@ -168,8 +234,13 @@ int main(int argc, char** argv) {
 		} else if (strcmp(list.items[i]->type, "ENUMERATED") == 0){
 			//tempory stuff - put label for enumerated
 			GtkWidget *alignment;
-			alignment = gtk_alignment_new(0.5,0.5,0,0);
-			gtk_box_pack_start(GTK_BOX(vbox), alignment, true, true, 0);
+			if (settings.vertical){
+				alignment = gtk_alignment_new(0.5,0.5,0,0);
+				gtk_box_pack_start(GTK_BOX(vbox), alignment, true, true, 0);
+			} else {
+				alignment = gtk_alignment_new(0.5,0.5,0,0);
+				gtk_box_pack_end(GTK_BOX(vbox), alignment, true, true, 0);
+			}
 			GtkWidget *label;
 			char text[16];
 			list.items[i]->sget(text);
@@ -180,8 +251,13 @@ int main(int argc, char** argv) {
 		//add a checkbox for sliders that are muteable
 		if (list.items[i]->switch_id >= 0){
 			GtkWidget *alignment;
-			alignment = gtk_alignment_new(0.5,1.0,0,0);
-			gtk_box_pack_start(GTK_BOX(vbox), alignment, true, true, 0);
+			if (settings.vertical){
+				alignment = gtk_alignment_new(0.5,1.0,0,0);
+				gtk_box_pack_start(GTK_BOX(vbox), alignment, true, true, 0);
+			} else {
+				alignment = gtk_alignment_new(1.0,0.5,0,0);
+				gtk_box_pack_end(GTK_BOX(vbox), alignment, true, true, 0);
+			}
 			GtkWidget *chkbx;
 			chkbx = gtk_check_button_new();
 			//set it to the current state
@@ -193,10 +269,16 @@ int main(int argc, char** argv) {
 		
 		//display the name of the control
 		GtkWidget *alignment;
-		alignment = gtk_alignment_new(0.5,1.0,0,0);
-		gtk_box_pack_end(GTK_BOX(vbox), alignment, false, false, 0);
 		char wrapped[80];
-		word_wrap(wrapped, list.items[i]->short_name);
+		if (settings.vertical){
+			alignment = gtk_alignment_new(0.5,1.0,0,0);
+			gtk_box_pack_end(GTK_BOX(vbox), alignment, false, false, 0);
+			word_wrap(wrapped, list.items[i]->short_name);
+		} else {
+			alignment = gtk_alignment_new(1.0,0.5,0,0);
+			gtk_box_pack_start(GTK_BOX(vbox), alignment, false, false, 0);
+			strcpy(wrapped, list.items[i]->short_name);
+		}
 		GtkWidget *label;
 		label = gtk_label_new(wrapped);
 		gtk_container_add(GTK_CONTAINER(alignment), label);

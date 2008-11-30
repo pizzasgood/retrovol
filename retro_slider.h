@@ -41,7 +41,7 @@ class retro_slider{
 		int slider_height;	//the height of the slider itself (no margins and no "slack" from funny-sized widgets)
 		float val_per_seg;  //how much each segment is "worth"
 		
-		
+		bool vertical;	//when true, the sliders are vertical
 		
 		
 		//slides the slider, updates the val and seg variables
