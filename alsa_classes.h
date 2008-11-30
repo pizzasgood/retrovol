@@ -61,8 +61,8 @@ class ElementList {
 		
 		//populates the items array by sorting elems and skipping switches that are associated with an element
 		void populate_items();
-		//populates the items array from a file
-		void populate_items_from_file(char *filename);
+		//rearranges the items array so the current indexes are reordered to match 'order'
+		void reorder_items(int *order, int n);
 };
 
 

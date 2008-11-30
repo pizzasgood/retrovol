@@ -5,11 +5,14 @@
 */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include <gtk/gtk.h>
 #include <string.h>
 #include "retro_slider.h"
 #include "alsa_classes.h"
 
+
+const char config_file[] = "/root/.retrovolrc"; //CHANGE this to use the home-dir!
 
 
 //callback that handles muting/unmuting a control
@@ -19,20 +22,96 @@ void toggle_it(GtkWidget *chkbx, Element *elem){
 }
 
 
+//replace the second space (or the first if preceeding a '(' or '-') with '\n'
+//else append a '\n' to keep things lined up
+void word_wrap(char *wrapped, char *orig){
+	strcpy(wrapped, orig);
+	unsigned int i,n;
+	for (i=0, n=0; i<strlen(wrapped); i++){
+		if (wrapped[i] == ' '){
+			n++;
+			if (n==2 || (n==1 && (wrapped[i+1] == '(' || wrapped[i+1] == '-'))){
+				n=2;
+				wrapped[i]='\n';
+				while(wrapped[i+1] == '-' || wrapped[i+1] == ' '){
+					strcpy(&wrapped[i+1], &wrapped[i+2]);
+				}
+				break;
+			}
+		}
+	}
+	if (n<2){
+		wrapped[i]='\n';
+		wrapped[i+1]='\0';
+	}
+}
+
+
+//reorder the list to match the config file
+void reorder_from_config(ElementList *list){
+	int *order = new int[list->num_items];
+	
+	FILE *cfile = fopen(config_file, "r");
+	if (!cfile){
+		cfile = fopen(config_file, "w");
+		if (!cfile){
+			fprintf(stderr, "ERROR: cannot create file: %s\n", config_file);
+		} else {
+			for(int i=0; i<list->num_items; i++){
+				fprintf(cfile, "\"%s\"\n", list->items[i]->name);
+			}
+			fclose(cfile);
+		}
+		cfile = fopen(config_file, "r");
+	}
+	
+	if (!cfile){
+		fprintf(stderr, "ERROR: cannot read file: %s\nUsing defaults...\n", config_file);
+		return;
+	}
+	
+	char buffer[80];
+	int n;
+	for (n=0; fgets(buffer, 80, cfile); n++){
+		//trim off the two quotation marks and terminating newline if it exists
+		char *buffer2 = strchr(buffer, '"')+1;
+		while (buffer[strlen(buffer)-1] == '\n' || buffer[strlen(buffer)-1] == '"'){
+			buffer[strlen(buffer)-1]='\0';
+		}
+		//find the index
+		for (int i=0; i<list->num_items; i++){
+			if (strcmp(buffer2, list->items[i]->name) == 0){
+				order[n]=i;
+				break;
+			}
+		}
+	}
+	
+	fclose(cfile);
+	list->reorder_items(order, n);
+	delete order;
+}
+
+
+
+
+
+
+
 
 
 int main(int argc, char** argv) {
 	//load the controls into list
 	char card[] = "hw:0";
 	ElementList list(card);
-
+	
 	
 	//set up the window
 	GtkWidget *window;
 	gtk_init(&argc, &argv);
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size(GTK_WINDOW(window), 480, 164);
+	gtk_window_set_default_size(GTK_WINDOW(window), 480, 180);
 	gtk_window_set_title(GTK_WINDOW(window), "Retrovol");
 	
 	//use a scrolled window
@@ -53,9 +132,12 @@ int main(int argc, char** argv) {
 	hbox = gtk_hbox_new(TRUE, 2);
 	gtk_container_add(GTK_CONTAINER(viewport), hbox);
 	
+	reorder_from_config(&list);
+
 			
 	//add the sliders
 	retro_slider *sliders = new retro_slider[list.num_items];
+	
 	for(int i=0; i<list.num_items; i++){
 		//use a vbox w/ slider on top and label on bottom
 		GtkWidget *vbox;
@@ -86,7 +168,7 @@ int main(int argc, char** argv) {
 		} else if (strcmp(list.items[i]->type, "ENUMERATED") == 0){
 			//tempory stuff - put label for enumerated
 			GtkWidget *alignment;
-			alignment = gtk_alignment_new(0.5,1.0,0,0);
+			alignment = gtk_alignment_new(0.5,0.5,0,0);
 			gtk_box_pack_start(GTK_BOX(vbox), alignment, true, true, 0);
 			GtkWidget *label;
 			char text[16];
@@ -113,8 +195,10 @@ int main(int argc, char** argv) {
 		GtkWidget *alignment;
 		alignment = gtk_alignment_new(0.5,1.0,0,0);
 		gtk_box_pack_end(GTK_BOX(vbox), alignment, false, false, 0);
+		char wrapped[80];
+		word_wrap(wrapped, list.items[i]->short_name);
 		GtkWidget *label;
-		label = gtk_label_new(list.items[i]->short_name);
+		label = gtk_label_new(wrapped);
 		gtk_container_add(GTK_CONTAINER(alignment), label);
 	}
 	

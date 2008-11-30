@@ -240,7 +240,7 @@ void Element::sget(char *ret){
 		snd_ctl_elem_info(handle, info);
 		strcpy(ret,snd_ctl_elem_info_get_item_name(info));
 	} else {
-		sprintf(ret, "%d",snd_ctl_elem_value_get_integer(control, 0));
+		sprintf(ret, "%d", snd_ctl_elem_value_get_integer(control, 0));
 	}
 	
 	//don't need the handle open anymore, so close it
@@ -292,6 +292,10 @@ int Element::_set(int num, int n){
 	return(num);
 	
 }
+
+
+
+
 
 
 
@@ -393,6 +397,19 @@ void ElementList::populate_items(){
 	}
 	
 	items = (Element**)realloc(items, num_items * sizeof(Element*));
+}
+
+
+//rearranges the items array so the current indexes are reordered to match 'order'
+void ElementList::reorder_items(int *order, int n){
+	num_items=n;
+	Element **tmp_items = (Element**)malloc(num_items * sizeof(Element*));
+	for (int i=0; i<num_items; i++){
+		tmp_items[i]=items[order[i]];
+	}
+	free(items);
+	items=tmp_items;
+	tmp_items=NULL;
 }
 
 
