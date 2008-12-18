@@ -60,6 +60,21 @@ ConfigSetttings::ConfigSetttings(){
 	window_height=180;
 	slider_width=20;
 	slider_height=102;
+	slider_margin = 2;
+	seg_thickness = 2;
+	seg_spacing = 1;
+
+}
+
+
+//apply settings to a slider
+void ConfigSetttings::apply_to_slider(retro_slider *slider){
+	slider->width = slider_width;
+	slider->height = slider_height;
+	slider->margin = slider_margin;
+	slider->seg_thickness = seg_thickness;
+	slider->seg_spacing = seg_spacing;
+	slider->vertical = vertical;
 }
 
 
@@ -94,6 +109,15 @@ void ConfigSetttings::parse_config(char *config_file){
 		} else if (strcmp(tmpptr, "slider_height")==0){
 			tmpptr=strtok(NULL, "=\n");
 			slider_height=atoi(tmpptr);
+		} else if (strcmp(tmpptr, "slider_margin")==0){
+			tmpptr=strtok(NULL, "=\n");
+			slider_margin=atoi(tmpptr);
+		} else if (strcmp(tmpptr, "seg_thickness")==0){
+			tmpptr=strtok(NULL, "=\n");
+			seg_thickness=atoi(tmpptr);
+		} else if (strcmp(tmpptr, "seg_spacing")==0){
+			tmpptr=strtok(NULL, "=\n");
+			seg_spacing=atoi(tmpptr);
 		} else if (strcmp(tmpptr, "sliders:")==0){
 			int n;
 			for (n=0; fgets(buffer, 80, cfile); n++){
@@ -212,7 +236,8 @@ int main(int argc, char** argv) {
 				gtk_box_pack_end(GTK_BOX(vbox), frame, false, false, 0);
 			}
 			//make the slider and associate with a control
-			sliders[i].init(frame, settings.slider_width, settings.slider_height, (void*)list.items[i], &Element::get_callback, &Element::set_callback);
+			settings.apply_to_slider(&sliders[i]);
+			sliders[i].init(frame, (void*)list.items[i], &Element::get_callback, &Element::set_callback);
 		
 		} else if (strcmp(list.items[i]->type, "BOOLEAN") == 0){
 			//booleans need checkboxes

@@ -22,7 +22,7 @@ class retro_slider{
 	public:
 		retro_slider();
 		retro_slider(GtkWidget *_frame, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float));
-		void init(GtkWidget *_frame, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float));
+		void init(GtkWidget *_frame, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float));
 		
 		
 		float val;			//the current value

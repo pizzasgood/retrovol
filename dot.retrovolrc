@@ -13,6 +13,10 @@ slider_height=102
 #slider_width=102
 #slider_height=20
 
+slider_margin=2
+seg_thickness=2
+seg_spacing=1
+
 #Which sliders to display, in order.  They MUST have a tab first and be quoted
 sliders:
 	"Master Playback Volume"

@@ -9,15 +9,20 @@
 retro_slider::retro_slider(){
 }
 retro_slider::retro_slider(GtkWidget *_frame, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float)){
-	init(_frame, _width, _height, _obj, _get_func, _set_func);
+	width=_width;
+	height=_height;
+	//default values
+	margin = 2;
+	seg_thickness = 2;
+	seg_spacing = 1;
+	vertical = true;
+	init(_frame, _obj, _get_func, _set_func);
 }
-void retro_slider::init(GtkWidget *_frame, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float)){
+void retro_slider::init(GtkWidget *_frame, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float)){
+	frame = _frame;
 	obj = _obj;
 	get_func = _get_func;
 	set_func = _set_func;
-	frame = _frame;
-	width = _width;
-	height = _height;
 
 	//add the slider itself
 	drawing_area = gtk_drawing_area_new ();
@@ -35,11 +40,6 @@ void retro_slider::init(GtkWidget *_frame, int _width, int _height, void *_obj, 
 							| GDK_POINTER_MOTION_HINT_MASK
 							| GDK_SCROLL_MASK);
 
-	//default values
-	margin = 2;
-	seg_thickness = 2;
-	seg_spacing = 1;
-	vertical = true;
 	
 	//total distance from the top of one segment to the top of the next
 	seg_offset = seg_thickness + seg_spacing;	

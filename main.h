@@ -12,12 +12,15 @@ class ConfigSetttings {
 		bool vertical;
 		
 		int window_width;
-		int window_height;		
+		int window_height;
 		
 		int slider_width;
-		int slider_height;		
+		int slider_height;
 		
+		int slider_margin;
 		
+		int seg_thickness;
+		int seg_spacing;
 		
 		
 		//parse the config file
@@ -25,6 +28,9 @@ class ConfigSetttings {
 
 		//reorder the list to match the config file
 		void reorder_list(ElementList *list);
+		
+		//apply settings to a slider
+		void apply_to_slider(retro_slider *slider);
 		
 	private:
 		
