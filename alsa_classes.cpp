@@ -9,9 +9,9 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <alsa/asoundlib.h>
 #include <math.h>
 #include <string.h>
+#include <alsa/asoundlib.h>
 
 #include "alsa_classes.h"
 
@@ -240,7 +240,7 @@ void Element::sget(char *ret){
 		snd_ctl_elem_info(handle, info);
 		strcpy(ret,snd_ctl_elem_info_get_item_name(info));
 	} else {
-		sprintf(ret, "%d", snd_ctl_elem_value_get_integer(control, 0));
+		sprintf(ret, "%ld", snd_ctl_elem_value_get_integer(control, 0));
 	}
 	
 	//don't need the handle open anymore, so close it

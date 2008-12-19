@@ -1,5 +1,9 @@
 /* alsa_classes.h */
 
+#ifndef __ALSA_CLASSES__
+#define __ALSA_CLASSES__
+
+
 //This stores data about an element (e.g. Front Volume, Front Switch, etc.)
 //and provides get() and set() functions to deal with its values.  Numbers are
 //This stores data about an element (e.g. Front Volume, Front Switch, etc.)
@@ -71,3 +75,5 @@ class ElementList {
 //this is just here for testing; used to be main()
 int test_alsa_stuff();
 
+
+#endif

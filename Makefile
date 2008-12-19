@@ -1,5 +1,5 @@
 BINNAME = retrovol
-OBJS = main.o retro_slider.o alsa_classes.o
+OBJS = main.o config_settings.o retro_slider.o alsa_classes.o
 
 
 INCLUDE = `pkg-config --cflags gtk+-2.0`
@@ -18,8 +18,11 @@ PP = g++ $(OPT)
 rvol: $(OBJS)
 	$(PP) $(LFLAGS) $(OBJS) -o $(BINNAME) $(LIBDIR) $(LIBRARIES)
 
-main.o: main.cpp main.h retro_slider.h alsa_classes.h
+main.o: main.cpp main.h config_settings.h retro_slider.h alsa_classes.h
 	$(PP) main.cpp $(CFLAGS) $(INCLUDE)
+
+config_settings.o: config_settings.cpp config_settings.h retro_slider.h alsa_classes.h
+	$(PP) config_settings.cpp $(CFLAGS) $(INCLUDE)
 
 retro_slider.o: retro_slider.cpp retro_slider.h
 	$(PP) retro_slider.cpp $(CFLAGS) $(INCLUDE)
