@@ -14,6 +14,22 @@ retro_slider::retro_slider(){
 	seg_thickness = 2;
 	seg_spacing = 1;
 	vertical = true;
+	
+	background_color[0]=0.0;
+	background_color[1]=0.0;
+	background_color[2]=0.0;
+	
+	border_color[0]=0.0;
+	border_color[1]=0.0;
+	border_color[2]=0.0;
+	
+	unlit_color[0]=0.6;
+	unlit_color[1]=0.2;
+	unlit_color[2]=0.0;
+	
+	lit_color[0]=1.0;
+	lit_color[1]=0.8;
+	lit_color[2]=0.0;
 }
 retro_slider::retro_slider(GtkWidget *_frame, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float)){
 	width=_width;
@@ -215,23 +231,31 @@ gboolean retro_slider::expose_event_callback (GtkWidget *widget, GdkEventExpose 
 	slider->val = slider->get_func(slider->obj);
 	slider->seg = slider->val_to_seg(slider->val);
 	
-	//load the cairo object and draw the bg
+	//load the cairo object and draw the border
 	cairo_t *cr;
 	cr = gdk_cairo_create(widget->window);
-	cairo_set_source_rgb(cr, 0, 0, 0);
+	cairo_set_source_rgb(cr, slider->border_color[0], slider->border_color[1], slider->border_color[2]);
 	cairo_paint(cr);
+	
+	//draw the background
+	cairo_set_source_rgb(cr, slider->background_color[0], slider->background_color[1], slider->background_color[2]);
+	if (slider->vertical){
+		cairo_rectangle(cr, slider->margin, slider->margin, slider->width-2*slider->margin, slider->num_segs*slider->seg_offset-slider->seg_spacing);
+	} else {
+		cairo_rectangle(cr, slider->margin, slider->margin, slider->num_segs*slider->seg_offset-slider->seg_spacing, slider->height-2*slider->margin);
+	}
+	cairo_fill(cr);
 	
 	//draw the segments
 	for (int i=0; i<slider->num_segs; i++){
 		if (i < slider->seg){
-			cairo_set_source_rgb(cr, 0.6, 0.2, 0.0); //unlit
+			cairo_set_source_rgb(cr, slider->unlit_color[0], slider->unlit_color[1], slider->unlit_color[2]); //unlit
 		} else {
-			cairo_set_source_rgb(cr, 1.0, 0.8, 0.0); //lit
+			cairo_set_source_rgb(cr, slider->lit_color[0], slider->lit_color[1], slider->lit_color[2]); //lit
 		}
 		if (slider->vertical){
 			cairo_rectangle(cr, slider->margin, slider->margin+i*slider->seg_offset, slider->width-2*slider->margin, slider->seg_thickness);
 		} else {
-			//cairo_rectangle(cr, slider->margin+(slider->num_segs-i-1)*slider->seg_offset, slider->margin, slider->seg_thickness, slider->height-2*slider->margin);
 			cairo_rectangle(cr, slider->width-slider->margin-(i+1)*slider->seg_offset+1, slider->margin, slider->seg_thickness, slider->height-2*slider->margin);
 		}
 		cairo_fill(cr);
@@ -242,7 +266,6 @@ gboolean retro_slider::expose_event_callback (GtkWidget *widget, GdkEventExpose 
 
 	return(true);
 }
-
 
 
 

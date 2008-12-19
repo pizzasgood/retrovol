@@ -2,7 +2,8 @@ main window
 	add editable numeric display
 	add dropdowns for enumerated displays
 	improve layout of horizontal-mode
-	option to change colors of sliders and window - including gradients
+	gradient colors in the slider
+	"overload" colors in the slider
 	commandline options to override the config file
 	commandline option to specify config file, else use ~/.retrovolrc
 	menu-bar w/ preferences

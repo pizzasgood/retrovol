@@ -1,6 +1,6 @@
 #Config file for retrovol
 
-#Set this to 1 to make the sliders vertical
+#Set this to 1 to make the sliders vertical, or 0 for horizontal
 vertical=1
 
 #window dimensions
@@ -16,6 +16,11 @@ slider_height=102
 slider_margin=2
 seg_thickness=2
 seg_spacing=1
+
+background_color=#000000
+border_color=#000000
+unlit_color=#993300
+lit_color=#FFCC00
 
 #Which sliders to display, in order.  They MUST have a tab first and be quoted
 sliders:

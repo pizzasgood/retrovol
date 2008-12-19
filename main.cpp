@@ -53,8 +53,9 @@ void word_wrap(char *wrapped, char *orig){
 
 
 ConfigSetttings::ConfigSetttings(){
-	strcpy(card, "hw:0");
 	num_names = 0;
+	//defaults
+	strcpy(card, "hw:0");
 	vertical = true;
 	window_width=480;
 	window_height=180;
@@ -63,6 +64,22 @@ ConfigSetttings::ConfigSetttings(){
 	slider_margin = 2;
 	seg_thickness = 2;
 	seg_spacing = 1;
+	
+	background_color[0]=0.0;
+	background_color[1]=0.0;
+	background_color[2]=0.0;
+	
+	border_color[0]=0.0;
+	border_color[1]=0.0;
+	border_color[2]=0.0;
+	
+	unlit_color[0]=0.6;
+	unlit_color[1]=0.2;
+	unlit_color[2]=0.0;
+	
+	lit_color[0]=1.0;
+	lit_color[1]=0.8;
+	lit_color[2]=0.0;
 
 }
 
@@ -75,6 +92,22 @@ void ConfigSetttings::apply_to_slider(retro_slider *slider){
 	slider->seg_thickness = seg_thickness;
 	slider->seg_spacing = seg_spacing;
 	slider->vertical = vertical;
+	
+	slider->background_color[0]=background_color[0];
+	slider->background_color[1]=background_color[1];
+	slider->background_color[2]=background_color[2];
+	
+	slider->border_color[0]=border_color[0];
+	slider->border_color[1]=border_color[1];
+	slider->border_color[2]=border_color[2];
+	
+	slider->unlit_color[0]=unlit_color[0];
+	slider->unlit_color[1]=unlit_color[1];
+	slider->unlit_color[2]=unlit_color[2];
+	
+	slider->lit_color[0]=lit_color[0];
+	slider->lit_color[1]=lit_color[1];
+	slider->lit_color[2]=lit_color[2];
 }
 
 
@@ -115,9 +148,21 @@ void ConfigSetttings::parse_config(char *config_file){
 		} else if (strcmp(tmpptr, "seg_thickness")==0){
 			tmpptr=strtok(NULL, "=\n");
 			seg_thickness=atoi(tmpptr);
-		} else if (strcmp(tmpptr, "seg_spacing")==0){
+		} else if (strcmp(tmpptr, "seg_thickness")==0){
 			tmpptr=strtok(NULL, "=\n");
-			seg_spacing=atoi(tmpptr);
+			seg_thickness=atoi(tmpptr);
+		} else if (strcmp(tmpptr, "background_color")==0){
+			tmpptr=strtok(NULL, "=\n");
+			htonf(background_color, tmpptr);
+		} else if (strcmp(tmpptr, "border_color")==0){
+			tmpptr=strtok(NULL, "=\n");
+			htonf(border_color, tmpptr);
+		} else if (strcmp(tmpptr, "unlit_color")==0){
+			tmpptr=strtok(NULL, "=\n");
+			htonf(unlit_color, tmpptr);
+		} else if (strcmp(tmpptr, "lit_color")==0){
+			tmpptr=strtok(NULL, "=\n");
+			htonf(lit_color, tmpptr);
 		} else if (strcmp(tmpptr, "sliders:")==0){
 			int n;
 			for (n=0; fgets(buffer, 80, cfile); n++){
@@ -169,6 +214,50 @@ void ConfigSetttings::reorder_list(ElementList *list){
 	}
 	
 }
+
+
+//take a hex string like #AAFF88 and put it into a three item integer array
+void ConfigSetttings::htoi(int *array, char *string){
+	if (strlen(string) == 7 ){
+		for (int i=0; i<3; i++){
+			if (string[1+2*i] >= '0' && string[1+2*i] <= '9'){
+				array[i]=16*(string[1+2*i]-'0');
+			} else if (string[1+2*i] >= 'A' && string[1+2*i] <= 'F'){
+				array[i]=16*(string[1+2*i]-'A'+10);
+			} else if (string[1+2*i] >= 'a' && string[1+2*i] <= 'f'){
+				array[i]=16*(string[1+2*i]-'a'+10);
+			} else {
+				array[i]=0;
+			}
+			if (string[2+2*i] >= '0' && string[2+2*i] <= '9'){
+				array[i]+=(string[2+2*i]-'0');
+			} else if (string[2+2*i] >= 'A' && string[2+2*i] <= 'F'){
+				array[i]+=(string[2+2*i]-'A'+10);
+			} else if (string[2+2*i] >= 'a' && string[2+2*i] <= 'f'){
+				array[i]+=(string[2+2*i]-'a'+10);
+			} else {
+				array[i]+=0;
+			}
+		}
+	} else {
+		array[0]=array[1]=array[2]=0;
+	}
+}
+
+//take a hex string like #AAFF88 and put it into a three item float array, normalized so 255=1.0, 0=0.0
+void ConfigSetttings::htonf(float *array, char *string){
+	int intarray[3];
+	htoi(intarray, string);
+	for (int i=0; i<3; i++){
+		array[i]=((float)intarray[i])/255;
+	}
+}
+
+
+
+
+
+
 
 
 

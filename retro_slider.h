@@ -25,24 +25,28 @@ class retro_slider{
 		void init(GtkWidget *_frame, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float));
 		
 		
-		float val;			//the current value
-		int seg;			//index of the highest segment to be 'lit', with 0 at the top
+		float val;				//the current value
+		int seg;				//index of the highest segment to be 'lit', with 0 at the top
+		                  	
+		int margin;        	
+		int seg_thickness;		//thickness of each line
+		int seg_spacing;		//space between the bottom of one segment and the top of the next
+		                  	
+		int seg_offset;			//distance from the top of one segment to the top of the next
+		                  	
+		int height;				//dimensions of the slider
+		int width;				//
+		                  	
+		int num_segs;			//number of segments
+		int slider_height;		//the height of the slider itself (no margins and no "slack" from funny-sized widgets)
+		float val_per_seg;  	//how much each segment is "worth"
+		                  	
+		bool vertical;			//when true, the sliders are vertical
 		
-		int margin;
-		int seg_thickness;	//thickness of each line
-		int seg_spacing;	//space between the bottom of one segment and the top of the next
-		
-		int seg_offset;		//distance from the top of one segment to the top of the next
-		
-		int height;			//dimensions of the slider
-		int width;			//
-		
-		int num_segs;		//number of segments
-		int slider_height;	//the height of the slider itself (no margins and no "slack" from funny-sized widgets)
-		float val_per_seg;  //how much each segment is "worth"
-		
-		bool vertical;	//when true, the sliders are vertical
-		
+		float background_color[3];	//background color
+		float border_color[3];		//border color
+		float unlit_color[3];		//color of unlit segments
+		float lit_color[3];			//color of lit segments
 		
 		//slides the slider, updates the val and seg variables
 		void slide_the_slider(float ypos);
