@@ -7,6 +7,13 @@
 //Constructor/initializer for retro_slider - takes care of all the annoying gtk initialization jazz,
 //just supply the frame (a GtkContaier of some sort, like GtkAlign)
 retro_slider::retro_slider(){
+	//default values
+	width=102;
+	height=20;
+	margin = 2;
+	seg_thickness = 2;
+	seg_spacing = 1;
+	vertical = true;
 }
 retro_slider::retro_slider(GtkWidget *_frame, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float)){
 	width=_width;
