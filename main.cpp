@@ -16,7 +16,8 @@
 
 
 static ConfigSetttings settings;
-char config_file[] = "/root/.retrovolrc"; //CHANGE this to use the home-dir!
+//add the leading slash here, so that it can simply be concatenated with the results of getenv("HOME") later.
+const char config_file[] = "/.retrovolrc";
 
 
 //callback that handles changing an enumerated control
@@ -62,7 +63,7 @@ void word_wrap(char *wrapped, char *orig){
 
 int main(int argc, char** argv) {
 	//parse the config file
-	settings.parse_config(config_file);
+	settings.parse_config(strcat(getenv("HOME"), config_file));
 	//load the controls into list
 	ElementList list(settings.card);
 	//reorder the controls to the order specified in the config file

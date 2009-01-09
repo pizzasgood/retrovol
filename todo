@@ -1,6 +1,5 @@
 main window
 	add editable numeric display
-	add dropdowns for enumerated displays
 	improve layout of horizontal-mode
 	gradient colors in the slider
 	"overload" colors in the slider
