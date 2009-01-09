@@ -19,6 +19,12 @@ static ConfigSetttings settings;
 char config_file[] = "/root/.retrovolrc"; //CHANGE this to use the home-dir!
 
 
+//callback that handles changing an enumerated control
+void change_it(GtkWidget *combo_box, Element *elem){
+	int state = gtk_combo_box_get_active(GTK_COMBO_BOX(combo_box));
+	elem->set((int)state);
+}
+
 //callback that handles muting/unmuting a control
 void toggle_it(GtkWidget *chkbx, Element *elem){
 	bool state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(chkbx));
@@ -154,6 +160,8 @@ int main(int argc, char** argv) {
 				gtk_combo_box_append_text(GTK_COMBO_BOX(combo_box), list.items[i]->enums[n]);
 			}
 			gtk_combo_box_set_active(GTK_COMBO_BOX(combo_box), list.items[i]->get());
+			//bind to the change_it function
+			g_signal_connect (GTK_COMBO_BOX(combo_box), "changed", G_CALLBACK (change_it), list.items[i]);
 			gtk_container_add(GTK_CONTAINER(alignment), combo_box);
 		}
 		

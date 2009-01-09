@@ -308,12 +308,33 @@ int Element::_set(int num, int n){
 	//set the values
 	for (int i=0; i<values; i++){
 		if(i==n){
-			snd_ctl_elem_value_set_integer(control, i, num);
+			if (strcmp(type, "INTEGER") == 0){
+				snd_ctl_elem_value_set_integer(control, i, num);
+			} else if (strcmp(type, "ENUMERATED") == 0){
+				snd_ctl_elem_value_set_enumerated(control, i, num);
+			} else if (strcmp(type, "BYTE") == 0){
+				snd_ctl_elem_value_set_byte(control, i, num);
+			} else if (strcmp(type, "BOOLEAN") == 0){
+				snd_ctl_elem_value_set_boolean(control, i, num);
+			} else {
+				snd_ctl_elem_value_set_integer(control, i, num);
+			}
 		} else {
 			//when we set 'n', it resets the other values, so let's be sure to preserve them
-			snd_ctl_elem_value_set_integer(control, i, _get(i));
+			if (strcmp(type, "INTEGER") == 0){
+				snd_ctl_elem_value_set_integer(control, i, _get(i));
+			} else if (strcmp(type, "ENUMERATED") == 0){
+				snd_ctl_elem_value_set_enumerated(control, i, _get(i));
+			} else if (strcmp(type, "BYTE") == 0){
+				snd_ctl_elem_value_set_byte(control, i, _get(i));
+			} else if (strcmp(type, "BOOLEAN") == 0){
+				snd_ctl_elem_value_set_boolean(control, i, _get(i));
+			} else {
+				snd_ctl_elem_value_set_integer(control, i, _get(i));
+			}
 		}
 	}
+
 	
 	//make the change
 	snd_ctl_elem_write(handle, control);
