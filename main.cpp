@@ -139,7 +139,6 @@ int main(int argc, char** argv) {
 			g_signal_connect (GTK_TOGGLE_BUTTON(chkbx), "toggled", G_CALLBACK (toggle_it), list.items[i]);
 			gtk_container_add(GTK_CONTAINER(alignment), chkbx);
 		} else if (strcmp(list.items[i]->type, "ENUMERATED") == 0){
-			//tempory stuff - put label for enumerated
 			GtkWidget *alignment;
 			if (settings.vertical){
 				alignment = gtk_alignment_new(0.5,0.5,0,0);
@@ -148,11 +147,14 @@ int main(int argc, char** argv) {
 				alignment = gtk_alignment_new(0.5,0.5,0,0);
 				gtk_box_pack_end(GTK_BOX(vbox), alignment, true, true, 0);
 			}
-			GtkWidget *label;
-			char text[16];
-			list.items[i]->sget(text);
-			label = gtk_label_new(text);
-			gtk_container_add(GTK_CONTAINER(alignment), label);
+			//insert a combobox with the different options
+			GtkWidget *combo_box;
+			combo_box=gtk_combo_box_new_text();
+			for(int n=0; n<list.items[i]->number_of_enums; n++){
+				gtk_combo_box_append_text(GTK_COMBO_BOX(combo_box), list.items[i]->enums[n]);
+			}
+			gtk_combo_box_set_active(GTK_COMBO_BOX(combo_box), list.items[i]->get());
+			gtk_container_add(GTK_CONTAINER(alignment), combo_box);
 		}
 		
 		//add a checkbox for sliders that are muteable

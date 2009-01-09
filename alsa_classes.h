@@ -22,6 +22,9 @@ class Element {
 		int switch_id;
 		bool associated;
 		
+		unsigned int number_of_enums;
+		char **enums;
+		
 		int get();
 		int get(int n);
 		void sget(char *ret);

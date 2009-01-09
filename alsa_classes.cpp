@@ -44,23 +44,32 @@ Element::Element(char *_card, int _numid, const char *_name){
 	snd_ctl_t *handle;
 	snd_ctl_elem_id_t *id;
 	snd_ctl_elem_info_t *info;
+	snd_ctl_elem_value_t *control;
 	
 	//allocate the items
 	snd_ctl_elem_id_alloca(&id);
 	snd_ctl_elem_info_alloca(&info);
+	snd_ctl_elem_value_alloca(&control);
 	
 
 	//set the interface and numid to grab the device which we're interested in
 	snd_ctl_elem_id_set_interface(id, SND_CTL_ELEM_IFACE_MIXER);
 	snd_ctl_elem_id_set_numid(id, numid);
+	//use the id to set the control
+	snd_ctl_elem_value_set_id(control, id);
 	
 	//open a handle to use with the card
 	if ((err = snd_ctl_open(&handle, card, 0)) < 0) {
 		fprintf(stderr, "Control %s open error: %s\n", card, snd_strerror(err));
 	}
 	
+	snd_ctl_elem_read(handle, control);
+	
+	//use the id to set the info
 	snd_ctl_elem_info_set_id(info, id);
+	//hook it up with the handle
 	snd_ctl_elem_info(handle, info);
+	//get the info
 	snd_ctl_elem_info_get_id(info, id);
 	
 	//set the number of values the element has (generally will be 2, for left and right)
@@ -76,6 +85,29 @@ Element::Element(char *_card, int _numid, const char *_name){
 	} else {
 		min = max = 0;
 	}
+	
+	
+	//if it's an enumerated, get a list of the types it has
+	if (strcmp(type, "ENUMERATED") == 0){
+		number_of_enums = snd_ctl_elem_info_get_items(info);
+		enums=(char**)malloc(number_of_enums*sizeof(char*));
+		for(unsigned int i=0; i<number_of_enums; i++){
+			//set which item in the enumerated list we're interested in
+			snd_ctl_elem_info_set_item(info, i);
+			//hook it up with the handle
+			snd_ctl_elem_info(handle, info);
+			enums[i]=(char*)malloc((strlen(snd_ctl_elem_info_get_item_name(info))+1)*sizeof(char));
+			strcpy(enums[i], snd_ctl_elem_info_get_item_name(info));
+		}
+	} else {
+		number_of_enums=0;
+		enums=NULL;
+	}
+	
+	
+	
+	
+	
 	
 	//don't need the handle open anymore, so close it
 	snd_ctl_close(handle);
