@@ -72,11 +72,4 @@ class ElementList {
 		void reorder_items(int *order, int n);
 };
 
-
-
-
-//this is just here for testing; used to be main()
-int test_alsa_stuff();
-
-
 #endif
