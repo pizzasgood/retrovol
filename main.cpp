@@ -157,7 +157,7 @@ int main(int argc, char** argv) {
 			//insert a combobox with the different options
 			GtkWidget *combo_box;
 			combo_box=gtk_combo_box_new_text();
-			for(int n=0; n<list.items[i]->number_of_enums; n++){
+			for(unsigned int n=0; n<list.items[i]->number_of_enums; n++){
 				gtk_combo_box_append_text(GTK_COMBO_BOX(combo_box), list.items[i]->enums[n]);
 			}
 			gtk_combo_box_set_active(GTK_COMBO_BOX(combo_box), list.items[i]->get());
