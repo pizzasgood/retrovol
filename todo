@@ -1,5 +1,5 @@
 main window
-	add editable numeric display
+	?add editable numeric display - might skip this to preserve screen space
 	improve layout of horizontal-mode
 	gradient colors in the slider
 	"overload" colors in the slider
@@ -7,7 +7,9 @@ main window
 	commandline option to specify config file, else use ~/.retrovolrc
 	menu-bar w/ preferences
 	gui to change order of sliders and enable/disable
-	keyboard controls
+	four radio boxes to switch view: Playback, Capture, All, Custom
+	keyboard controls on the sliders
+	support for multiple soundcards
 
 tray icon
 	*left-click: mini-slider

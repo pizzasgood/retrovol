@@ -72,4 +72,8 @@ class ElementList {
 		void reorder_items(int *order, int n);
 };
 
+//replaces any instance of 'oldstr' found in dest with newstr, and returns true if dest was modified
+bool strrep(char *dest, char *oldstr, char *newstr);
+
+
 #endif

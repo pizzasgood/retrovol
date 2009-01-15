@@ -38,6 +38,11 @@ Element::Element(char *_card, int _numid, const char *_name){
 		space[0]='\0';
 	}
 	
+	//also abbrieviate some things
+	strrep(short_name, (char *)"Source", (char *)"So.");
+	strrep(short_name, (char *)"Channel Mode", (char *)"Channel");
+	strrep(short_name, (char *)"Digital Capture", (char *)"Digital");
+	
 	
 	//some needed pointers
 	int err;
@@ -72,6 +77,14 @@ Element::Element(char *_card, int _numid, const char *_name){
 	//get the info
 	snd_ctl_elem_info_get_id(info, id);
 	
+	//set the index of the element (generally 0 except stuff like 'capture 0, capture 1, capture 2')
+	index = snd_ctl_elem_id_get_index(id);
+	//update the names if index > 0
+	if (index > 0){
+		strcat(short_name, " ");
+		short_name[strlen(short_name)-1] = '0' + index;
+	}
+
 	//set the number of values the element has (generally will be 2, for left and right)
 	values = snd_ctl_elem_info_get_count(info);
 	
@@ -388,7 +401,7 @@ ElementList::ElementList(char *_card){
 			buffer[strlen(elems[i].name) - 6] = '\0';
 			strcat(buffer, "Volume");
 			for (int j=0; j<num_elems; j++){
-				if (strstr(elems[j].name, buffer) && !strstr(elems[j].name, "Switch")){
+				if (strstr(elems[j].name, buffer) && !strstr(elems[j].name, "Switch") && elems[j].index == elems[i].index){
 					elems[j].switch_id = i;
 					elems[j].associated = elems[i].associated = true;
 				}
@@ -464,4 +477,21 @@ void ElementList::reorder_items(int *order, int n){
 	free(items);
 	items=tmp_items;
 	tmp_items=NULL;
+}
+
+
+//replaces any instance of 'oldstr' found in dest with newstr, and returns true if dest was modified
+bool strrep(char *dest, char *oldstr, char *newstr){
+	if (char *start = strstr(dest, oldstr)){
+		if (start[strlen(oldstr)]=='\0'){
+			strcpy(start, newstr);
+		} else {
+			strncpy(start, newstr, strlen(newstr));
+			strcpy(start+strlen(newstr), start+strlen(oldstr));
+			strrep(dest, oldstr, newstr); //handle multiple instances of oldstr
+		}
+		return true;
+	} else {
+		return false;
+	}
 }
