@@ -435,7 +435,7 @@ void ElementList::populate_items(){
 		}
 	}
 	for (int i=0; i<num_elems; i++){
-		if (elems[i].switch_id >= 0 && !strstr(elems[i].name, "Playback Volume") && !strstr(elems[i].name, "Capture Volume")){
+		if (elems[i].switch_id >= 0 && !strstr(elems[i].name, "Playback Volume") && !strstr(elems[i].name, "Capture Volume") && !strstr(elems[i].name, "IEC958")){
 			items[num_items++] = &elems[i];
 		}
 	}
@@ -445,7 +445,7 @@ void ElementList::populate_items(){
 		}
 	}
 	for (int i=0; i<num_elems; i++){
-		if (!elems[i].associated && !(strstr(elems[i].name, "Switch") || strstr(elems[i].name, "Playback Volume"))){
+		if (!elems[i].associated && !(strstr(elems[i].name, "Switch") || strstr(elems[i].name, "Playback Volume") || strstr(elems[i].name, "IEC958"))){
 			items[num_items++] = &elems[i];
 		}
 	}
