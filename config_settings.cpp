@@ -13,11 +13,16 @@ ConfigSetttings::ConfigSetttings(){
 	num_names = 0;
 	//defaults
 	strcpy(card, "hw:0");
-	vertical = true;
-	window_width=480;
-	window_height=180;
-	slider_width=20;
-	slider_height=102;
+	//vertical = true;
+	vertical = false;
+	//window_width=480;
+	//window_height=180;
+	window_width=256;
+	window_height=256;
+	//slider_width=20;
+	//slider_height=102;
+	slider_width=102;
+	slider_height=20;
 	slider_margin = 2;
 	seg_thickness = 2;
 	seg_spacing = 1;
