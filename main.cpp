@@ -151,7 +151,7 @@ int main(int argc, char** argv) {
 				alignment = gtk_alignment_new(0.5,0.5,0,0);
 				gtk_box_pack_start(GTK_BOX(vbox), alignment, true, true, 0);
 			} else {
-				alignment = gtk_alignment_new(0.5,0.5,0,0);
+				alignment = gtk_alignment_new(1.0,0.5,0,0);
 				gtk_box_pack_end(GTK_BOX(vbox), alignment, true, true, 0);
 			}
 			//insert a combobox with the different options

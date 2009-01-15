@@ -1,17 +1,19 @@
 #Config file for retrovol
 
 #Set this to 1 to make the sliders vertical, or 0 for horizontal
-vertical=1
+vertical=0
 
 #window dimensions
-window_width=480
-window_height=180
+#window_width=480
+#window_height=180
+window_width=256
+window_height=256
 
 #slider dimensions
-slider_width=20
-slider_height=102
-#slider_width=102
-#slider_height=20
+#slider_width=20
+#slider_height=102
+slider_width=102
+slider_height=20
 
 slider_margin=2
 seg_thickness=2
@@ -22,33 +24,10 @@ border_color=#000000
 unlit_color=#993300
 lit_color=#FFCC00
 
-#Which sliders to display, in order.  They MUST have a tab first and be quoted
+#Which sliders to display, in order.  They MUST have a tab first and be quoted with double-quotes.  Example:
+#sliders:
+#	"Master Playback Volume"
+#	"Front Playback Volume"
+#	"MSurround Playback Volume"
 sliders:
-	"Master Playback Volume"
-	"Master Mono Playback Volume"
-	"PCM Playback Volume"
-	"Line Playback Volume"
-	"CD Playback Volume"
-	"Mic Playback Volume"
-	"Phone Playback Volume"
-	"Video Playback Volume"
-	"PC Speaker Playback Volume"
-	"Aux Playback Volume"
-	"3D Control - Center"
-	"3D Control - Depth"
-	"Capture Source"
-	"IEC958 Playback Con Mask"
-	"IEC958 Playback Pro Mask"
-	"IEC958 Playback AC97-SPSA"
-	"IEC958 Playback Default"
-	"Mic Capture Volume"
-	"Capture Volume"
-	"Tone Control - Bass"
-	"Tone Control - Treble"
-	"PCM Out Path & Mute"
-	"Mic Boost (+20dB)"
-	"Mic Select"
-	"Mono Output Select"
-	"External Amplifier"
-	"Loudness (bass boost)"
-	"Simulated Stereo Enhancement"
+
