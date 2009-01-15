@@ -381,11 +381,12 @@ ElementList::ElementList(char *_card){
 	//want to track down all "Switch" elements and look to see if they have an associated value elsewhere
 	for (int i=0; i<num_elems; i++){
 		if (strstr(elems[i].name, "Switch")){
-			//okay, we need to grab the name, minus the "Switch", and loop through to
+			//okay, we need to grab the name, replace the 'Switch' with a 'Volume', and loop through to
 			//find any elements with that as the first portion of their name
 			char buffer[80];
 			strncpy(buffer, elems[i].name, strlen(elems[i].name) - 6);
 			buffer[strlen(elems[i].name) - 6] = '\0';
+			strcat(buffer, "Volume");
 			for (int j=0; j<num_elems; j++){
 				if (strstr(elems[j].name, buffer) && !strstr(elems[j].name, "Switch")){
 					elems[j].switch_id = i;
