@@ -53,6 +53,7 @@ class retro_slider{
 		
 		//all the callbacks for button presses and whatnot
 		static gboolean button_press_event_callback (GtkWidget *widget, GdkEventButton *event, retro_slider *slider);
+		static gboolean key_event_callback (GtkWidget *widget, GdkEventKey *event, retro_slider *slider);
 		static gboolean motion_notify_event_callback( GtkWidget *widget, GdkEventMotion *event, retro_slider *slider);
 		static gboolean scroll_event_callback (GtkWidget *widget, GdkEventScroll *event, retro_slider *slider);
 		static gboolean configure_event_callback (GtkWidget *widget, GdkEventConfigure *event, retro_slider *slider);

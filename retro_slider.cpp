@@ -1,6 +1,7 @@
 /* retro_slider.cpp */
 
 #include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
 #include "retro_slider.h"
 
 
@@ -52,6 +53,7 @@ void retro_slider::init(GtkWidget *_frame, void *_obj, float (*_get_func)(void*)
 	gtk_container_add(GTK_CONTAINER(frame), drawing_area);
 	gtk_widget_set_size_request (drawing_area, width, height);
 	g_signal_connect (G_OBJECT (drawing_area), "button_press_event", G_CALLBACK (&retro_slider::button_press_event_callback), this);
+	g_signal_connect (G_OBJECT (drawing_area), "key_press_event", G_CALLBACK (&retro_slider::key_event_callback), this);
 	g_signal_connect (G_OBJECT (drawing_area), "motion_notify_event", G_CALLBACK (&retro_slider::motion_notify_event_callback), this);
 	g_signal_connect (G_OBJECT (drawing_area), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), this);
 	g_signal_connect (G_OBJECT (drawing_area), "expose_event", G_CALLBACK (retro_slider::expose_event_callback), this);
@@ -59,9 +61,11 @@ void retro_slider::init(GtkWidget *_frame, void *_obj, float (*_get_func)(void*)
 	gtk_widget_set_events (drawing_area, GDK_EXPOSURE_MASK
 							| GDK_LEAVE_NOTIFY_MASK
 							| GDK_BUTTON_PRESS_MASK
+							| GDK_KEY_PRESS_MASK
 							| GDK_POINTER_MOTION_MASK
 							| GDK_POINTER_MOTION_HINT_MASK
 							| GDK_SCROLL_MASK);
+	g_object_set(drawing_area, "can-focus", true, NULL);
 
 	
 	//total distance from the top of one segment to the top of the next
@@ -133,6 +137,57 @@ gboolean retro_slider::button_press_event_callback (GtkWidget *widget, GdkEventB
 	} else {
 		slider->slide_the_slider(slider->width - event->x - 1);
 	}
+	gtk_widget_queue_draw_area(widget, 0, 0, widget->allocation.width, widget->allocation.height);
+	return(true);
+}
+
+//handle keypresses
+gboolean retro_slider::key_event_callback (GtkWidget *widget, GdkEventKey *event, retro_slider *slider){
+	int delta;
+	//check direction
+	switch(event->keyval){
+		case GDK_Up:
+			if (slider->vertical){delta = -1;} else {return(false);}
+			break;
+		case GDK_Right:
+			if (!slider->vertical){delta = -1;} else {return(false);}
+			break;
+		case GDK_Down:
+			if (slider->vertical){delta = 1;} else {return(false);}
+			break;
+		case GDK_Left:
+			if (!slider->vertical){delta = 1;} else {return(false);}
+			break;
+		case GDK_Page_Up:
+			delta = -(slider->num_segs * 0.2);
+			if (delta == 0){ delta = -1; }
+			break;
+		case GDK_Page_Down:
+			delta = slider->num_segs * 0.2;
+			if (delta == 0){ delta = 1; }
+			break;
+		default:
+			return(false);
+			break;
+	}
+
+	int direction = (delta > 0 ? 1 : -1);
+	int ret=slider->seg;
+	int n=1;
+	while (ret==slider->seg && direction*ret < slider->num_segs && direction+ret >= 0){
+		ret+=n*delta;
+		//limit to between 0 and num_segs
+		if (ret > slider->num_segs){
+			ret = slider->num_segs;
+		} else if (ret < 0){
+			ret = 0;
+		}
+		//update values
+		slider->val = slider->set_func(slider->obj, slider->seg_to_val(ret));
+		ret = slider->val_to_seg(slider->val);
+		n++;
+	}
+	slider->seg=ret;
 	gtk_widget_queue_draw_area(widget, 0, 0, widget->allocation.width, widget->allocation.height);
 	return(true);
 }
