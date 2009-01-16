@@ -12,6 +12,7 @@
 #include "alsa_classes.h"
 #include "config_settings.h"
 #include "main.h"
+#include "eggtrayicon.h"
 
 
 
@@ -19,6 +20,7 @@ static ConfigSetttings settings;
 //add the leading slash here, so that it can simply be concatenated with the results of getenv("HOME") later.
 const char config_file[] = "/.retrovolrc";
 
+static retro_slider *tray_slider;
 
 //callback that handles changing an enumerated control
 void change_it(GtkWidget *combo_box, Element *elem){
@@ -30,6 +32,30 @@ void change_it(GtkWidget *combo_box, Element *elem){
 void toggle_it(GtkWidget *chkbx, Element *elem){
 	bool state = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(chkbx));
 	elem->set((int)state);
+}
+
+
+//callback that handles clicking the tray icon
+static gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *event, GtkWidget *slider_window){
+	switch(event->button){
+		case 1:		//left mouse button - toggle slider_window
+			if (GTK_WIDGET_VISIBLE(slider_window)){
+				gtk_widget_hide_all(slider_window);
+			} else {
+				int x, y;
+				gtk_window_get_size(GTK_WINDOW(slider_window), &x, &y);
+				gtk_widget_set_uposition(slider_window, event->x_root - event->x - x/2 + widget->allocation.width/2, event->y_root-event->y-y-3);
+				gtk_widget_show_all(slider_window);
+			}
+			break;
+		case 3:		//right mouse button - display main window
+			break;
+		case 2:		//middle mouse button - mute
+		default:
+			break;
+		}
+	
+	return(true);
 }
 
 
@@ -202,12 +228,54 @@ int main(int argc, char** argv) {
 		gtk_container_add(GTK_CONTAINER(alignment), label);
 	}
 	
-	
-	//finish the gtk stuff
+	//finish the window stuff
 	gtk_widget_show_all(window);
 	g_signal_connect(window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
 	
+
+	//set up the tray_slider that goes in the tray
+	GtkWidget *tray_frame;
+	tray_frame = gtk_alignment_new(0.5,0.0,0,0);
+	tray_slider = new retro_slider;
+	settings.apply_to_slider(tray_slider);
+	tray_slider->vertical = true;
+	tray_slider->width = 20;
+	tray_slider->height = 102;
+	tray_slider->init(tray_frame, (void*)list.items[2], &Element::get_callback, &Element::set_callback);
+
+	//set up the small window that holds the tray_slider
+	GtkWidget *slider_window;
+	slider_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+	gtk_window_set_resizable(GTK_WINDOW(slider_window), false);
+	gtk_window_set_decorated(GTK_WINDOW(slider_window), false);
+	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(slider_window), true);
+	gtk_window_set_skip_pager_hint(GTK_WINDOW(slider_window), true);
+	gtk_widget_set_usize(slider_window, tray_slider->width, tray_slider->height);
+	//don't want accidental closure of the slider window to destroy the window
+	g_signal_connect(slider_window, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
+	gtk_container_add( GTK_CONTAINER(slider_window), tray_frame );
+	//we want it hidden by default, but it must be shown at least once or else scrolling over the icon will cause a hang
+	gtk_widget_show_all(slider_window);
+	gtk_widget_hide_all(slider_window);
+	
+		
+	//set up tray icon
+	GtkWidget *tray_icon, *tray_icon_image;
+	tray_icon = GTK_WIDGET(egg_tray_icon_new("Retrovol Tray Icon"));
+	tray_icon_image = gtk_image_new();
+	gtk_container_add( GTK_CONTAINER(tray_icon), tray_icon_image );
+	gtk_image_set_from_file(GTK_IMAGE(tray_icon_image), "images/audio-volume-medium.png");
+	g_signal_connect(G_OBJECT(tray_icon), "button_press_event", G_CALLBACK (&tray_button_press_event_callback), slider_window);
+	g_signal_connect(G_OBJECT(tray_icon), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), tray_slider);
+	gtk_widget_set_events (tray_icon, GDK_BUTTON_PRESS_MASK | GDK_SCROLL_MASK);
+	
+	gtk_widget_show_all(tray_icon);
+	
+	
+	//finished with gtk setup
 	gtk_main();
 	
 	return(0);
 }
+
+

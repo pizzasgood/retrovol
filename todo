@@ -9,10 +9,9 @@ main window
 	gui to change order of sliders and enable/disable
 	four radio boxes to switch view: Playback, Capture, All, Custom
 	support for multiple soundcards
+	status bar - shows full name of device below cursor, along with numeric info - make optional
 
 tray icon
-	*left-click: mini-slider
 	*middle-click: toggle mute
 	*right-click: full window
-	*scroll-button: adjust volume
 	make icon change to reflect volume

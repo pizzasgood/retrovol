@@ -250,7 +250,8 @@ gboolean retro_slider::scroll_event_callback (GtkWidget *widget, GdkEventScroll 
 		n++;
 	}
 	slider->seg=ret;
-	gtk_widget_queue_draw_area(widget, 0, 0, widget->allocation.width, widget->allocation.height);
+	//use slider->drawing_area instead of widget so that we can use this same function externally to scroll on the tray icon
+	gtk_widget_queue_draw_area(slider->drawing_area, 0, 0, slider->drawing_area->allocation.width, slider->drawing_area->allocation.height);
 	return(true);
 }
 
