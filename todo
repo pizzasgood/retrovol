@@ -12,6 +12,4 @@ main window
 	status bar - shows full name of device below cursor, along with numeric info - make optional
 
 tray icon
-	*middle-click: toggle mute
 	*right-click: full window
-	make icon change to reflect volume

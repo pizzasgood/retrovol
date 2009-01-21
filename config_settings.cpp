@@ -42,6 +42,11 @@ ConfigSetttings::ConfigSetttings(){
 	lit_color[0]=1.0;
 	lit_color[1]=0.8;
 	lit_color[2]=0.0;
+	
+	strcpy(icon_file_names[0], "images/audio-volume-muted.png");
+	strcpy(icon_file_names[1], "images/audio-volume-low.png");
+	strcpy(icon_file_names[2], "images/audio-volume-medium.png");
+	strcpy(icon_file_names[3], "images/audio-volume-high.png");
 
 }
 

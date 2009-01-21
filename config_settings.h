@@ -8,6 +8,13 @@ class ConfigSetttings {
 	public:
 		ConfigSetttings();
 		
+		//some "global" variables - I put them in here to not have so much global stuff scattered around
+		GtkWidget *main_window, *tray_icon_image;
+		retro_slider *tray_slider;
+		int tray_slider_elem_num;
+		
+		//the rest is the actual settings stuff
+		
 		char card[16];
 		
 		int num_names;
@@ -30,6 +37,8 @@ class ConfigSetttings {
 		float border_color[3];		//border color
 		float unlit_color[3];		//color of unlit segments
 		float lit_color[3];			//color of lit segments
+		
+		char icon_file_names[4][80]; //NEED TO MAKE THIS DYNAMIC
 		
 		
 		//parse the config file
