@@ -38,6 +38,11 @@ Element::Element(char *_card, int _numid, const char *_name){
 		space[0]='\0';
 	}
 	
+	//if there is a trailing hyphen, get rid of it
+	if (short_name[strlen(short_name)-2] == ' ' && short_name[strlen(short_name)-1] == '-'){
+		short_name[strlen(short_name)-2]='\0';
+	}
+	
 	//also abbrieviate some things
 	strrep(short_name, (char *)"Source", (char *)"So.");
 	strrep(short_name, (char *)"Channel Mode", (char *)"Channel");
