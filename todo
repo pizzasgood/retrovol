@@ -1,17 +1,20 @@
-main window
-	?add editable numeric display - might skip this to preserve screen space
-	improve layout of horizontal-mode
+:main window:
+	?add editable numeric display - Will probably skip this to preserve screen space - make up for it with a tooltip?
+	improve layout of horizontal-mode - mute buttons are funky
 	gradient colors in the slider
 	"overload" colors in the slider
 	commandline options to override the config file
 	commandline option to specify config file, else use ~/.retrovolrc
-	menu-bar w/ preferences
-	gui to change order of sliders and enable/disable
 	four radio boxes to switch view: Playback, Capture, All, Custom
 	support for multiple soundcards
 	status bar - shows full name of device below cursor, along with numeric info - make optional
+	:menu bar:
+		exit program completely
+		preferences
+		gui to change order of sliders and enable/disable
 
-tray icon
+:tray icon:
 	use non-deprecated functions to position slider (inside a popup menu?)
 	use transparent background so taskbar shows through.
+	?should scrolling to increase sound level automatically unmute?  Would have to affect normal sliders too, so I think not.
 	
