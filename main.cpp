@@ -80,6 +80,7 @@ gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *ev
 gboolean update(gpointer data){
 	bool state = true;		
 	int val = list_ptr->elems[settings.tray_slider_elem_num].get();
+	char tooltiptext[16];
 	if (list_ptr->elems[settings.tray_slider_elem_num].switch_id >= 0){
 		state = (bool)list_ptr->elems[list_ptr->elems[settings.tray_slider_elem_num].switch_id].get();
 	}
@@ -90,10 +91,13 @@ gboolean update(gpointer data){
 		} else if (image < 0){
 			image=0;
 		}
+		sprintf(tooltiptext, "Volume: %d%%", val);
 		gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[image]);
 	} else {
+		sprintf(tooltiptext, "Volume: Muted");
 		gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[0]);
 	}
+	gtk_widget_set_tooltip_text(settings.tray_icon_image, tooltiptext);
 	gtk_widget_queue_draw(settings.main_window);
 	
 	return(true);

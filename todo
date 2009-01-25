@@ -14,5 +14,4 @@ main window
 tray icon
 	use non-deprecated functions to position slider (inside a popup menu?)
 	use transparent background so taskbar shows through.
-	tool-tip with current volume
 	
