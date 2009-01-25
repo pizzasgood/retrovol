@@ -56,6 +56,11 @@ gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *ev
 			}
 			break;
 		case 3:		//right mouse button - display main window
+			if (GTK_WIDGET_VISIBLE(settings.main_window)){
+				gtk_widget_hide_all(settings.main_window);
+			} else {
+				gtk_widget_show_all(settings.main_window);
+			}
 			break;
 		case 2:		//middle mouse button - mute
 			if (list_ptr->elems[settings.tray_slider_elem_num].switch_id >= 0){
@@ -139,6 +144,9 @@ int main(int argc, char** argv) {
 	gtk_window_set_default_size(GTK_WINDOW(settings.main_window), settings.window_width, settings.window_height);
 	gtk_window_set_title(GTK_WINDOW(settings.main_window), "Retrovol");
 	
+	//want the window to hide rather than closing
+	g_signal_connect(settings.main_window, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
+
 	//use a scrolled window
 	GtkWidget *scrolled_window;
 	scrolled_window = gtk_scrolled_window_new(NULL, NULL);

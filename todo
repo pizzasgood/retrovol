@@ -12,4 +12,7 @@ main window
 	status bar - shows full name of device below cursor, along with numeric info - make optional
 
 tray icon
-	*right-click: full window
+	use non-deprecated functions to position slider (inside a popup menu?)
+	use transparent background so taskbar shows through.
+	tool-tip with current volume
+	
