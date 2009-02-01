@@ -306,6 +306,8 @@ int main(int argc, char** argv) {
 	gtk_widget_set_usize(slider_window, settings.tray_slider->width, settings.tray_slider->height);
 	//don't want accidental closure of the slider window to destroy the window
 	g_signal_connect(slider_window, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
+	//want the widow to go away when it loses focus
+	g_signal_connect(slider_window, "focus-out-event", G_CALLBACK (gtk_widget_hide), NULL);
 	gtk_container_add( GTK_CONTAINER(slider_window), tray_frame );
 	//we want it hidden by default, but it must be shown at least once or else scrolling over the icon will cause a hang
 	gtk_widget_show_all(slider_window);
