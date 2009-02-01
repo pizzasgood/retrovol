@@ -1,5 +1,8 @@
 #  Config file for retrovol
 
+#  Which soundcard to use (defaults to hw:0)
+#card=hw:0
+
 #  Set this to 1 to make the sliders vertical, or 0 for horizontal
 vertical=0
 

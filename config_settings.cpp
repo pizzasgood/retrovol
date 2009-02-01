@@ -97,7 +97,10 @@ void ConfigSetttings::parse_config(char *config_file){
 			continue;
 		}
 		tmpptr=strtok(buffer, "=\n");
-		if (strcmp(tmpptr, "vertical")==0){
+		if (strcmp(tmpptr, "card")==0){
+			tmpptr=strtok(NULL, "=\"\n");
+			strcpy(card, tmpptr);
+		} else if (strcmp(tmpptr, "vertical")==0){
 			tmpptr=strtok(NULL, "=\n");
 			vertical=(bool)atoi(tmpptr);
 		} else if (strcmp(tmpptr, "window_width")==0){
