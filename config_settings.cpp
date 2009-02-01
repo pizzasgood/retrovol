@@ -43,6 +43,9 @@ ConfigSetttings::ConfigSetttings(){
 	lit_color[1]=0.8;
 	lit_color[2]=0.0;
 	
+	tray_control = NULL;
+	tray_control_name[0] = '\0';
+	
 	strcpy(icon_file_names[0], "images/audio-volume-muted.png");
 	strcpy(icon_file_names[1], "images/audio-volume-low.png");
 	strcpy(icon_file_names[2], "images/audio-volume-medium.png");
@@ -130,6 +133,9 @@ void ConfigSetttings::parse_config(char *config_file){
 		} else if (strcmp(tmpptr, "lit_color")==0){
 			tmpptr=strtok(NULL, "=\n");
 			htonf(lit_color, tmpptr);
+		} else if (strcmp(tmpptr, "tray_control")==0){
+			tmpptr=strtok(NULL, "=\"\n");
+			strcpy(tray_control_name, tmpptr);
 		} else if (strcmp(tmpptr, "sliders:")==0){
 			int n;
 			for (n=0; fgets(buffer, 80, cfile); n++){
@@ -180,6 +186,38 @@ void ConfigSetttings::reorder_list(ElementList *list){
 		
 	}
 	
+}
+
+
+//look through the list and set the tray_slider_control to the matching element
+void ConfigSetttings::set_tray_slider(ElementList *list){
+	//don't bother searching unless a name has been specified
+	if (strlen(tray_control_name) != 0){
+		for(int i=0; i<list->num_elems; i++){
+			if (strcmp(list->elems[i].name, tray_control_name) == 0){
+				tray_control = &(list->elems[i]);
+				break;
+			}
+		}
+	}
+	//if the name was not specified, or was but was not found, then iterate through
+	//the search_list to find one.
+	char search_list[5][80] = {"Master Playback Volume", "PCM Playback Volume", "Front Playback Volume", "Playback Volume", "Volume"};
+	int attempt = 0;
+	while(attempt < 5 && (strlen(tray_control_name)==0 || !tray_control)){
+		for(int i=0; i<list->num_elems; i++){
+			if (strstr(list->elems[i].name, search_list[attempt])){
+				tray_control = &(list->elems[i]);
+				strcpy(tray_control_name, list->elems[i].name);
+				break;
+			}
+		}
+		attempt++;
+	}
+	if(strlen(tray_control_name)==0 || !tray_control){
+		tray_control = &(list->elems[0]);
+		strcpy(tray_control_name, list->elems[0].name);
+	}
 }
 
 

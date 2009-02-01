@@ -1,6 +1,6 @@
-#Config file for retrovol
+#  Config file for retrovol
 
-#Set this to 1 to make the sliders vertical, or 0 for horizontal
+#  Set this to 1 to make the sliders vertical, or 0 for horizontal
 vertical=0
 
 #window dimensions
@@ -24,10 +24,12 @@ border_color=#000000
 unlit_color=#993300
 lit_color=#FFCC00
 
-#Which sliders to display, in order.  They MUST have a tab first and be quoted with double-quotes.  Example:
+#  Which slider to use as the tray_slider.
+#tray_control="Master Playback Volume"
+
+#  Which sliders to display, in order.  They MUST have a tab first and be quoted with double-quotes.  Example:
 #sliders:
 #	"Master Playback Volume"
 #	"Front Playback Volume"
 #	"MSurround Playback Volume"
-sliders:
 

@@ -11,7 +11,7 @@ class ConfigSetttings {
 		//some "global" variables - I put them in here to not have so much global stuff scattered around
 		GtkWidget *main_window, *tray_icon_image;
 		retro_slider *tray_slider;
-		int tray_slider_elem_num;
+		Element *tray_control;
 		
 		//the rest is the actual settings stuff
 		
@@ -38,6 +38,8 @@ class ConfigSetttings {
 		float unlit_color[3];		//color of unlit segments
 		float lit_color[3];			//color of lit segments
 		
+		char tray_control_name[80]; //NEED TO MAKE THIS DYNAMIC
+		
 		char icon_file_names[4][80]; //NEED TO MAKE THIS DYNAMIC
 		
 		
@@ -46,6 +48,9 @@ class ConfigSetttings {
 
 		//reorder the list to match the config file
 		void reorder_list(ElementList *list);
+		
+		//look through the list and set the tray_slider_control to the matching element
+		void set_tray_slider(ElementList *list);
 		
 		//apply settings to a slider
 		void apply_to_slider(retro_slider *slider);

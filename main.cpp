@@ -63,9 +63,9 @@ gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *ev
 			}
 			break;
 		case 2:		//middle mouse button - mute
-			if (list_ptr->elems[settings.tray_slider_elem_num].switch_id >= 0){
-				bool state = !(bool)list_ptr->elems[list_ptr->elems[settings.tray_slider_elem_num].switch_id].get();
-				list_ptr->elems[list_ptr->elems[settings.tray_slider_elem_num].switch_id].set((int)(state));
+			if (settings.tray_control->switch_id >= 0){
+				bool state = !(bool)list_ptr->elems[settings.tray_control->switch_id].get();
+				list_ptr->elems[settings.tray_control->switch_id].set((int)(state));
 			}
 			break;
 		default:
@@ -79,10 +79,10 @@ gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *ev
 //update the tray-icon and refresh the window
 gboolean update(gpointer data){
 	bool state = true;		
-	int val = list_ptr->elems[settings.tray_slider_elem_num].get();
+	int val = settings.tray_control->get();
 	char tooltiptext[16];
-	if (list_ptr->elems[settings.tray_slider_elem_num].switch_id >= 0){
-		state = (bool)list_ptr->elems[list_ptr->elems[settings.tray_slider_elem_num].switch_id].get();
+	if (settings.tray_control->switch_id >= 0){
+		state = (bool)list_ptr->elems[settings.tray_control->switch_id].get();
 	}
 	if (state && val != 0){
 		int image = 1+3*val/100;
@@ -140,6 +140,8 @@ int main(int argc, char** argv) {
 	list_ptr = &list;
 	//reorder the controls to the order specified in the config file
 	settings.reorder_list(&list);
+	//set the tray_slider_control
+	settings.set_tray_slider(&list);
 	
 	//set up the window
 	gtk_init(&argc, &argv);
@@ -286,7 +288,6 @@ int main(int argc, char** argv) {
 	
 
 	//set up the tray_slider that goes in the tray
-	settings.tray_slider_elem_num = 1;
 	GtkWidget *tray_frame;
 	tray_frame = gtk_alignment_new(0.5,0.0,0,0);
 	settings.tray_slider = new retro_slider;
@@ -294,7 +295,7 @@ int main(int argc, char** argv) {
 	settings.tray_slider->vertical = true;
 	settings.tray_slider->width = 20;
 	settings.tray_slider->height = 102;
-	settings.tray_slider->init(tray_frame, (void*)&list.elems[settings.tray_slider_elem_num], &Element::get_callback, &Element::set_callback);
+	settings.tray_slider->init(tray_frame, (void*)settings.tray_control, &Element::get_callback, &Element::set_callback);
 
 	//set up the small window that holds the tray_slider
 	GtkWidget *slider_window;
