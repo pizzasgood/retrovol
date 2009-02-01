@@ -20,7 +20,7 @@ class ConfigSetttings {
 		int num_names;
 		char name_list[80][80]; //NEED TO MAKE THIS DYNAMIC
 		
-		bool vertical;			//when true, the sliders are vertical
+		bool vertical;			//when true, the normal sliders are vertical
 		
 		int window_width;		//dimensions of the window
 		int window_height;		//
@@ -38,6 +38,10 @@ class ConfigSetttings {
 		float unlit_color[3];		//color of unlit segments
 		float lit_color[3];			//color of lit segments
 		
+		bool enable_tray_icon;		//enable the tray icon
+		bool tray_slider_vertical;	//when true, the tray_slider is vertical
+		int tray_slider_width;		//dimensions of the tray_slider
+		int tray_slider_height;		//
 		char tray_control_name[80]; //NEED TO MAKE THIS DYNAMIC
 		
 		char icon_file_names[4][80]; //NEED TO MAKE THIS DYNAMIC
@@ -54,6 +58,7 @@ class ConfigSetttings {
 		
 		//apply settings to a slider
 		void apply_to_slider(retro_slider *slider);
+		void apply_to_tray_slider(retro_slider *slider);
 
 		//take a hex string like #AAFF88 and put it into a three item integer array
 		void htoi(int *array, char *string);

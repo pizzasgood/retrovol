@@ -78,27 +78,31 @@ gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *ev
 
 //update the tray-icon and refresh the window
 gboolean update(gpointer data){
-	bool state = true;		
-	int val = settings.tray_control->get();
-	char tooltiptext[16];
-	if (settings.tray_control->switch_id >= 0){
-		state = (bool)list_ptr->elems[settings.tray_control->switch_id].get();
-	}
-	if (state && val != 0){
-		int image = 1+3*val/100;
-		if (image > 3){
-			image=3;
-		} else if (image < 0){
-			image=0;
+	bool state = true;
+	if (settings.enable_tray_icon){
+		int val = settings.tray_control->get();
+		char tooltiptext[16];
+		if (settings.tray_control->switch_id >= 0){
+			state = (bool)list_ptr->elems[settings.tray_control->switch_id].get();
 		}
-		sprintf(tooltiptext, "Volume: %d%%", val);
-		gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[image]);
-	} else {
-		sprintf(tooltiptext, "Volume: Muted");
-		gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[0]);
+		if (state && val != 0){
+			int image = 1+3*val/100;
+			if (image > 3){
+				image=3;
+			} else if (image < 0){
+				image=0;
+			}
+			sprintf(tooltiptext, "Volume: %d%%", val);
+			gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[image]);
+		} else {
+			sprintf(tooltiptext, "Volume: Muted");
+			gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[0]);
+		}
+		gtk_widget_set_tooltip_text(settings.tray_icon_image, tooltiptext);
 	}
-	gtk_widget_set_tooltip_text(settings.tray_icon_image, tooltiptext);
-	gtk_widget_queue_draw(settings.main_window);
+	if (GTK_WIDGET_VISIBLE(settings.main_window)){
+		gtk_widget_queue_draw(settings.main_window);
+	}
 	
 	return(true);
 }
@@ -140,8 +144,6 @@ int main(int argc, char** argv) {
 	list_ptr = &list;
 	//reorder the controls to the order specified in the config file
 	settings.reorder_list(&list);
-	//set the tray_slider_control
-	settings.set_tray_slider(&list);
 	
 	//set up the window
 	gtk_init(&argc, &argv);
@@ -150,8 +152,10 @@ int main(int argc, char** argv) {
 	gtk_window_set_default_size(GTK_WINDOW(settings.main_window), settings.window_width, settings.window_height);
 	gtk_window_set_title(GTK_WINDOW(settings.main_window), "Retrovol");
 	
-	//want the window to hide rather than closing
-	g_signal_connect(settings.main_window, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
+	//if the tray icon is enabled, we want the window to hide rather than closing
+	if (settings.enable_tray_icon){
+		g_signal_connect(settings.main_window, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
+	}
 
 	//use a scrolled window
 	GtkWidget *scrolled_window;
@@ -288,44 +292,44 @@ int main(int argc, char** argv) {
 	
 
 	//set up the tray_slider that goes in the tray
-	GtkWidget *tray_frame;
-	tray_frame = gtk_alignment_new(0.5,0.0,0,0);
-	settings.tray_slider = new retro_slider;
-	settings.apply_to_slider(settings.tray_slider);
-	settings.tray_slider->vertical = true;
-	settings.tray_slider->width = 20;
-	settings.tray_slider->height = 102;
-	settings.tray_slider->init(tray_frame, (void*)settings.tray_control, &Element::get_callback, &Element::set_callback);
+	if (settings.enable_tray_icon){
+		GtkWidget *tray_frame;
+		tray_frame = gtk_alignment_new(0.5,0.0,0,0);
+		settings.tray_slider = new retro_slider;
+		settings.set_tray_slider(&list);
+		settings.apply_to_tray_slider(settings.tray_slider);
+		settings.tray_slider->init(tray_frame, (void*)settings.tray_control, &Element::get_callback, &Element::set_callback);
 
-	//set up the small window that holds the tray_slider
-	GtkWidget *slider_window;
-	slider_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_resizable(GTK_WINDOW(slider_window), false);
-	gtk_window_set_decorated(GTK_WINDOW(slider_window), false);
-	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(slider_window), true);
-	gtk_window_set_skip_pager_hint(GTK_WINDOW(slider_window), true);
-	gtk_widget_set_usize(slider_window, settings.tray_slider->width, settings.tray_slider->height);
-	//don't want accidental closure of the slider window to destroy the window
-	g_signal_connect(slider_window, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
-	//want the widow to go away when it loses focus
-	g_signal_connect(slider_window, "focus-out-event", G_CALLBACK (gtk_widget_hide), NULL);
-	gtk_container_add( GTK_CONTAINER(slider_window), tray_frame );
-	//we want it hidden by default, but it must be shown at least once or else scrolling over the icon will cause a hang
-	gtk_widget_show_all(slider_window);
-	gtk_widget_hide_all(slider_window);
-	
+		//set up the small window that holds the tray_slider
+		GtkWidget *slider_window;
+		slider_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+		gtk_window_set_resizable(GTK_WINDOW(slider_window), false);
+		gtk_window_set_decorated(GTK_WINDOW(slider_window), false);
+		gtk_window_set_skip_taskbar_hint(GTK_WINDOW(slider_window), true);
+		gtk_window_set_skip_pager_hint(GTK_WINDOW(slider_window), true);
+		gtk_widget_set_usize(slider_window, settings.tray_slider->width, settings.tray_slider->height);
+		//don't want accidental closure of the slider window to destroy the window
+		g_signal_connect(slider_window, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
+		//want the widow to go away when it loses focus
+		g_signal_connect(slider_window, "focus-out-event", G_CALLBACK (gtk_widget_hide), NULL);
+		gtk_container_add( GTK_CONTAINER(slider_window), tray_frame );
+		//we want it hidden by default, but it must be shown at least once or else scrolling over the icon will cause a hang
+		gtk_widget_show_all(slider_window);
+		gtk_widget_hide_all(slider_window);
 		
-	//set up tray icon
-	GtkWidget *tray_icon;
-	tray_icon = GTK_WIDGET(egg_tray_icon_new("Retrovol Tray Icon"));
-	settings.tray_icon_image = gtk_image_new();
-	gtk_container_add( GTK_CONTAINER(tray_icon), settings.tray_icon_image );
-	gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), "images/audio-volume-medium.png");
-	g_signal_connect(G_OBJECT(tray_icon), "button_press_event", G_CALLBACK (&tray_button_press_event_callback), slider_window);
-	g_signal_connect(G_OBJECT(tray_icon), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), settings.tray_slider);
-	gtk_widget_set_events (tray_icon, GDK_BUTTON_PRESS_MASK | GDK_SCROLL_MASK);
-	
-	gtk_widget_show_all(tray_icon);
+			
+		//set up tray icon
+		GtkWidget *tray_icon;
+		tray_icon = GTK_WIDGET(egg_tray_icon_new("Retrovol Tray Icon"));
+		settings.tray_icon_image = gtk_image_new();
+		gtk_container_add( GTK_CONTAINER(tray_icon), settings.tray_icon_image );
+		gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), "images/audio-volume-medium.png");
+		g_signal_connect(G_OBJECT(tray_icon), "button_press_event", G_CALLBACK (&tray_button_press_event_callback), slider_window);
+		g_signal_connect(G_OBJECT(tray_icon), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), settings.tray_slider);
+		gtk_widget_set_events (tray_icon, GDK_BUTTON_PRESS_MASK | GDK_SCROLL_MASK);
+		
+		gtk_widget_show_all(tray_icon);
+	}
 	
 	//add some periodic refreshment to keep the icon and window up-to-date
 	g_timeout_add_seconds(1, update, NULL);

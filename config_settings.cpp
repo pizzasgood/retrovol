@@ -13,14 +13,9 @@ ConfigSetttings::ConfigSetttings(){
 	num_names = 0;
 	//defaults
 	strcpy(card, "hw:0");
-	//vertical = true;
 	vertical = false;
-	//window_width=480;
-	//window_height=180;
 	window_width=256;
 	window_height=256;
-	//slider_width=20;
-	//slider_height=102;
 	slider_width=102;
 	slider_height=20;
 	slider_margin = 2;
@@ -44,6 +39,11 @@ ConfigSetttings::ConfigSetttings(){
 	lit_color[2]=0.0;
 	
 	tray_control = NULL;
+	enable_tray_icon = true;
+	tray_slider_vertical = true;
+	tray_slider_width=20;
+	tray_slider_height=102;
+	
 	tray_control_name[0] = '\0';
 	
 	strcpy(icon_file_names[0], "images/audio-volume-muted.png");
@@ -78,6 +78,13 @@ void ConfigSetttings::apply_to_slider(retro_slider *slider){
 	slider->lit_color[0]=lit_color[0];
 	slider->lit_color[1]=lit_color[1];
 	slider->lit_color[2]=lit_color[2];
+}
+//apply settings to a tray_slider
+void ConfigSetttings::apply_to_tray_slider(retro_slider *slider){
+	apply_to_slider(slider);
+	slider->width = tray_slider_width;
+	slider->height = tray_slider_height;
+	slider->vertical = tray_slider_vertical;
 }
 
 
@@ -136,6 +143,18 @@ void ConfigSetttings::parse_config(char *config_file){
 		} else if (strcmp(tmpptr, "lit_color")==0){
 			tmpptr=strtok(NULL, "=\n");
 			htonf(lit_color, tmpptr);
+		} else if (strcmp(tmpptr, "enable_tray_icon")==0){
+			tmpptr=strtok(NULL, "=\n");
+			enable_tray_icon=(bool)atoi(tmpptr);
+		} else if (strcmp(tmpptr, "tray_slider_vertical")==0){
+			tmpptr=strtok(NULL, "=\n");
+			tray_slider_vertical=(bool)atoi(tmpptr);
+		} else if (strcmp(tmpptr, "tray_slider_width")==0){
+			tmpptr=strtok(NULL, "=\n");
+			tray_slider_width=atoi(tmpptr);
+		} else if (strcmp(tmpptr, "tray_slider_height")==0){
+			tmpptr=strtok(NULL, "=\n");
+			tray_slider_height=atoi(tmpptr);
 		} else if (strcmp(tmpptr, "tray_control")==0){
 			tmpptr=strtok(NULL, "=\"\n");
 			strcpy(tray_control_name, tmpptr);

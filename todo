@@ -16,5 +16,4 @@
 	use non-deprecated functions to position slider (inside a popup menu?)
 	use transparent background so taskbar shows through.
 	?should scrolling to increase sound level automatically unmute?  Would have to affect normal sliders too, so I think not.
-	make tray_icon optional
 	
