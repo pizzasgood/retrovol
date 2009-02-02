@@ -1,0 +1,32 @@
+RetroVol
+http://puppylinux.svn.sourceforge.net/viewvc/puppylinux/retrovol/
+This software is released into the public domain.
+
+RetroVol is a volume setting program.  It adds an icon to the tray that can be
+scrolled on to change the volume.  It can be middle-clicked to mute/unmute. It
+can be right-clicked to display the main window, which lists all the volume
+controls it can detect on your system.
+
+Configuration changes can be made in the ~/.retrovolrc file.  For example, you
+can change the colors to green and blue, make the segments fatter, disable the
+tray icon, and have the main window only display specific sliders.
+
+At the moment, you must edit that file manually to make those changes.  I will
+eventually make a gui tool for doing it though.
+
+To see the names of the sliders that you can use in the 'sliders:' section,
+run this command in a terminal:
+
+amixer controls
+
+That will spit out something that looks like this:
+
+numid=37,iface=MIXER,name='Master Playback Switch'
+numid=36,iface=MIXER,name='Master Playback Volume'
+numid=19,iface=MIXER,name='Headphone Playback Switch'
+numid=38,iface=MIXER,name='PCM Playback Volume'
+numid=16,iface=MIXER,name='Front Mic Playback Switch'
+numid=15,iface=MIXER,name='Front Mic Playback Volume'
+
+You can ignore any "Switch" entries that have a corresponding "Volume" entry.
+They will automatically be combined into one item.

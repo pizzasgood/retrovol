@@ -43,7 +43,9 @@
 
 
 
-#  Which sliders to display, in order.  They MUST have a tab first and be quoted with double-quotes.
+#  Which sliders to display, in order.  They MUST have a tab first and be quoted
+#  with double-quotes.  To get a list of the slider names, run this command:
+#    amixer controls
 #  NOTE:  This section must go at the end of the file!
 
 #sliders:
