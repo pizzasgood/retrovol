@@ -1,6 +1,17 @@
 RetroVol
 http://puppylinux.svn.sourceforge.net/viewvc/puppylinux/retrovol/
-This software is released into the public domain.
+
+---- Legal Jazz --------------------------------------------------------------
+ 
+ This software is released into the public domain.
+ 
+ This software includes the eggtrayicon.c and eggtrayicon.h libraries, which
+ were released under the GNU LGPL.  They are copyrighted by Anders Carlsson,
+ not myself.  I claim no credit for them; they are unmodified.  Copies of the
+ GNU GPL and GNU LGPL are included in this package, named gpl.txt and lgpl.txt
+ in compliance with Section 4e of the GNU LGPL.
+ 
+---- End Legal Jazz ----------------------------------------------------------
 
 RetroVol is a volume setting program.  It adds an icon to the tray that can be
 scrolled on to change the volume.  It can be middle-clicked to mute/unmute. It
