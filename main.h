@@ -1,4 +1,5 @@
 /* main.h */
+/* This code is part of the Public Domain. */
 
 #ifndef __MAIN__
 #define __MAIN__

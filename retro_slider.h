@@ -1,4 +1,5 @@
 /* retro_slider.h */
+/* This code is part of the Public Domain. */
 
 #ifndef __RETRO_SLIDER__
 #define __RETRO_SLIDER__

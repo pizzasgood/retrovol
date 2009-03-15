@@ -8,7 +8,7 @@ http://puppylinux.svn.sourceforge.net/viewvc/puppylinux/retrovol/
  This software includes the eggtrayicon.c and eggtrayicon.h libraries, which
  were released under the GNU LGPL.  They are copyrighted by Anders Carlsson,
  not myself.  I claim no credit for them; they are unmodified.  Copies of the
- GNU GPL and GNU LGPL are included in this package, named gpl.txt and lgpl.txt
+ GNU GPL and GNU LGPL are included in this package named gpl.txt and lgpl.txt,
  in compliance with Section 4e of the GNU LGPL.
  
 ---- End Legal Jazz ----------------------------------------------------------

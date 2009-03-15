@@ -1,4 +1,5 @@
 /* main.cpp */
+/* This code is part of the Public Domain. */
 
 /*
     retrovol - a retro-styled volume mixer, by Pizzasgood

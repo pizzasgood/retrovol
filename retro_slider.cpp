@@ -1,4 +1,5 @@
 /* retro_slider.cpp */
+/* This code is part of the Public Domain. */
 
 #if HAVE_CONFIG_H
 #include <config.h>

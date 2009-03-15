@@ -1,4 +1,5 @@
 /* alsa_classes.h */
+/* This code is part of the Public Domain. */
 
 #ifndef __ALSA_CLASSES__
 #define __ALSA_CLASSES__

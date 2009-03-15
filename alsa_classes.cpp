@@ -1,4 +1,5 @@
 /* alsa_classes.cpp */
+/* This code is part of the Public Domain. */
 /*
  This file contains classes to load and manipulate the mixer settings through
  alsa using asoundlib.h.  Numbers are automatically scaled to a 0-100 range

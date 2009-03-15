@@ -1,4 +1,5 @@
 /* config_settings.h */
+/* This code is part of the Public Domain. */
 
 #ifndef __CONFIG_SETTINGS__
 #define __CONFIG_SETTINGS__
