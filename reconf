@@ -1,0 +1,9 @@
+#!/bin/sh
+rm -f config.cache
+rm -f acconfig.h
+aclocal
+autoconf
+autoheader
+for i in AUTHORS ChangeLog NEWS README; do [ ! -f $i ] && touch $i; done
+automake -a
+exit

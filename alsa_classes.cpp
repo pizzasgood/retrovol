@@ -7,6 +7,10 @@
  created 2008-09-30 by pizzasgood
 */
 
+#if HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>

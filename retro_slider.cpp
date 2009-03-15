@@ -1,5 +1,9 @@
 /* retro_slider.cpp */
 
+#if HAVE_CONFIG_H
+#include <config.h>
+#endif
+
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include "retro_slider.h"
