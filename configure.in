@@ -1,7 +1,8 @@
-AC_INIT(main.cpp)
+AC_INIT(retrovol, 0.1)
 AM_CONFIG_HEADER(config.h)
+AC_CONFIG_FILES([images/Makefile src/Makefile Makefile])
 AM_INIT_AUTOMAKE(retrovol,0.1)
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL
-AC_OUTPUT(images/Makefile Makefile)
+AC_OUTPUT
