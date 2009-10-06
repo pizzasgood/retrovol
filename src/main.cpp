@@ -90,7 +90,7 @@ gboolean update(gpointer data){
 	bool state = true;
 	if (settings.enable_tray_icon){
 		int val = settings.tray_control->get();
-		char tooltiptext[16];
+		char tooltiptext[32];
 		if (settings.tray_control->switch_id >= 0){
 			state = (bool)list_ptr->elems[settings.tray_control->switch_id].get();
 		}
