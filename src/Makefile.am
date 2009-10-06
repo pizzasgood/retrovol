@@ -1,4 +1,7 @@
+imagedir = $(pkgdatadir)/images
 INCLUDES = `pkg-config --cflags gtk+-2.0`
+
+AM_CPPFLAGS = -DIMAGEDIR="\"$(imagedir)\""
 
 bin_PROGRAMS = retrovol
 

@@ -51,10 +51,10 @@ ConfigSetttings::ConfigSetttings(){
 	
 	tray_control_name[0] = '\0';
 	
-	strcpy(icon_file_names[0], "images/audio-volume-muted.png");
-	strcpy(icon_file_names[1], "images/audio-volume-low.png");
-	strcpy(icon_file_names[2], "images/audio-volume-medium.png");
-	strcpy(icon_file_names[3], "images/audio-volume-high.png");
+	strcpy(icon_file_names[0], VOL_MUTED_IMAGE);
+	strcpy(icon_file_names[1], VOL_LOW_IMAGE);
+	strcpy(icon_file_names[2], VOL_MEDIUM_IMAGE);
+	strcpy(icon_file_names[3], VOL_HIGH_IMAGE);
 
 }
 

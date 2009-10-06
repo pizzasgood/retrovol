@@ -4,6 +4,11 @@
 #ifndef __CONFIG_SETTINGS__
 #define __CONFIG_SETTINGS__
 
+//define the paths to the volume images
+#define VOL_MUTED_IMAGE IMAGEDIR"/audio-volume-muted.png"
+#define VOL_LOW_IMAGE IMAGEDIR"/audio-volume-low.png"
+#define VOL_MEDIUM_IMAGE IMAGEDIR"/audio-volume-medium.png"
+#define VOL_HIGH_IMAGE IMAGEDIR"/audio-volume-high.png"
 
 class ConfigSetttings {
 	public:

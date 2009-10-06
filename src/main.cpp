@@ -328,7 +328,7 @@ int main(int argc, char** argv) {
 		tray_icon = GTK_WIDGET(egg_tray_icon_new("Retrovol Tray Icon"));
 		settings.tray_icon_image = gtk_image_new();
 		gtk_container_add( GTK_CONTAINER(tray_icon), settings.tray_icon_image );
-		gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), "images/audio-volume-medium.png");
+		gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), VOL_MEDIUM_IMAGE);
 		g_signal_connect(G_OBJECT(tray_icon), "button_press_event", G_CALLBACK (&tray_button_press_event_callback), slider_window);
 		g_signal_connect(G_OBJECT(tray_icon), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), settings.tray_slider);
 		gtk_widget_set_events (tray_icon, GDK_BUTTON_PRESS_MASK | GDK_SCROLL_MASK);
