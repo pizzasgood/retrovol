@@ -19,6 +19,10 @@
 #include "main.h"
 #include "eggtrayicon.h"
 
+//i18n stuff
+#include "gettext.h"
+#include <locale.h>
+#define _(String) gettext (String)
 
 
 static ConfigSetttings settings;
@@ -97,10 +101,10 @@ gboolean update(gpointer data){
 			} else if (image < 0){
 				image=0;
 			}
-			sprintf(tooltiptext, "Volume: %d%%", val);
+			sprintf(tooltiptext, _("Volume: %d%%"), val);
 			gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[image]);
 		} else {
-			sprintf(tooltiptext, "Volume: Muted");
+			sprintf(tooltiptext, _("Volume: Muted"));
 			gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[0]);
 		}
 		gtk_widget_set_tooltip_text(settings.tray_icon_image, tooltiptext);
@@ -142,6 +146,11 @@ void word_wrap(char *wrapped, char *orig){
 
 
 int main(int argc, char** argv) {
+    //initialize locale jazz
+    setlocale(LC_ALL, "");
+    bindtextdomain(PACKAGE, LOCALEDIR);
+    textdomain(PACKAGE);
+    
 	//parse the config file
 	settings.parse_config(strcat(getenv("HOME"), config_file));
 	//load the controls into list

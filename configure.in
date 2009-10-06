@@ -1,7 +1,9 @@
 AC_INIT(retrovol, 0.1)
 AM_CONFIG_HEADER(config.h)
-AC_CONFIG_FILES([images/Makefile src/Makefile Makefile])
+AC_CONFIG_FILES([Makefile images/Makefile src/Makefile po/Makefile.in])
 AM_INIT_AUTOMAKE(retrovol,0.1)
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION([0.16.1])
 AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_INSTALL

@@ -1,7 +1,10 @@
 imagedir = $(pkgdatadir)/images
-INCLUDES = `pkg-config --cflags gtk+-2.0`
+localedir = $(datadir)/locale
+LDADD = @LIBINTL@
 
-AM_CPPFLAGS = -DIMAGEDIR="\"$(imagedir)\""
+AM_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\" -DIMAGEDIR="\"$(imagedir)\""
+
+INCLUDES = `pkg-config --cflags gtk+-2.0`
 
 bin_PROGRAMS = retrovol
 
