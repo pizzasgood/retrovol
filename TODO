@@ -1,5 +1,6 @@
 :main window:
 	?add editable numeric display - Will probably skip this to preserve screen space - make up for it with a tooltip?
+	make sliders select when clicked on (so arrow keys work on them)
 	improve layout of horizontal-mode - mute buttons are funky
 	gradient colors in the slider
 	"overload" colors in the slider
