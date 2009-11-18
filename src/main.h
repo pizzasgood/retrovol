@@ -23,4 +23,13 @@ gboolean update(gpointer data);
 //else append a '\n' to keep things lined up
 void word_wrap(char *wrapped, char *orig);
 
+//callback for the configure window
+void configure( GtkWidget *w, gpointer data);
+
+//callback that closes the main window
+void close_window( GtkWidget *w, gpointer data);
+
+//Returns a menubar widget made from the passed menu_items
+GtkWidget *get_menubar_menu( GtkWidget  *window, GtkItemFactoryEntry *menu_items, gint nmenu_items, const char *menu_name );
+
 #endif

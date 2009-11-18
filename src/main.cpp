@@ -142,17 +142,17 @@ void word_wrap(char *wrapped, char *orig){
 }
 
 
-//show the configure window
+//callback for the configure window
 void configure( GtkWidget *w, gpointer data){
     g_message ("configure() not yet implemented\n");
 }
 
-//close the main window
+//callback that closes the main window
 void close_window( GtkWidget *w, gpointer data){
 	gtk_widget_hide(settings.main_window);
 }
 
-/* Returns a menubar widget made from the above menu */
+//Returns a menubar widget made from the passed menu_items
 GtkWidget *get_menubar_menu( GtkWidget  *window, GtkItemFactoryEntry *menu_items, gint nmenu_items, const char *menu_name )
 {
 	GtkItemFactory *item_factory;
