@@ -142,7 +142,40 @@ void word_wrap(char *wrapped, char *orig){
 }
 
 
+//show the configure window
+void configure( GtkWidget *w, gpointer data){
+    g_message ("configure() not yet implemented\n");
+}
 
+//close the main window
+void close_window( GtkWidget *w, gpointer data){
+	gtk_widget_hide(settings.main_window);
+}
+
+/* Returns a menubar widget made from the above menu */
+GtkWidget *get_menubar_menu( GtkWidget  *window, GtkItemFactoryEntry *menu_items, gint nmenu_items, const char *menu_name )
+{
+	GtkItemFactory *item_factory;
+	GtkAccelGroup *accel_group;
+
+	/* Make an accelerator group (shortcut keys) */
+	accel_group = gtk_accel_group_new ();
+
+	/* Make an ItemFactory (that makes a menubar) */
+	item_factory = gtk_item_factory_new (GTK_TYPE_MENU_BAR, menu_name,
+                                         accel_group);
+
+	/* This function generates the menu items. Pass the item factory,
+	   the number of items in the array, the array itself, and any
+	   callback data for the the menu items. */
+	gtk_item_factory_create_items (item_factory, nmenu_items, menu_items, NULL);
+
+	/* Attach the new accelerator group to the window. */
+	gtk_window_add_accel_group (GTK_WINDOW (window), accel_group);
+
+	/* Finally, return the actual menu bar created by the item factory. */
+	return gtk_item_factory_get_widget (item_factory, menu_name);
+}
 
 
 int main(int argc, char** argv) {
@@ -171,11 +204,31 @@ int main(int argc, char** argv) {
 		g_signal_connect(settings.main_window, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
 	}
 
+	//make the over_box, which will hold stuff like the menu, status bar, and the actual content in the middle
+        GtkWidget *over_box;
+        over_box = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(settings.main_window), over_box);
+
+	//define the menu
+	GtkItemFactoryEntry menu_items[] = {
+		{ (gchar*)"/_File",           NULL,              NULL,                      0, (gchar*)"<Branch>" },
+		{ (gchar*)"/File/_Configure", (gchar*)"<CTRL>C", G_CALLBACK(configure),     0, (gchar*)"<StockItem>", GTK_STOCK_NEW },
+		{ (gchar*)"/File/_Quit",      (gchar*)"<CTRL>Q", G_CALLBACK(close_window),  0, (gchar*)"<StockItem>", GTK_STOCK_QUIT },
+		{ (gchar*)"/File/_Exit",      (gchar*)"<CTRL>E", G_CALLBACK(gtk_main_quit), 0, (gchar*)"<StockItem>", GTK_STOCK_QUIT }
+	};
+	gint nmenu_items = sizeof (menu_items) / sizeof (menu_items[0]);
+
+	//build the menu
+	GtkWidget *menubar;
+        menubar = get_menubar_menu(settings.main_window, menu_items, nmenu_items, "<RetrovolMain>");
+        gtk_box_pack_start(GTK_BOX(over_box), menubar, FALSE, TRUE, 0);
+
+
 	//use a scrolled window
 	GtkWidget *scrolled_window;
 	scrolled_window = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy((GtkScrolledWindow*)scrolled_window, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_container_add(GTK_CONTAINER(settings.main_window), scrolled_window);
+	gtk_container_add(GTK_CONTAINER(over_box), scrolled_window);
 	
 	//put the stuff into a viewport manually, so we can specify that it should have no shadow
 	GtkWidget *viewport;
