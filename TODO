@@ -7,11 +7,11 @@
 	commandline options to override the config file
 	commandline option to specify config file, else use ~/.retrovolrc
 	four radio boxes to switch view: Playback, Capture, All, Custom
+	custom sliders that operate multiple sliders at once
 	status bar - shows full name of the device below cursor, along with numeric info - make optional in config file
 	:menu bar:
-		exit program completely
 		preferences
-		gui to change order of sliders and enable/disable
+			gui to change order of sliders and enable/disable
 
 :tray icon:
 	use non-deprecated functions to position slider (inside a popup menu?)
