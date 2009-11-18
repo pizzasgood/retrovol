@@ -10,9 +10,9 @@
 #define VOL_MEDIUM_IMAGE IMAGEDIR"/audio-volume-medium.png"
 #define VOL_HIGH_IMAGE IMAGEDIR"/audio-volume-high.png"
 
-class ConfigSetttings {
+class ConfigSettings {
 	public:
-		ConfigSetttings();
+		ConfigSettings();
 		
 		//some "global" variables - I put them in here to not have so much global stuff scattered around
 		GtkWidget *main_window, *tray_icon_image;

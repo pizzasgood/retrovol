@@ -14,7 +14,7 @@
 #include "config_settings.h"
 
 
-ConfigSetttings::ConfigSetttings(){
+ConfigSettings::ConfigSettings(){
 	num_names = 0;
 	//defaults
 	strcpy(card, "hw:0");
@@ -60,7 +60,7 @@ ConfigSetttings::ConfigSetttings(){
 
 
 //apply settings to a slider
-void ConfigSetttings::apply_to_slider(retro_slider *slider){
+void ConfigSettings::apply_to_slider(retro_slider *slider){
 	slider->width = slider_width;
 	slider->height = slider_height;
 	slider->margin = slider_margin;
@@ -85,7 +85,7 @@ void ConfigSetttings::apply_to_slider(retro_slider *slider){
 	slider->lit_color[2]=lit_color[2];
 }
 //apply settings to a tray_slider
-void ConfigSetttings::apply_to_tray_slider(retro_slider *slider){
+void ConfigSettings::apply_to_tray_slider(retro_slider *slider){
 	apply_to_slider(slider);
 	slider->width = tray_slider_width;
 	slider->height = tray_slider_height;
@@ -94,7 +94,7 @@ void ConfigSetttings::apply_to_tray_slider(retro_slider *slider){
 
 
 //parse the config file
-void ConfigSetttings::parse_config(char *config_file){
+void ConfigSettings::parse_config(char *config_file){
 	FILE *cfile = fopen(config_file, "r");	
 	if (!cfile){
 		fprintf(stdout, "Cannot read file: %s\nUsing defaults...\n", config_file);
@@ -191,7 +191,7 @@ void ConfigSetttings::parse_config(char *config_file){
 
 
 //reorder the items in list to match name_list, omitting any that are not in name_list
-void ConfigSetttings::reorder_list(ElementList *list){
+void ConfigSettings::reorder_list(ElementList *list){
 	
 	//this function is not needed unless an order has been defined somewhere
 	if (num_names!=0){
@@ -217,7 +217,7 @@ void ConfigSetttings::reorder_list(ElementList *list){
 
 
 //look through the list and set the tray_slider_control to the matching element
-void ConfigSetttings::set_tray_slider(ElementList *list){
+void ConfigSettings::set_tray_slider(ElementList *list){
 	//don't bother searching unless a name has been specified
 	if (strlen(tray_control_name) != 0){
 		for(int i=0; i<list->num_elems; i++){
@@ -249,7 +249,7 @@ void ConfigSetttings::set_tray_slider(ElementList *list){
 
 
 //take a hex string like #AAFF88 and put it into a three item integer array
-void ConfigSetttings::htoi(int *array, char *string){
+void ConfigSettings::htoi(int *array, char *string){
 	if (strlen(string) == 7 ){
 		for (int i=0; i<3; i++){
 			if (string[1+2*i] >= '0' && string[1+2*i] <= '9'){
@@ -277,7 +277,7 @@ void ConfigSetttings::htoi(int *array, char *string){
 }
 
 //take a hex string like #AAFF88 and put it into a three item float array, normalized so 255=1.0, 0=0.0
-void ConfigSetttings::htonf(float *array, char *string){
+void ConfigSettings::htonf(float *array, char *string){
 	int intarray[3];
 	htoi(intarray, string);
 	for (int i=0; i<3; i++){

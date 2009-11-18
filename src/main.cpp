@@ -25,7 +25,7 @@
 #define _(String) gettext (String)
 
 
-static ConfigSetttings settings;
+static ConfigSettings settings;
 //add the leading slash here, so that it can simply be concatenated with the results of getenv("HOME") later.
 const char config_file[] = "/.retrovolrc";
 static ElementList *list_ptr;
