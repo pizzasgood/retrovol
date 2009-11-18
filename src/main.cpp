@@ -179,10 +179,10 @@ GtkWidget *get_menubar_menu( GtkWidget  *window, GtkItemFactoryEntry *menu_items
 
 
 int main(int argc, char** argv) {
-    //initialize locale jazz
-    setlocale(LC_ALL, "");
-    bindtextdomain(PACKAGE, LOCALEDIR);
-    textdomain(PACKAGE);
+	//initialize locale jazz
+	setlocale(LC_ALL, "");
+	bindtextdomain(PACKAGE, LOCALEDIR);
+	textdomain(PACKAGE);
     
 	//parse the config file
 	settings.parse_config(strcat(getenv("HOME"), config_file));
