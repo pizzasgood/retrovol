@@ -15,7 +15,9 @@ class ConfigSettings {
 		ConfigSettings();
 		
 		//some "global" variables - I put them in here to not have so much global stuff scattered around
-		GtkWidget *main_window, *tray_icon_image;
+		GtkWidget *main_window;
+		GtkWidget *config_window;
+                GtkWidget *tray_icon_image;
 		retro_slider *tray_slider;
 		Element *tray_control;
 		
@@ -53,6 +55,9 @@ class ConfigSettings {
 		char icon_file_names[4][80]; //NEED TO MAKE THIS DYNAMIC
 		
 		
+		//copy the settings of another ConfigSettings into this one
+		void copy_settings(ConfigSettings *ptr);
+
 		//parse the config file
 		void parse_config(char *config_file);
 

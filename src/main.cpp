@@ -16,6 +16,7 @@
 #include "retro_slider.h"
 #include "alsa_classes.h"
 #include "config_settings.h"
+#include "config_window.h"
 #include "main.h"
 #include "eggtrayicon.h"
 
@@ -144,7 +145,7 @@ void word_wrap(char *wrapped, char *orig){
 
 //callback for the configure window
 void configure( GtkWidget *w, gpointer data){
-    g_message ("configure() not yet implemented\n");
+    build_config_window();
 }
 
 //callback that closes the main window

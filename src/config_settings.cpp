@@ -93,6 +93,31 @@ void ConfigSettings::apply_to_tray_slider(retro_slider *slider){
 }
 
 
+//copy the settings of another ConfigSettings into this one
+void ConfigSettings::copy_settings(ConfigSettings *ptr){
+	strcpy(card, ptr->card);
+	num_names = ptr->num_names;
+	vertical = ptr->vertical;
+	window_width = ptr->window_width;
+	window_height = ptr->window_height;
+	slider_width = ptr->slider_width;
+	slider_height = ptr->slider_height;
+	slider_margin = ptr->slider_margin;
+	seg_thickness = ptr->seg_thickness;
+	seg_spacing = ptr->seg_spacing;
+	for(int i=0; i<3; i++){
+		background_color[i] = ptr->background_color[i];
+		border_color[i] = ptr->border_color[i];
+		unlit_color[i] = ptr->unlit_color[i];
+		lit_color[i] = ptr->lit_color[i];
+	}
+	enable_tray_icon = ptr->enable_tray_icon;
+	tray_slider_width = ptr->tray_slider_width;
+	tray_slider_height = ptr->tray_slider_height;
+	strcpy(tray_control_name, ptr->tray_control_name);
+}
+
+
 //parse the config file
 void ConfigSettings::parse_config(char *config_file){
 	FILE *cfile = fopen(config_file, "r");	
