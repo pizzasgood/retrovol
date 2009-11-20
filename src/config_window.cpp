@@ -30,26 +30,89 @@ void save_settings(ConfigSettings *settings){
 	//settings.apply_new();
 }
 
+static void cancel_config_window(GtkWidget *widget, gpointer data){
+    gtk_widget_destroy(window);
+}
+
 //create a preferences window
 void build_config_window(){
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+	gtk_window_set_default_size(GTK_WINDOW(window), 500, 500);
 	gtk_window_set_title(GTK_WINDOW(window), "Retrovol - Configuration");
 
-	//use a scrolled window in a viewport
-        GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-	gtk_scrolled_window_set_policy((GtkScrolledWindow*)scrolled_window, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-	gtk_container_add(GTK_CONTAINER(window), scrolled_window);
-        GtkWidget *viewport = gtk_viewport_new(NULL, NULL);
-	gtk_container_add(GTK_CONTAINER(scrolled_window), viewport);
+        //create the overall vbox
+        GtkWidget *over_box;
+        over_box = gtk_vbox_new(FALSE, 0);
+	gtk_container_add(GTK_CONTAINER(window), over_box);
 
-	//place the vbox
-        GtkWidget *vbox = gtk_vbox_new(TRUE, 2);
-	gtk_container_add(GTK_CONTAINER(viewport), vbox);
+        //create the notebook
+        GtkWidget *notebook = gtk_notebook_new();
+        gtk_notebook_set_tab_pos((GtkNotebook*)notebook, GTK_POS_TOP);
+        gtk_container_add(GTK_CONTAINER(over_box), notebook);
 
-        GtkWidget *label1 = gtk_label_new("<< Unimplemented >>");
-	gtk_container_add(GTK_CONTAINER(vbox), label1);
+        //Slider tab
+        //slider dimensions, colors, etc.
+        {
+            //use a scrolled window in a viewport
+            GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+            gtk_scrolled_window_set_policy((GtkScrolledWindow*)scrolled_window, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+            GtkWidget *tab_label = gtk_label_new("Slider");
+            gtk_notebook_append_page( (GtkNotebook*)notebook, scrolled_window, tab_label );
+            GtkWidget *viewport = gtk_viewport_new(NULL, NULL);
+            gtk_container_add(GTK_CONTAINER(scrolled_window), viewport);
+
+            GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
+            gtk_container_add(GTK_CONTAINER(viewport), vbox);
+            GtkWidget *label = gtk_label_new("Slider stuff");
+            gtk_container_add(GTK_CONTAINER(vbox), label);
+        }
+
+	//Hardware tab
+        //default card, sliders to use, order, etc.
+        {
+            //use a scrolled window in a viewport
+            GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+            gtk_scrolled_window_set_policy((GtkScrolledWindow*)scrolled_window, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+            GtkWidget *tab_label = gtk_label_new("Hardware");
+            gtk_notebook_append_page( (GtkNotebook*)notebook, scrolled_window, tab_label );
+            GtkWidget *viewport = gtk_viewport_new(NULL, NULL);
+            gtk_container_add(GTK_CONTAINER(scrolled_window), viewport);
+
+            GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
+            gtk_container_add(GTK_CONTAINER(viewport), vbox);
+            GtkWidget *label = gtk_label_new("Hardware stuff");
+            gtk_container_add(GTK_CONTAINER(vbox), label);
+        }
+
+	//Main window tab
+        //Main window dimensions, slider spacing, orientation, etc.
+        {
+            //use a scrolled window in a viewport
+            GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+            gtk_scrolled_window_set_policy((GtkScrolledWindow*)scrolled_window, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+            GtkWidget *tab_label = gtk_label_new("Window");
+            gtk_notebook_append_page( (GtkNotebook*)notebook, scrolled_window, tab_label );
+            GtkWidget *viewport = gtk_viewport_new(NULL, NULL);
+            gtk_container_add(GTK_CONTAINER(scrolled_window), viewport);
+
+            GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
+            gtk_container_add(GTK_CONTAINER(viewport), vbox);
+            GtkWidget *label = gtk_label_new("Window stuff");
+            gtk_container_add(GTK_CONTAINER(vbox), label);
+        }
+
+
+
+        //handle the apply and cancel buttons
+        GtkWidget *apply_cancel_box = gtk_hbox_new(TRUE, 2);
+        gtk_box_pack_end(GTK_BOX(over_box), apply_cancel_box, FALSE, TRUE, 0);
+        GtkWidget *cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+        GtkWidget *apply = gtk_button_new_from_stock(GTK_STOCK_APPLY);
+        gtk_container_add(GTK_CONTAINER(apply_cancel_box), cancel);
+        gtk_container_add(GTK_CONTAINER(apply_cancel_box), apply);
+        g_signal_connect(cancel, "clicked", G_CALLBACK(cancel_config_window), NULL);
 
 	gtk_widget_show_all(window);
 
