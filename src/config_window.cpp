@@ -58,15 +58,38 @@ void build_config_window(){
             //use a scrolled window in a viewport
             GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
             gtk_scrolled_window_set_policy((GtkScrolledWindow*)scrolled_window, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-            GtkWidget *tab_label = gtk_label_new("Slider");
+            GtkWidget *tab_label = gtk_label_new("Sliders");
             gtk_notebook_append_page( (GtkNotebook*)notebook, scrolled_window, tab_label );
             GtkWidget *viewport = gtk_viewport_new(NULL, NULL);
             gtk_container_add(GTK_CONTAINER(scrolled_window), viewport);
 
             GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
             gtk_container_add(GTK_CONTAINER(viewport), vbox);
-            GtkWidget *label = gtk_label_new("Slider stuff");
-            gtk_container_add(GTK_CONTAINER(vbox), label);
+
+            GtkWidget *hbox1 = gtk_hbox_new(TRUE, 2);
+            gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, TRUE, 0);
+            GtkWidget *label1 = gtk_label_new("Width");
+            gtk_container_add(GTK_CONTAINER(hbox1), label1);
+            GtkObject *adjustment1 = gtk_adjustment_new(tmp_settings.slider_width, 1, 9999, 1, 10, 10);
+            GtkWidget *spin1 = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment1), 1, 0);
+            gtk_container_add(GTK_CONTAINER(hbox1), spin1);
+
+            GtkWidget *hbox2 = gtk_hbox_new(TRUE, 2);
+            gtk_box_pack_start(GTK_BOX(vbox), hbox2, FALSE, TRUE, 0);
+            GtkWidget *label2 = gtk_label_new("Height");
+            gtk_container_add(GTK_CONTAINER(hbox2), label2);
+            GtkObject *adjustment2 = gtk_adjustment_new(tmp_settings.slider_height, 1, 9999, 1, 10, 10);
+            GtkWidget *spin2 = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment2), 1, 0);
+            gtk_container_add(GTK_CONTAINER(hbox2), spin2);
+
+            GtkWidget *hbox3 = gtk_hbox_new(TRUE, 2);
+            gtk_box_pack_start(GTK_BOX(vbox), hbox3, FALSE, TRUE, 0);
+            GtkWidget *label3 = gtk_label_new("Margins");
+            gtk_container_add(GTK_CONTAINER(hbox3), label3);
+            GtkObject *adjustment3 = gtk_adjustment_new(tmp_settings.slider_margin, 1, 9999, 1, 10, 10);
+            GtkWidget *spin3 = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment3), 1, 0);
+            gtk_container_add(GTK_CONTAINER(hbox3), spin3);
+
         }
 
 	//Hardware tab
