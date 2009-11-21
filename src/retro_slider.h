@@ -28,20 +28,20 @@ class retro_slider{
 		
 		float val;				//the current value
 		int seg;				//index of the highest segment to be 'lit', with 0 at the top
-		                  	
-		int margin;        	
+
+		int margin;
 		int seg_thickness;		//thickness of each line
 		int seg_spacing;		//space between the bottom of one segment and the top of the next
-		                  	
+
 		int seg_offset;			//distance from the top of one segment to the top of the next
-		                  	
+
 		int height;				//dimensions of the slider
 		int width;				//
-		                  	
+
 		int num_segs;			//number of segments
 		int slider_height;		//the height of the slider itself (no margins and no "slack" from funny-sized widgets)
 		float val_per_seg;  	//how much each segment is "worth"
-		                  	
+
 		bool vertical;			//when true, the sliders are vertical
 		
 		float background_color[3];	//background color

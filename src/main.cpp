@@ -2,7 +2,7 @@
 /* This code is part of the Public Domain. */
 
 /*
-    retrovol - a retro-styled volume mixer, by Pizzasgood
+	retrovol - a retro-styled volume mixer, by Pizzasgood
 */
 
 #if HAVE_CONFIG_H
@@ -145,7 +145,7 @@ void word_wrap(char *wrapped, char *orig){
 
 //callback for the configure window
 void configure( GtkWidget *w, gpointer data){
-    build_config_window(&settings);
+	build_config_window(&settings);
 }
 
 //callback that closes the main window
@@ -163,8 +163,7 @@ GtkWidget *get_menubar_menu( GtkWidget  *window, GtkItemFactoryEntry *menu_items
 	accel_group = gtk_accel_group_new ();
 
 	/* Make an ItemFactory (that makes a menubar) */
-	item_factory = gtk_item_factory_new (GTK_TYPE_MENU_BAR, menu_name,
-                                         accel_group);
+	item_factory = gtk_item_factory_new (GTK_TYPE_MENU_BAR, menu_name, accel_group);
 
 	/* This function generates the menu items. Pass the item factory,
 	   the number of items in the array, the array itself, and any
@@ -184,7 +183,7 @@ int main(int argc, char** argv) {
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
-    
+
 	//parse the config file
 	settings.parse_config(strcat(getenv("HOME"), config_file));
 	//load the controls into list
@@ -193,7 +192,7 @@ int main(int argc, char** argv) {
 	//reorder the controls to the order specified in the config file
 	settings.reorder_list(&list);
 	
-        //initialize gtk
+	//initialize gtk
 	gtk_init(&argc, &argv);
 
 	//set up the tray_slider that goes in the tray
@@ -250,8 +249,8 @@ int main(int argc, char** argv) {
 	}
 
 	//make the over_box, which will hold stuff like the menu, status bar, and the actual content in the middle
-        GtkWidget *over_box;
-        over_box = gtk_vbox_new(FALSE, 0);
+	GtkWidget *over_box;
+	over_box = gtk_vbox_new(FALSE, 0);
 	gtk_container_add(GTK_CONTAINER(settings.main_window), over_box);
 
 	//define the menu
@@ -265,8 +264,8 @@ int main(int argc, char** argv) {
 
 	//build the menu
 	GtkWidget *menubar;
-        menubar = get_menubar_menu(settings.main_window, menu_items, nmenu_items, "<RetrovolMain>");
-        gtk_box_pack_start(GTK_BOX(over_box), menubar, FALSE, TRUE, 0);
+	menubar = get_menubar_menu(settings.main_window, menu_items, nmenu_items, "<RetrovolMain>");
+	gtk_box_pack_start(GTK_BOX(over_box), menubar, FALSE, TRUE, 0);
 
 
 	//use a scrolled window
