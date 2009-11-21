@@ -23,43 +23,49 @@ class ConfigSettings {
 		
 		//the rest is the actual settings stuff
 		
-		char card[16];
+		char card[16], _d_card[16];
 		
 		int num_names;
 		char name_list[80][80]; //NEED TO MAKE THIS DYNAMIC
 		
-		bool vertical;			//when true, the normal sliders are vertical
+		bool vertical, _d_vertical;			//when true, the normal sliders are vertical
 		
-		int window_width;		//dimensions of the window
-		int window_height;		//
+		int window_width, _d_window_width;		//dimensions of the window
+		int window_height, _d_window_height;		//
 		
-		int slider_width;		//dimensions of the slider
-		int slider_height;		//
+		int slider_width, _d_slider_width;		//dimensions of the slider
+		int slider_height, _d_slider_height;		//
 		
-		int slider_margin;		//the space around the segments of the slider
+		int slider_margin, _d_slider_margin;		//the space around the segments of the slider
 		
-		int seg_thickness;		//thickness of each line
-		int seg_spacing;  		//space between the bottom of one segment and the top of the next
+		int seg_thickness, _d_seg_thickness;		//thickness of each line
+		int seg_spacing, _d_seg_spacing;  		//space between the bottom of one segment and the top of the next
 		
-		float background_color[3];	//background color
-		float border_color[3];		//border color
-		float unlit_color[3];		//color of unlit segments
-		float lit_color[3];			//color of lit segments
+		float background_color[3], _d_background_color[3];	//background color
+		float border_color[3], _d_border_color[3];		//border color
+		float unlit_color[3], _d_unlit_color[3];		//color of unlit segments
+		float lit_color[3], _d_lit_color[3];			//color of lit segments
 		
-		bool enable_tray_icon;		//enable the tray icon
-		bool tray_slider_vertical;	//when true, the tray_slider is vertical
-		int tray_slider_width;		//dimensions of the tray_slider
-		int tray_slider_height;		//
+		bool enable_tray_icon, _d_enable_tray_icon;		//enable the tray icon
+		bool tray_slider_vertical, _d_tray_slider_vertical;	//when true, the tray_slider is vertical
+		int tray_slider_width, _d_tray_slider_width;		//dimensions of the tray_slider
+		int tray_slider_height, _d_tray_slider_height;		//
 		char tray_control_name[80]; //NEED TO MAKE THIS DYNAMIC
 		
 		char icon_file_names[4][80]; //NEED TO MAKE THIS DYNAMIC
 		
 		
+		//apply the defaults
+		void apply_defaults();
+
 		//copy the settings of another ConfigSettings into this one
 		void copy_settings(ConfigSettings *ptr);
 
 		//parse the config file
 		void parse_config(char *config_file);
+
+		//write the config file
+		void write_config(char *config_file);
 
 		//reorder the list to match the config file
 		void reorder_list(ElementList *list);

@@ -17,44 +17,79 @@
 ConfigSettings::ConfigSettings(){
 	num_names = 0;
 	//defaults
-	strcpy(card, "hw:0");
-	vertical = false;
-	window_width=256;
-	window_height=256;
-	slider_width=102;
-	slider_height=20;
-	slider_margin = 2;
-	seg_thickness = 2;
-	seg_spacing = 1;
+	strcpy(_d_card, "hw:0");
+	_d_vertical = false;
+	_d_window_width=256;
+	_d_window_height=256;
+	_d_slider_width=102;
+	_d_slider_height=20;
+	_d_slider_margin = 2;
+	_d_seg_thickness = 2;
+	_d_seg_spacing = 1;
 	
-	background_color[0]=0.0;
-	background_color[1]=0.0;
-	background_color[2]=0.0;
+	_d_background_color[0]=0.0;
+	_d_background_color[1]=0.0;
+	_d_background_color[2]=0.0;
 	
-	border_color[0]=0.0;
-	border_color[1]=0.0;
-	border_color[2]=0.0;
+	_d_border_color[0]=0.0;
+	_d_border_color[1]=0.0;
+	_d_border_color[2]=0.0;
 	
-	unlit_color[0]=0.6;
-	unlit_color[1]=0.2;
-	unlit_color[2]=0.0;
+	_d_unlit_color[0]=0.6;
+	_d_unlit_color[1]=0.2;
+	_d_unlit_color[2]=0.0;
 	
-	lit_color[0]=1.0;
-	lit_color[1]=0.8;
-	lit_color[2]=0.0;
+	_d_lit_color[0]=1.0;
+	_d_lit_color[1]=0.8;
+	_d_lit_color[2]=0.0;
 	
-	tray_control = NULL;
-	enable_tray_icon = true;
-	tray_slider_vertical = true;
-	tray_slider_width=20;
-	tray_slider_height=102;
+	_d_enable_tray_icon = true;
+	_d_tray_slider_vertical = true;
+	_d_tray_slider_width=20;
+	_d_tray_slider_height=102;
 	
-	tray_control_name[0] = '\0';
 	
 	strcpy(icon_file_names[0], VOL_MUTED_IMAGE);
 	strcpy(icon_file_names[1], VOL_LOW_IMAGE);
 	strcpy(icon_file_names[2], VOL_MEDIUM_IMAGE);
 	strcpy(icon_file_names[3], VOL_HIGH_IMAGE);
+
+	apply_defaults();
+}
+
+
+void ConfigSettings::apply_defaults(){
+	strcpy(card, _d_card);
+	vertical = _d_vertical;
+	window_width = _d_window_width;
+	window_height = _d_window_height;
+	slider_width = _d_slider_width;
+	slider_height = _d_slider_height;
+	slider_margin = _d_slider_margin;
+	seg_thickness = _d_seg_thickness;
+	seg_spacing = _d_seg_spacing;
+	
+	background_color[0] = _d_background_color[0];
+	background_color[1] = _d_background_color[1];
+	background_color[2] = _d_background_color[2];
+	
+	border_color[0] = _d_border_color[0];
+	border_color[1] = _d_border_color[1];
+	border_color[2] = _d_border_color[2];
+	
+	unlit_color[0] = _d_unlit_color[0];
+	unlit_color[1] = _d_unlit_color[1];
+	unlit_color[2] = _d_unlit_color[2];
+	
+	lit_color[0] = _d_lit_color[0];
+	lit_color[1] = _d_lit_color[1];
+	lit_color[2] = _d_lit_color[2];
+	
+	enable_tray_icon = _d_enable_tray_icon;
+	tray_slider_vertical = _d_tray_slider_vertical;
+	tray_slider_width = _d_tray_slider_width;
+	tray_slider_height = _d_tray_slider_height;
+	
 
 }
 
@@ -214,6 +249,18 @@ void ConfigSettings::parse_config(char *config_file){
 	
 }
 
+
+//write the config file
+void ConfigSettings::write_config(char *config_file){
+	FILE *cfile = fopen(config_file, "w");	
+	if (!cfile){
+		fprintf(stdout, "Cannot open file: %s\n for writing\n", config_file);
+		return;
+	}
+	
+	fclose(cfile);
+	
+}
 
 //reorder the items in list to match name_list, omitting any that are not in name_list
 void ConfigSettings::reorder_list(ElementList *list){
