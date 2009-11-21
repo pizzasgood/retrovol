@@ -8,9 +8,9 @@
 void load_settings(ConfigSettings *settings);
 
 //save the current settings back to the rc file and apply them
-void save_settings(ConfigSettings *settings);
+void save_settings();
 
 //create a preferences window
-void build_config_window();
+void build_config_window(ConfigSettings *settings);
 
 #endif

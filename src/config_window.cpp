@@ -15,27 +15,42 @@
 #include "config_window.h"
 
 
-static ConfigSettings tmp_settings;
+ConfigSettings tmp_settings;
+ConfigSettings *orig_settings;
 GtkWidget *window;
 
 //load the current settings into a temporary tmp_settings variable
 void load_settings(ConfigSettings *settings){
 	tmp_settings.copy_settings(settings);
+	orig_settings = settings;
 }
 
 //save the current settings back to the rc file and apply them
-void save_settings(ConfigSettings *settings){
+void save_settings(){
 	//tmp_settings.write();
-	//settings.copy_settings(tmp_settings);
+	orig_settings->copy_settings(&tmp_settings);
 	//settings.apply_new();
 }
 
+//close the window without saving anything
 static void cancel_config_window(GtkWidget *widget, gpointer data){
     gtk_widget_destroy(window);
 }
 
+//close the window and save the settings
+static void apply_config_window(GtkWidget *widget, gpointer data){
+    save_settings();
+    gtk_widget_destroy(window);
+}
+
+//update the value pointed to by the data pointer with the value contained by the widget
+static void update_int(GtkWidget *widget, gpointer data){
+    *((int *)data) = (int)gtk_adjustment_get_value(GTK_ADJUSTMENT(widget));
+}
+
 //create a preferences window
-void build_config_window(){
+void build_config_window(ConfigSettings *settings){
+	load_settings(settings);
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
@@ -73,6 +88,7 @@ void build_config_window(){
             GtkObject *adjustment1 = gtk_adjustment_new(tmp_settings.slider_width, 1, 9999, 1, 10, 10);
             GtkWidget *spin1 = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment1), 1, 0);
             gtk_container_add(GTK_CONTAINER(hbox1), spin1);
+            g_signal_connect(adjustment1, "value-changed", G_CALLBACK(update_int), &tmp_settings.slider_width);
 
             GtkWidget *hbox2 = gtk_hbox_new(TRUE, 2);
             gtk_box_pack_start(GTK_BOX(vbox), hbox2, FALSE, TRUE, 0);
@@ -81,6 +97,7 @@ void build_config_window(){
             GtkObject *adjustment2 = gtk_adjustment_new(tmp_settings.slider_height, 1, 9999, 1, 10, 10);
             GtkWidget *spin2 = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment2), 1, 0);
             gtk_container_add(GTK_CONTAINER(hbox2), spin2);
+            g_signal_connect(adjustment2, "value-changed", G_CALLBACK(update_int), &tmp_settings.slider_height);
 
             GtkWidget *hbox3 = gtk_hbox_new(TRUE, 2);
             gtk_box_pack_start(GTK_BOX(vbox), hbox3, FALSE, TRUE, 0);
@@ -89,6 +106,7 @@ void build_config_window(){
             GtkObject *adjustment3 = gtk_adjustment_new(tmp_settings.slider_margin, 1, 9999, 1, 10, 10);
             GtkWidget *spin3 = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment3), 1, 0);
             gtk_container_add(GTK_CONTAINER(hbox3), spin3);
+            g_signal_connect(adjustment3, "value-changed", G_CALLBACK(update_int), &tmp_settings.slider_margin);
 
         }
 
@@ -136,6 +154,7 @@ void build_config_window(){
         gtk_container_add(GTK_CONTAINER(apply_cancel_box), cancel);
         gtk_container_add(GTK_CONTAINER(apply_cancel_box), apply);
         g_signal_connect(cancel, "clicked", G_CALLBACK(cancel_config_window), NULL);
+        g_signal_connect(apply, "clicked", G_CALLBACK(apply_config_window), NULL);
 
 	gtk_widget_show_all(window);
 

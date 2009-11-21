@@ -145,7 +145,7 @@ void word_wrap(char *wrapped, char *orig){
 
 //callback for the configure window
 void configure( GtkWidget *w, gpointer data){
-    build_config_window();
+    build_config_window(&settings);
 }
 
 //callback that closes the main window
