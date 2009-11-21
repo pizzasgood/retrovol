@@ -43,6 +43,17 @@ static void apply_config_window(GtkWidget *widget, gpointer data){
 	gtk_widget_destroy(window);
 }
 
+//return a pointer to a viewport in a scrolled window in a notebook tab
+GtkWidget *tab_init(GtkWidget *notebook, const char *label_text){
+	GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+	gtk_scrolled_window_set_policy((GtkScrolledWindow*)scrolled_window, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+	GtkWidget *tab_label = gtk_label_new(label_text);
+	gtk_notebook_append_page( (GtkNotebook*)notebook, scrolled_window, tab_label );
+	GtkWidget *viewport = gtk_viewport_new(NULL, NULL);
+	gtk_container_add(GTK_CONTAINER(scrolled_window), viewport);
+	return(viewport);
+}
+
 //update the value pointed to by the data pointer with the value contained by the widget
 static void update_int(GtkWidget *widget, gpointer data){
 	*((int *)data) = (int)gtk_adjustment_get_value(GTK_ADJUSTMENT(widget));
@@ -82,18 +93,12 @@ void build_config_window(ConfigSettings *settings){
 	//Slider tab
 	//slider dimensions, colors, etc.
 	{
-		//use a scrolled window in a viewport
-		GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-		gtk_scrolled_window_set_policy((GtkScrolledWindow*)scrolled_window, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-		GtkWidget *tab_label = gtk_label_new("Sliders");
-		gtk_notebook_append_page( (GtkNotebook*)notebook, scrolled_window, tab_label );
-		GtkWidget *viewport = gtk_viewport_new(NULL, NULL);
-		gtk_container_add(GTK_CONTAINER(scrolled_window), viewport);
-
+		//initialize the tab
+		GtkWidget *viewport = tab_init(notebook, "Sliders");
 		GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
 		gtk_container_add(GTK_CONTAINER(viewport), vbox);
 
-		//add the actual widgets
+		//add the widgets
 		add_entry_int(vbox, "Width", &tmp_settings.slider_width);
 		add_entry_int(vbox, "Height", &tmp_settings.slider_height);
 		add_entry_int(vbox, "Margins", &tmp_settings.slider_margin);
@@ -102,16 +107,11 @@ void build_config_window(ConfigSettings *settings){
 	//Hardware tab
 	//default card, sliders to use, order, etc.
 	{
-		//use a scrolled window in a viewport
-		GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-		gtk_scrolled_window_set_policy((GtkScrolledWindow*)scrolled_window, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-		GtkWidget *tab_label = gtk_label_new("Hardware");
-		gtk_notebook_append_page( (GtkNotebook*)notebook, scrolled_window, tab_label );
-		GtkWidget *viewport = gtk_viewport_new(NULL, NULL);
-		gtk_container_add(GTK_CONTAINER(scrolled_window), viewport);
-
+		//initialize the tab
+		GtkWidget *viewport = tab_init(notebook, "Hardware");
 		GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
 		gtk_container_add(GTK_CONTAINER(viewport), vbox);
+
 		GtkWidget *label = gtk_label_new("Hardware stuff");
 		gtk_container_add(GTK_CONTAINER(vbox), label);
 	}
@@ -119,16 +119,11 @@ void build_config_window(ConfigSettings *settings){
 	//Main window tab
 	//Main window dimensions, slider spacing, orientation, etc.
 	{
-		//use a scrolled window in a viewport
-		GtkWidget *scrolled_window = gtk_scrolled_window_new(NULL, NULL);
-		gtk_scrolled_window_set_policy((GtkScrolledWindow*)scrolled_window, GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
-		GtkWidget *tab_label = gtk_label_new("Window");
-		gtk_notebook_append_page( (GtkNotebook*)notebook, scrolled_window, tab_label );
-		GtkWidget *viewport = gtk_viewport_new(NULL, NULL);
-		gtk_container_add(GTK_CONTAINER(scrolled_window), viewport);
-		
+		//initialize the tab
+		GtkWidget *viewport = tab_init(notebook, "Window");
 		GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
 		gtk_container_add(GTK_CONTAINER(viewport), vbox);
+
 		GtkWidget *label = gtk_label_new("Window stuff");
 		gtk_container_add(GTK_CONTAINER(vbox), label);
 	}
