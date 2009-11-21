@@ -48,6 +48,18 @@ static void update_int(GtkWidget *widget, gpointer data){
 	*((int *)data) = (int)gtk_adjustment_get_value(GTK_ADJUSTMENT(widget));
 }
 
+//create an entry to edit an int value w/ spinbutton
+void add_entry_int(GtkWidget *vbox, const char *label_text, int *item){
+	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+	GtkWidget *label = gtk_label_new(label_text);
+	gtk_container_add(GTK_CONTAINER(hbox), label);
+	GtkObject *adjustment = gtk_adjustment_new(*item, 1, 9999, 1, 10, 10);
+	GtkWidget *spin = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), 1, 0);
+	gtk_container_add(GTK_CONTAINER(hbox), spin);
+	g_signal_connect(adjustment, "value-changed", G_CALLBACK(update_int), item);
+}
+
 //create a preferences window
 void build_config_window(ConfigSettings *settings){
 	load_settings(settings);
@@ -81,33 +93,10 @@ void build_config_window(ConfigSettings *settings){
 		GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
 		gtk_container_add(GTK_CONTAINER(viewport), vbox);
 
-		GtkWidget *hbox1 = gtk_hbox_new(TRUE, 2);
-		gtk_box_pack_start(GTK_BOX(vbox), hbox1, FALSE, TRUE, 0);
-		GtkWidget *label1 = gtk_label_new("Width");
-		gtk_container_add(GTK_CONTAINER(hbox1), label1);
-		GtkObject *adjustment1 = gtk_adjustment_new(tmp_settings.slider_width, 1, 9999, 1, 10, 10);
-		GtkWidget *spin1 = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment1), 1, 0);
-		gtk_container_add(GTK_CONTAINER(hbox1), spin1);
-		g_signal_connect(adjustment1, "value-changed", G_CALLBACK(update_int), &tmp_settings.slider_width);
-
-		GtkWidget *hbox2 = gtk_hbox_new(TRUE, 2);
-		gtk_box_pack_start(GTK_BOX(vbox), hbox2, FALSE, TRUE, 0);
-		GtkWidget *label2 = gtk_label_new("Height");
-		gtk_container_add(GTK_CONTAINER(hbox2), label2);
-		GtkObject *adjustment2 = gtk_adjustment_new(tmp_settings.slider_height, 1, 9999, 1, 10, 10);
-		GtkWidget *spin2 = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment2), 1, 0);
-		gtk_container_add(GTK_CONTAINER(hbox2), spin2);
-		g_signal_connect(adjustment2, "value-changed", G_CALLBACK(update_int), &tmp_settings.slider_height);
-
-		GtkWidget *hbox3 = gtk_hbox_new(TRUE, 2);
-		gtk_box_pack_start(GTK_BOX(vbox), hbox3, FALSE, TRUE, 0);
-		GtkWidget *label3 = gtk_label_new("Margins");
-		gtk_container_add(GTK_CONTAINER(hbox3), label3);
-		GtkObject *adjustment3 = gtk_adjustment_new(tmp_settings.slider_margin, 1, 9999, 1, 10, 10);
-		GtkWidget *spin3 = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment3), 1, 0);
-		gtk_container_add(GTK_CONTAINER(hbox3), spin3);
-		g_signal_connect(adjustment3, "value-changed", G_CALLBACK(update_int), &tmp_settings.slider_margin);
-
+		//add the actual widgets
+		add_entry_int(vbox, "Width", &tmp_settings.slider_width);
+		add_entry_int(vbox, "Height", &tmp_settings.slider_height);
+		add_entry_int(vbox, "Margins", &tmp_settings.slider_margin);
 	}
 
 	//Hardware tab
