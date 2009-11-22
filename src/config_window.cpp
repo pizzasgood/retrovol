@@ -27,9 +27,9 @@ void load_settings(ConfigSettings *settings){
 
 //save the current settings back to the rc file and apply them
 void save_settings(){
-	//tmp_settings.write();
 	orig_settings->copy_settings(&tmp_settings);
-	//settings.apply_new();
+	orig_settings->write_config();
+	//orig_settings->apply_new();
 }
 
 //close the window without saving anything

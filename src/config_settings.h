@@ -20,6 +20,8 @@ class ConfigSettings {
 		GtkWidget *tray_icon_image;
 		retro_slider *tray_slider;
 		Element *tray_control;
+
+		char _config_file[80]; //NEED TO MAKE THIS DYNAMIC
 		
 		//the rest is the actual settings stuff
 		
@@ -65,7 +67,7 @@ class ConfigSettings {
 		void parse_config(char *config_file);
 
 		//write the config file
-		void write_config(char *config_file);
+		void write_config();
 
 		//reorder the list to match the config file
 		void reorder_list(ElementList *list);
@@ -82,6 +84,12 @@ class ConfigSettings {
 
 		//take a hex string like #AAFF88 and put it into a three item float array, normalized so 255=1.0, 0=0.0
 		void htonf(float *array, char *string);
+
+		//take a 3 item integer array and convert it into a hex string like #AAFF88
+		void itoh(int *array, char *string);
+
+		//take a 3 item normalized float array and convert it into a hex string like #AAFF88
+		void nftoh(float *array, char *string);
 		
 	private:
 		

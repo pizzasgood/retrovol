@@ -155,9 +155,12 @@ void ConfigSettings::copy_settings(ConfigSettings *ptr){
 
 //parse the config file
 void ConfigSettings::parse_config(char *config_file){
-	FILE *cfile = fopen(config_file, "r");	
+	//store the filename
+	strcpy(_config_file, config_file);
+	
+	FILE *cfile = fopen(_config_file, "r");	
 	if (!cfile){
-		fprintf(stdout, "Cannot read file: %s\nUsing defaults...\n", config_file);
+		fprintf(stdout, "Cannot read file: %s\nUsing defaults...\n", _config_file);
 		return;
 	}
 	
@@ -251,13 +254,92 @@ void ConfigSettings::parse_config(char *config_file){
 
 
 //write the config file
-void ConfigSettings::write_config(char *config_file){
-	FILE *cfile = fopen(config_file, "w");	
+void ConfigSettings::write_config(){
+	char tmpstr1[8];
+	char tmpstr2[8];
+	FILE *cfile = fopen(_config_file, "w");	
 	if (!cfile){
-		fprintf(stdout, "Cannot open file: %s\n for writing\n", config_file);
+		fprintf(stdout, "Cannot open file: %s\n for writing\n", _config_file);
 		return;
 	}
 	
+	fputs("# Config file for retrovol\n", cfile);
+	fputs("# This file should reside in the user's home directory and be named .retrovolrc\n", cfile);
+
+	fputs("\n", cfile);
+	fputs("\n# Which soundcard to use\n", cfile);
+	fprintf(cfile, "#card=%s\n", _d_card);
+	if (strcmp(card, _d_card) != 0){ fprintf(cfile, "card=%s\n", card); }
+
+	fputs("\n# Set this to 1 to make the sliders vertical, or 0 for horizontal (only applies to the main window)\n", cfile);
+	fprintf(cfile, "#vertical=%d\n", _d_vertical);
+	if (vertical != _d_vertical){ fprintf(cfile, "vertical=%d\n", vertical); }
+
+	fputs("\n# Window dimensions\n", cfile);
+	fprintf(cfile, "#window_width=%d\n", _d_window_width);
+	if (window_width != _d_window_width){ fprintf(cfile, "window_width=%d\n", window_width); }
+	fprintf(cfile, "#window_height=%d\n", _d_window_height);
+	if (window_height != _d_window_height){ fprintf(cfile, "window_height=%d\n", window_height); }
+
+	fputs("\n# Slider dimensions\n", cfile);
+	fprintf(cfile, "#slider_width=%d\n", _d_slider_width);
+	if (slider_width != _d_slider_width){ fprintf(cfile, "slider_width=%d\n", slider_width); }
+	fprintf(cfile, "#slider_height=%d\n", _d_slider_height);
+	if (slider_height != _d_slider_height){ fprintf(cfile, "slider_height=%d\n", slider_height); }
+	fprintf(cfile, "#slider_margin=%d\n", _d_slider_margin);
+	if (slider_margin != _d_slider_margin){ fprintf(cfile, "slider_margin=%d\n", slider_margin); }
+	fprintf(cfile, "#seg_thickness=%d\n", _d_seg_thickness);
+	if (seg_thickness != _d_seg_thickness){ fprintf(cfile, "seg_thickness=%d\n", seg_thickness); }
+	fprintf(cfile, "#seg_spacing=%d\n", _d_seg_spacing);
+	if (seg_spacing != _d_seg_spacing){ fprintf(cfile, "seg_spacing=%d\n", seg_spacing); }
+
+	fputs("\n# Slider colorscheme\n", cfile);
+	nftoh(_d_background_color, tmpstr1);
+	nftoh(background_color, tmpstr2);
+	fprintf(cfile, "#background_color=%s\n", tmpstr1);
+	if (strcmp(tmpstr1, tmpstr2) != 0){ fprintf(cfile, "background_color=%s\n", tmpstr2); }
+	nftoh(_d_border_color, tmpstr1);
+	nftoh(border_color, tmpstr2);
+	fprintf(cfile, "#border_color=%s\n", tmpstr1);
+	if (strcmp(tmpstr1, tmpstr2) != 0){ fprintf(cfile, "border_color=%s\n", tmpstr2); }
+	nftoh(_d_unlit_color, tmpstr1);
+	nftoh(unlit_color, tmpstr2);
+	fprintf(cfile, "#unlit_color=%s\n", tmpstr1);
+	if (strcmp(tmpstr1, tmpstr2) != 0){ fprintf(cfile, "unlit_color=%s\n", tmpstr2); }
+	nftoh(_d_lit_color, tmpstr1);
+	nftoh(lit_color, tmpstr2);
+	fprintf(cfile, "#lit_color=%s\n", tmpstr1);
+	if (strcmp(tmpstr1, tmpstr2) != 0){ fprintf(cfile, "lit_color=%s\n", tmpstr2); }
+
+	fputs("\n# Enable the tray_icon\n", cfile);
+	fprintf(cfile, "#enable_tray_icon=%d\n", _d_enable_tray_icon);
+	if (enable_tray_icon != _d_enable_tray_icon){ fprintf(cfile, "enable_tray_icon=%d\n", enable_tray_icon); }
+
+	fputs("\n# Set this to 1 to make the slider on the tray_icon vertical, or 0 for horizontal\n", cfile);
+	fprintf(cfile, "#tray_slider_vertical=%d\n", _d_tray_slider_vertical);
+	if (tray_slider_vertical != _d_tray_slider_vertical){ fprintf(cfile, "tray_slider_vertical=%d\n", tray_slider_vertical); }
+
+	fputs("\n# Tray slider dimensions", cfile);
+	fprintf(cfile, "#tray_slider_width=%d\n", _d_tray_slider_width);
+	if (tray_slider_width != _d_tray_slider_width){ fprintf(cfile, "tray_slider_width=%d\n", tray_slider_width); }
+	fprintf(cfile, "#tray_slider_height=%d\n", _d_tray_slider_height);
+	if (tray_slider_height != _d_tray_slider_height){ fprintf(cfile, "tray_slider_height=%d\n", tray_slider_height); }
+	
+	fputs("\n# Which slider to link with the tray_icon\n", cfile);
+	fprintf(cfile, "#tray_control=%s\n", "Master Playback Volume");
+	if (strcmp(tray_control_name, "Master Playback Volume") != 0){ fprintf(cfile, "tray_control=%s\n", tray_control_name); }
+
+	fputs("\n\n", cfile);
+	fputs("\n# Which sliders to display, in order.  They MUST have a tab first and be quoted\n# with double-quotes.  To get a list of the slider names, run this command:\n#    amixer controls\n# NOTE:  This section must go at the end of the file!\n", cfile);
+
+	fputs("\n#sliders:\n", cfile);
+	fputs("#\t\"Master Playback Volume\"\n", cfile);
+	fputs("#\t\"Front Playback Volume\"\n", cfile);
+	fputs("#\t\"Surround Playback Volume\"\n", cfile);
+	for (int n=0; n<num_names; n++){
+		fprintf(cfile, "\t\"%s\"\n", name_list[n]);
+	}
+
 	fclose(cfile);
 	
 }
@@ -356,4 +438,40 @@ void ConfigSettings::htonf(float *array, char *string){
 		array[i]=((float)intarray[i])/255;
 	}
 }
+
+//take a 3 item integer array and convert it into a hex string like #AAFF88
+void ConfigSettings::itoh(int *array, char *string){
+	string[0] = '#';
+	for (int i=0; i<3; i++){
+		int tmp = array[i]/16;
+		if (tmp >= 10 && tmp <= 15){
+			string[1+2*i] = 'A' + tmp - 10;
+		} else if (tmp >= 0 && tmp <= 9){
+			string[1+2*i] = '0' + tmp;
+		} else {
+			string[1+2*i] = '0';
+		}
+		tmp = array[i]%16;
+		if (tmp >= 10 && tmp <= 15){
+			string[2+2*i] = 'A' + tmp - 10;
+		} else if (tmp >= 0 && tmp <= 9){
+			string[2+2*i] = '0' + tmp;
+		} else {
+			string[2+2*i] = '0';
+		}
+	}
+	string[7] = '\0';
+}
+
+//take a 3 item normalized float array and convert it into a hex string like #AAFF88
+void ConfigSettings::nftoh(float *array, char *string){
+	int intarray[3];
+	for (int i=0; i<3; i++){
+		intarray[i]=((int)array[i])*255;
+	}
+	itoh(intarray, string);
+}
+
+
+
 
