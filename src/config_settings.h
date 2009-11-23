@@ -17,9 +17,12 @@ class ConfigSettings {
 		//some "global" variables - I put them in here to not have so much global stuff scattered around
 		GtkWidget *main_window;
 		GtkWidget *config_window;
+		GtkWidget *slider_window;
+		GtkWidget *tray_icon;
 		GtkWidget *tray_icon_image;
 		retro_slider *tray_slider;
 		Element *tray_control;
+		bool restart;
 
 		char _config_file[80]; //NEED TO MAKE THIS DYNAMIC
 		

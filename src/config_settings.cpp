@@ -59,6 +59,7 @@ ConfigSettings::ConfigSettings(){
 
 
 void ConfigSettings::apply_defaults(){
+	restart = false;
 	strcpy(card, _d_card);
 	vertical = _d_vertical;
 	window_width = _d_window_width;
@@ -155,6 +156,8 @@ void ConfigSettings::copy_settings(ConfigSettings *ptr){
 
 //parse the config file
 void ConfigSettings::parse_config(char *config_file){
+	//first set the defaults
+	apply_defaults();
 	//store the filename
 	strcpy(_config_file, config_file);
 	

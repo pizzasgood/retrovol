@@ -178,14 +178,13 @@ GtkWidget *get_menubar_menu( GtkWidget  *window, GtkItemFactoryEntry *menu_items
 }
 
 
-int main(int argc, char** argv) {
-	//initialize locale jazz
-	setlocale(LC_ALL, "");
-	bindtextdomain(PACKAGE, LOCALEDIR);
-	textdomain(PACKAGE);
+bool loop(int argc, char** argv) {
+
+	char home[80]; //NEED TO MAKE THIS DYNAMIC
+	strcpy(home, getenv("HOME"));
 
 	//parse the config file
-	settings.parse_config(strcat(getenv("HOME"), config_file));
+	settings.parse_config(strcat(home, config_file));
 	//load the controls into list
 	ElementList list(settings.card);
 	list_ptr = &list;
@@ -205,34 +204,32 @@ int main(int argc, char** argv) {
 		settings.tray_slider->init(tray_frame, (void*)settings.tray_control, &Element::get_callback, &Element::set_callback);
 
 		//set up the small window that holds the tray_slider
-		GtkWidget *slider_window;
-		slider_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-		gtk_window_set_resizable(GTK_WINDOW(slider_window), false);
-		gtk_window_set_decorated(GTK_WINDOW(slider_window), false);
-		gtk_window_set_skip_taskbar_hint(GTK_WINDOW(slider_window), true);
-		gtk_window_set_skip_pager_hint(GTK_WINDOW(slider_window), true);
-		gtk_widget_set_usize(slider_window, settings.tray_slider->width, settings.tray_slider->height);
+		settings.slider_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+		gtk_window_set_resizable(GTK_WINDOW(settings.slider_window), false);
+		gtk_window_set_decorated(GTK_WINDOW(settings.slider_window), false);
+		gtk_window_set_skip_taskbar_hint(GTK_WINDOW(settings.slider_window), true);
+		gtk_window_set_skip_pager_hint(GTK_WINDOW(settings.slider_window), true);
+		gtk_widget_set_usize(settings.slider_window, settings.tray_slider->width, settings.tray_slider->height);
 		//don't want accidental closure of the slider window to destroy the window
-		g_signal_connect(slider_window, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
+		g_signal_connect(settings.slider_window, "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
 		//want the widow to go away when it loses focus
-		g_signal_connect(slider_window, "focus-out-event", G_CALLBACK (gtk_widget_hide), NULL);
-		gtk_container_add( GTK_CONTAINER(slider_window), tray_frame );
+		g_signal_connect(settings.slider_window, "focus-out-event", G_CALLBACK (gtk_widget_hide), NULL);
+		gtk_container_add( GTK_CONTAINER(settings.slider_window), tray_frame );
 		//we want it hidden by default, but it must be shown at least once or else scrolling over the icon will cause a hang
-		gtk_widget_show_all(slider_window);
-		gtk_widget_hide_all(slider_window);
+		gtk_widget_show_all(settings.slider_window);
+		gtk_widget_hide_all(settings.slider_window);
 		
 			
 		//set up tray icon
-		GtkWidget *tray_icon;
-		tray_icon = GTK_WIDGET(egg_tray_icon_new("Retrovol Tray Icon"));
+		settings.tray_icon = GTK_WIDGET(egg_tray_icon_new("Retrovol Tray Icon"));
 		settings.tray_icon_image = gtk_image_new();
-		gtk_container_add( GTK_CONTAINER(tray_icon), settings.tray_icon_image );
+		gtk_container_add( GTK_CONTAINER(settings.tray_icon), settings.tray_icon_image );
 		gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), VOL_MEDIUM_IMAGE);
-		g_signal_connect(G_OBJECT(tray_icon), "button_press_event", G_CALLBACK (&tray_button_press_event_callback), slider_window);
-		g_signal_connect(G_OBJECT(tray_icon), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), settings.tray_slider);
-		gtk_widget_set_events (tray_icon, GDK_BUTTON_PRESS_MASK | GDK_SCROLL_MASK);
+		g_signal_connect(G_OBJECT(settings.tray_icon), "button_press_event", G_CALLBACK (&tray_button_press_event_callback), settings.slider_window);
+		g_signal_connect(G_OBJECT(settings.tray_icon), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), settings.tray_slider);
+		gtk_widget_set_events (settings.tray_icon, GDK_BUTTON_PRESS_MASK | GDK_SCROLL_MASK);
 		
-		gtk_widget_show_all(tray_icon);
+		gtk_widget_show_all(settings.tray_icon);
 	}
 	
 
@@ -408,7 +405,18 @@ int main(int argc, char** argv) {
 	//finished with gtk setup
 	gtk_main();
 	
-	return(0);
+	return(settings.restart);
 }
 
+
+int main(int argc, char** argv) {
+	//initialize locale jazz
+	setlocale(LC_ALL, "");
+	bindtextdomain(PACKAGE, LOCALEDIR);
+	textdomain(PACKAGE);
+
+	while (loop(argc, argv));
+
+	return(0);
+}
 

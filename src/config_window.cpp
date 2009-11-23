@@ -29,7 +29,6 @@ void load_settings(ConfigSettings *settings){
 void save_settings(){
 	orig_settings->copy_settings(&tmp_settings);
 	orig_settings->write_config();
-	//orig_settings->apply_new();
 }
 
 //close the window without saving anything
@@ -40,7 +39,16 @@ static void cancel_config_window(GtkWidget *widget, gpointer data){
 //close the window and save the settings
 static void apply_config_window(GtkWidget *widget, gpointer data){
 	save_settings();
+	//set the restart flag and close all the windows
+	orig_settings->restart = true;
 	gtk_widget_destroy(window);
+	if (orig_settings->enable_tray_icon){
+		gtk_widget_destroy(orig_settings->slider_window);
+		gtk_widget_destroy(orig_settings->tray_icon);
+	}
+	gtk_widget_destroy(orig_settings->main_window);
+	//and quit gtk
+	gtk_main_quit();
 }
 
 //return a pointer to a viewport in a scrolled window in a notebook tab
@@ -65,7 +73,7 @@ void add_entry_int(GtkWidget *vbox, const char *label_text, int *item){
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 	GtkWidget *label = gtk_label_new(label_text);
 	gtk_container_add(GTK_CONTAINER(hbox), label);
-	GtkObject *adjustment = gtk_adjustment_new(*item, 1, 9999, 1, 10, 10);
+	GtkObject *adjustment = gtk_adjustment_new(*item, 0, 9999, 1, 10, 10);
 	GtkWidget *spin = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), 1, 0);
 	gtk_container_add(GTK_CONTAINER(hbox), spin);
 	g_signal_connect(adjustment, "value-changed", G_CALLBACK(update_int), item);
@@ -102,6 +110,8 @@ void build_config_window(ConfigSettings *settings){
 		add_entry_int(vbox, "Width", &tmp_settings.slider_width);
 		add_entry_int(vbox, "Height", &tmp_settings.slider_height);
 		add_entry_int(vbox, "Margins", &tmp_settings.slider_margin);
+		add_entry_int(vbox, "Segment Thickness", &tmp_settings.seg_thickness);
+		add_entry_int(vbox, "Segment Spacing", &tmp_settings.seg_spacing);
 	}
 
 	//Hardware tab
