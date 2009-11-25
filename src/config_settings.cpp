@@ -148,6 +148,7 @@ void ConfigSettings::copy_settings(ConfigSettings *ptr){
 		lit_color[i] = ptr->lit_color[i];
 	}
 	enable_tray_icon = ptr->enable_tray_icon;
+	tray_slider_vertical = ptr->tray_slider_vertical;
 	tray_slider_width = ptr->tray_slider_width;
 	tray_slider_height = ptr->tray_slider_height;
 	strcpy(tray_control_name, ptr->tray_control_name);
@@ -322,7 +323,7 @@ void ConfigSettings::write_config(){
 	fprintf(cfile, "#tray_slider_vertical=%d\n", _d_tray_slider_vertical);
 	if (tray_slider_vertical != _d_tray_slider_vertical){ fprintf(cfile, "tray_slider_vertical=%d\n", tray_slider_vertical); }
 
-	fputs("\n# Tray slider dimensions", cfile);
+	fputs("\n# Tray slider dimensions\n", cfile);
 	fprintf(cfile, "#tray_slider_width=%d\n", _d_tray_slider_width);
 	if (tray_slider_width != _d_tray_slider_width){ fprintf(cfile, "tray_slider_width=%d\n", tray_slider_width); }
 	fprintf(cfile, "#tray_slider_height=%d\n", _d_tray_slider_height);
@@ -330,7 +331,7 @@ void ConfigSettings::write_config(){
 	
 	fputs("\n# Which slider to link with the tray_icon\n", cfile);
 	fprintf(cfile, "#tray_control=%s\n", "Master Playback Volume");
-	if (strcmp(tray_control_name, "Master Playback Volume") != 0){ fprintf(cfile, "tray_control=%s\n", tray_control_name); }
+	if (strlen(tray_control_name) > 0 && strcmp(tray_control_name, "Master Playback Volume") != 0){ fprintf(cfile, "tray_control=%s\n", tray_control_name); }
 
 	fputs("\n\n", cfile);
 	fputs("\n# Which sliders to display, in order.  They MUST have a tab first and be quoted\n# with double-quotes.  To get a list of the slider names, run this command:\n#    amixer controls\n# NOTE:  This section must go at the end of the file!\n", cfile);
@@ -470,9 +471,23 @@ void ConfigSettings::itoh(int *array, char *string){
 void ConfigSettings::nftoh(float *array, char *string){
 	int intarray[3];
 	for (int i=0; i<3; i++){
-		intarray[i]=((int)array[i])*255;
+		intarray[i]=(int)(array[i]*255);
 	}
 	itoh(intarray, string);
+}
+
+//take a 3 item normalized float array and convert it into a GdkColor
+void ConfigSettings::nftog(float *array, GdkColor *color){
+	color->red=(guint16)(array[0]*65535);
+	color->green=(guint16)(array[1]*65535);
+	color->blue=(guint16)(array[2]*65535);
+}
+
+//take a GdkColor and convert it into a 3 item normalized float array
+void ConfigSettings::gtonf(float *array, GdkColor *color){
+	array[0]=((float)color->red)/65535;
+	array[1]=((float)color->green)/65535;
+	array[2]=((float)color->blue)/65535;
 }
 
 

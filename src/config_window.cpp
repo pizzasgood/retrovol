@@ -18,6 +18,25 @@
 ConfigSettings tmp_settings;
 ConfigSettings *orig_settings;
 GtkWidget *window;
+SwapStruc slider_swap_struc;
+SwapStruc tray_slider_swap_struc;
+
+void SwapStruc::swap(){
+	int tmp = *iA;
+	*iA = *iB;
+	*iB = tmp;
+	gtk_adjustment_set_value(adj_A, *iA);
+	gtk_adjustment_set_value(adj_B, *iB);
+}
+void SwapStruc::toggle(){
+	*control = !*control;
+	swap();
+}
+void SwapStruc::set(GtkToggleButton *button){
+	if ((bool)gtk_toggle_button_get_active(button) != *control){
+		toggle();
+	}
+}
 
 //load the current settings into a temporary tmp_settings variable
 void load_settings(ConfigSettings *settings){
@@ -38,11 +57,12 @@ static void cancel_config_window(GtkWidget *widget, gpointer data){
 
 //close the window and save the settings
 static void apply_config_window(GtkWidget *widget, gpointer data){
+	bool enable_tray_icon = orig_settings->enable_tray_icon;
 	save_settings();
 	//set the restart flag and close all the windows
 	orig_settings->restart = true;
 	gtk_widget_destroy(window);
-	if (orig_settings->enable_tray_icon){
+	if (enable_tray_icon){
 		gtk_widget_destroy(orig_settings->slider_window);
 		gtk_widget_destroy(orig_settings->tray_icon);
 	}
@@ -68,7 +88,7 @@ static void update_int(GtkWidget *widget, gpointer data){
 }
 
 //create an entry to edit an int value w/ spinbutton
-void add_entry_int(GtkWidget *vbox, const char *label_text, int *item){
+GtkAdjustment *add_entry_int(GtkWidget *vbox, const char *label_text, int *item){
 	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 	GtkWidget *label = gtk_label_new(label_text);
@@ -77,6 +97,81 @@ void add_entry_int(GtkWidget *vbox, const char *label_text, int *item){
 	GtkWidget *spin = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), 1, 0);
 	gtk_container_add(GTK_CONTAINER(hbox), spin);
 	g_signal_connect(adjustment, "value-changed", G_CALLBACK(update_int), item);
+	return(GTK_ADJUSTMENT(adjustment));
+}
+
+//update the value pointed to by the data pointer with the value contained by the widget
+static void update_bool(GtkWidget *widget, gpointer data){
+	*((bool *)data) = (bool)gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+}
+
+//update the bool and swap the ints pointed to by the data pointer with the value contained by the widget
+static void update_bool_s(GtkWidget *widget, gpointer data){
+	((SwapStruc*)data)->set(GTK_TOGGLE_BUTTON(widget));
+}
+
+//create an entry to edit a bool value w/ checkbox
+void add_entry_bool_c(GtkWidget *vbox, const char *label_text, bool *item, SwapStruc *swap_struc){
+	if (swap_struc != NULL){
+		item = swap_struc->control;
+	}
+	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+	GtkWidget *label = gtk_label_new(label_text);
+	gtk_container_add(GTK_CONTAINER(hbox), label);
+	GtkWidget *check_button = gtk_check_button_new();
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(check_button), *item);
+	gtk_container_add(GTK_CONTAINER(hbox), check_button);
+	if (swap_struc == NULL){
+		g_signal_connect(check_button, "toggled", G_CALLBACK(update_bool), item);
+	} else {
+		g_signal_connect(check_button, "toggled", G_CALLBACK(update_bool_s), swap_struc);
+	}
+}
+
+//create an entry to edit a bool value w/ radiobutton
+void add_entry_bool_r(GtkWidget *vbox, const char *label_text, const char *true_label, const char *false_label, bool *item, SwapStruc *swap_struc){
+	if (swap_struc != NULL){
+		item = swap_struc->control;
+	}
+	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+	GtkWidget *label = gtk_label_new(label_text);
+	gtk_container_add(GTK_CONTAINER(hbox), label);
+	GtkWidget *radio_vbox = gtk_vbox_new(TRUE, 2);
+	gtk_container_add(GTK_CONTAINER(hbox), radio_vbox);
+	GtkWidget *true_button = gtk_radio_button_new_with_label(NULL, true_label);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(true_button), *item);
+	gtk_container_add(GTK_CONTAINER(radio_vbox), true_button);
+	GtkWidget *false_button = gtk_radio_button_new_with_label_from_widget(GTK_RADIO_BUTTON(true_button), false_label);
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(false_button), !*item);
+	gtk_container_add(GTK_CONTAINER(radio_vbox), false_button);
+	if (swap_struc == NULL){
+		g_signal_connect(true_button, "toggled", G_CALLBACK(update_bool), item);
+	} else {
+		g_signal_connect(true_button, "toggled", G_CALLBACK(update_bool_s), swap_struc);
+	}
+}
+
+//update the value pointed to by the data pointer with the value contained by the widget
+static void update_color(GtkWidget *widget, gpointer data){
+	GdkColor color;
+	gtk_color_button_get_color(GTK_COLOR_BUTTON(widget), &color);
+	ConfigSettings::gtonf((float *)data, &color);
+}
+
+//create an entry to edit a color value
+void add_entry_color(GtkWidget *vbox, const char *label_text, float *item){
+	GdkColor color;
+	ConfigSettings::nftog(item, &color);
+	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+	GtkWidget *label = gtk_label_new(label_text);
+	gtk_container_add(GTK_CONTAINER(hbox), label);
+	GtkWidget *color_button = gtk_color_button_new_with_color(&color);
+	gtk_color_button_set_use_alpha(GTK_COLOR_BUTTON(color_button), FALSE);
+	gtk_container_add(GTK_CONTAINER(hbox), color_button);
+	g_signal_connect(color_button, "color-set", G_CALLBACK(update_color), item);
 }
 
 //create a preferences window
@@ -85,7 +180,7 @@ void build_config_window(ConfigSettings *settings){
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size(GTK_WINDOW(window), 500, 500);
+	gtk_window_set_default_size(GTK_WINDOW(window), 300, 500);
 	gtk_window_set_title(GTK_WINDOW(window), "Retrovol - Configuration");
 
 	//create the overall vbox
@@ -98,20 +193,37 @@ void build_config_window(ConfigSettings *settings){
 	gtk_notebook_set_tab_pos((GtkNotebook*)notebook, GTK_POS_TOP);
 	gtk_container_add(GTK_CONTAINER(over_box), notebook);
 
-	//Slider tab
-	//slider dimensions, colors, etc.
+	//Main tab
+	//dimensions, colors, etc.
 	{
 		//initialize the tab
-		GtkWidget *viewport = tab_init(notebook, "Sliders");
+		GtkWidget *viewport = tab_init(notebook, "Main");
 		GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
 		gtk_container_add(GTK_CONTAINER(viewport), vbox);
 
 		//add the widgets
-		add_entry_int(vbox, "Width", &tmp_settings.slider_width);
-		add_entry_int(vbox, "Height", &tmp_settings.slider_height);
-		add_entry_int(vbox, "Margins", &tmp_settings.slider_margin);
+		add_entry_int(vbox, "Window Width", &tmp_settings.window_width);
+		add_entry_int(vbox, "Window Height", &tmp_settings.window_height);
+		slider_swap_struc.iA = &(tmp_settings.slider_width);
+		slider_swap_struc.iB = &(tmp_settings.slider_height);
+		slider_swap_struc.control = &tmp_settings.vertical;
+		add_entry_bool_r(vbox, "Slider Orientation", "Vertical", "Horizontal", NULL, &slider_swap_struc);
+		slider_swap_struc.adj_A = add_entry_int(vbox, "Slider Width", slider_swap_struc.iA);
+		slider_swap_struc.adj_B = add_entry_int(vbox, "Slider Height", slider_swap_struc.iB);
+		add_entry_int(vbox, "Slider Margins", &tmp_settings.slider_margin);
 		add_entry_int(vbox, "Segment Thickness", &tmp_settings.seg_thickness);
 		add_entry_int(vbox, "Segment Spacing", &tmp_settings.seg_spacing);
+		add_entry_color(vbox, "Background Color", tmp_settings.background_color);
+		add_entry_color(vbox, "Border Color", tmp_settings.border_color);
+		add_entry_color(vbox, "Unlit Color", tmp_settings.unlit_color);
+		add_entry_color(vbox, "Lit Color", tmp_settings.lit_color);
+		add_entry_bool_c(vbox, "Enable Tray Icon", &tmp_settings.enable_tray_icon);
+		tray_slider_swap_struc.iA = &(tmp_settings.tray_slider_width);
+		tray_slider_swap_struc.iB = &(tmp_settings.tray_slider_height);
+		tray_slider_swap_struc.control = &tmp_settings.tray_slider_vertical;
+		add_entry_bool_r(vbox, "Tray Slider Orientation", "Vertical", "Horizontal", NULL, &tray_slider_swap_struc);
+		tray_slider_swap_struc.adj_A = add_entry_int(vbox, "Tray Slider Width", tray_slider_swap_struc.iA);
+		tray_slider_swap_struc.adj_B = add_entry_int(vbox, "Tray Slider Height", tray_slider_swap_struc.iB);
 	}
 
 	//Hardware tab
@@ -122,19 +234,8 @@ void build_config_window(ConfigSettings *settings){
 		GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
 		gtk_container_add(GTK_CONTAINER(viewport), vbox);
 
+		//add the widgets
 		GtkWidget *label = gtk_label_new("Hardware stuff");
-		gtk_container_add(GTK_CONTAINER(vbox), label);
-	}
-
-	//Main window tab
-	//Main window dimensions, slider spacing, orientation, etc.
-	{
-		//initialize the tab
-		GtkWidget *viewport = tab_init(notebook, "Window");
-		GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
-		gtk_container_add(GTK_CONTAINER(viewport), vbox);
-
-		GtkWidget *label = gtk_label_new("Window stuff");
 		gtk_container_add(GTK_CONTAINER(vbox), label);
 	}
 

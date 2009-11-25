@@ -84,16 +84,19 @@ class ConfigSettings {
 
 		//take a hex string like #AAFF88 and put it into a three item integer array
 		void htoi(int *array, char *string);
-
 		//take a hex string like #AAFF88 and put it into a three item float array, normalized so 255=1.0, 0=0.0
 		void htonf(float *array, char *string);
 
 		//take a 3 item integer array and convert it into a hex string like #AAFF88
 		void itoh(int *array, char *string);
-
 		//take a 3 item normalized float array and convert it into a hex string like #AAFF88
 		void nftoh(float *array, char *string);
 		
+		//take a 3 item normalized float array and convert it into a GdkColor
+		static void nftog(float *array, GdkColor *color);
+		//take a GdkColor and convert it into a 3 item normalized float array
+		static void gtonf(float *array, GdkColor *color);
+
 	private:
 		
 };

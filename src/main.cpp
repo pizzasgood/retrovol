@@ -150,7 +150,11 @@ void configure( GtkWidget *w, gpointer data){
 
 //callback that closes the main window
 void close_window( GtkWidget *w, gpointer data){
-	gtk_widget_hide(settings.main_window);
+	if (settings.enable_tray_icon){
+		gtk_widget_hide(settings.main_window);
+	} else {
+		gtk_widget_destroy(settings.main_window);
+	}
 }
 
 //Returns a menubar widget made from the passed menu_items
