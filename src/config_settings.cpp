@@ -357,15 +357,17 @@ void ConfigSettings::reorder_list(ElementList *list){
 		int *order = new int[list->num_items];
 
 		//find the indexes
+		int k = 0;
 		for (int n=0; n<num_names; n++){
 			for (int i=0; i<list->num_items; i++){
 				if (strcmp(name_list[n], list->items[i]->name) == 0){
-					order[n]=i;
+					order[k++]=i;
 					break;
 				}
 			}
 		}
 
+		num_names = k;
 		list->reorder_items(order, num_names);
 		delete order;
 		
