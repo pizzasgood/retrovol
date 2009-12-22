@@ -152,6 +152,9 @@ void ConfigSettings::copy_settings(ConfigSettings *ptr){
 	tray_slider_width = ptr->tray_slider_width;
 	tray_slider_height = ptr->tray_slider_height;
 	strcpy(tray_control_name, ptr->tray_control_name);
+	for(int i=0; i<num_names; i++){
+		strcpy(name_list[i], ptr->name_list[i]);
+	}
 }
 
 
