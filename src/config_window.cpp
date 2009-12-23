@@ -174,6 +174,45 @@ void add_entry_color(GtkWidget *vbox, const char *label_text, float *item){
 	g_signal_connect(color_button, "color-set", G_CALLBACK(update_color), item);
 }
 
+//create a set of widgets that let you enable/disable and rearrange the visible sliders
+void add_slider_config(GtkWidget *vbox, int *num_names, char name_list[80][80], ElementList *list_ptr){
+	GtkWidget *label = gtk_label_new("Hardware stuff");
+	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, TRUE, 0);
+	GtkWidget *hbox = gtk_hbox_new(FALSE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+	GtkWidget *up_down_box = gtk_vbox_new(FALSE, 2);
+	gtk_container_add(GTK_CONTAINER(hbox), up_down_box);
+	GtkWidget *up_label = gtk_label_new("UP");
+	gtk_container_add(GTK_CONTAINER(up_down_box), up_label);
+	GtkWidget *down_label = gtk_label_new("DOWN");
+	gtk_container_add(GTK_CONTAINER(up_down_box), down_label);
+	GtkWidget *a_box = gtk_vbox_new(FALSE, 2);
+	gtk_container_add(GTK_CONTAINER(hbox), a_box);
+	GtkWidget *active_label = gtk_label_new("ACTIVE");
+	gtk_container_add(GTK_CONTAINER(a_box), active_label);
+	for (int i=0; i<*num_names; i++){
+		GtkWidget *item_label = gtk_label_new(name_list[i]);
+		gtk_container_add(GTK_CONTAINER(a_box), item_label);
+	}
+	GtkWidget *left_right_box = gtk_vbox_new(FALSE, 2);
+	gtk_container_add(GTK_CONTAINER(hbox), left_right_box);
+	GtkWidget *left_label = gtk_label_new("<<");
+	gtk_container_add(GTK_CONTAINER(left_right_box), left_label);
+	GtkWidget *right_label = gtk_label_new(">>");
+	gtk_container_add(GTK_CONTAINER(left_right_box), right_label);
+	GtkWidget *i_box = gtk_vbox_new(FALSE, 2);
+	gtk_container_add(GTK_CONTAINER(hbox), i_box);
+	GtkWidget *inactive_label = gtk_label_new("INACTIVE");
+	gtk_container_add(GTK_CONTAINER(i_box), inactive_label);
+	char unused_name_list[80][80]; //NEED TO MAKE THIS DYNAMIC!
+	int num_unused_names = list_ptr->list_other_names(unused_name_list);
+	for (int i=0; i<num_unused_names; i++){
+		GtkWidget *item_label = gtk_label_new(unused_name_list[i]);
+		gtk_container_add(GTK_CONTAINER(i_box), item_label);
+	}
+
+}
+
 //create a preferences window
 void build_config_window(ConfigSettings *settings){
 	load_settings(settings);
@@ -235,8 +274,7 @@ void build_config_window(ConfigSettings *settings){
 		gtk_container_add(GTK_CONTAINER(viewport), vbox);
 
 		//add the widgets
-		GtkWidget *label = gtk_label_new("Hardware stuff");
-		gtk_container_add(GTK_CONTAINER(vbox), label);
+		add_slider_config(vbox, &tmp_settings.num_names, tmp_settings.name_list, tmp_settings.list_ptr);
 	}
 
 

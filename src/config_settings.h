@@ -15,6 +15,7 @@ class ConfigSettings {
 		ConfigSettings();
 		
 		//some "global" variables - I put them in here to not have so much global stuff scattered around
+		ElementList *list_ptr;
 		GtkWidget *main_window;
 		GtkWidget *config_window;
 		GtkWidget *slider_window;

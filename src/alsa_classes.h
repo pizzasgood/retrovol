@@ -67,6 +67,12 @@ class ElementList {
 		int num_items;
 		Element **items;
 		
+		//returns a list of all elements in this list
+		int list_my_names(char list[][80]);
+		//returns a list of all element names
+		int list_all_names(char list[][80]);
+		//returns a list of all elements not in this list
+		int list_other_names(char list[][80]);
 		//populates the items array by sorting elems and skipping switches that are associated with an element
 		void populate_items();
 		//rearranges the items array so the current indexes are reordered to match 'order'

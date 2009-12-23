@@ -132,6 +132,7 @@ void ConfigSettings::apply_to_tray_slider(retro_slider *slider){
 //copy the settings of another ConfigSettings into this one
 void ConfigSettings::copy_settings(ConfigSettings *ptr){
 	strcpy(card, ptr->card);
+	list_ptr = ptr->list_ptr;
 	num_names = ptr->num_names;
 	vertical = ptr->vertical;
 	window_width = ptr->window_width;
@@ -353,16 +354,16 @@ void ConfigSettings::write_config(){
 
 //reorder the items in list to match name_list, omitting any that are not in name_list
 void ConfigSettings::reorder_list(ElementList *list){
-	
+	list_ptr = list;
 	//this function is not needed unless an order has been defined somewhere
 	if (num_names!=0){
 		
-		int *order = new int[list->num_items];
+		int *order = new int[list_ptr->num_items];
 
 		//find the indexes
 		int k = 0;
 		for (int n=0; n<num_names; n++){
-			for (int i=0; i<list->num_items; i++){
+			for (int i=0; i < list_ptr->num_items; i++){
 				if (strcmp(name_list[n], list->items[i]->name) == 0){
 					order[k++]=i;
 					break;
@@ -371,9 +372,11 @@ void ConfigSettings::reorder_list(ElementList *list){
 		}
 
 		num_names = k;
-		list->reorder_items(order, num_names);
+		list_ptr->reorder_items(order, num_names);
 		delete order;
 		
+		//update the name_list to omit nonexistent items
+		list_ptr->list_my_names(name_list);
 	}
 	
 }

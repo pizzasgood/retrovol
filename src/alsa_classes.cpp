@@ -428,6 +428,40 @@ ElementList::ElementList(char *_card){
 	
 }
 
+int ElementList::list_my_names(char list[][80]){
+	for(int i=0; i<num_items; i++){
+		strcpy(list[i], items[i]->name);
+	}
+	return(num_items);
+}
+
+int ElementList::list_all_names(char list[][80]){
+	int k=0;
+	for(int n=0; n<num_elems; n++){
+		if (!strstr(elems[n].name, "Switch") || (!elems[n].associated && strstr(elems[n].name, "Switch"))){
+			strcpy(list[k++], elems[n].name);
+		}
+	}
+	return(k);
+}
+
+int ElementList::list_other_names(char list[][80]){
+	int k=0;
+	for(int n=0; n<num_elems; n++){
+		bool other = true;
+		for(int i=0; i<num_items; i++){
+			if(items[i]->numid == elems[n].numid){
+				other = false;
+				break;
+			}
+		}
+		if (other && (!strstr(elems[n].name, "Switch") || (!elems[n].associated && strstr(elems[n].name, "Switch")))){
+			strcpy(list[k++], elems[n].name);
+		}
+	}
+	return(k);
+}
+
 void ElementList::populate_items(){
 	num_items=0;
 	//Since there aren't that many elements, I figure it's more efficient to just
