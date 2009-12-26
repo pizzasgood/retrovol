@@ -17,6 +17,12 @@ class SwapStruc {
 		void set(GtkToggleButton *button);
 };
 
+class OrderWidget {
+	public:
+		GtkWidget *hbox;
+		void build(GtkContainer *parent_container, int *num_names, char name_list[80][80], ElementList *list_ptr);
+};
+
 //load the current settings into a temporary tmp_settings variable
 void load_settings(ConfigSettings *settings);
 

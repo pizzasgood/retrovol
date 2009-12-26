@@ -20,6 +20,7 @@ ConfigSettings *orig_settings;
 GtkWidget *window;
 SwapStruc slider_swap_struc;
 SwapStruc tray_slider_swap_struc;
+OrderWidget order_widget;
 
 void SwapStruc::swap(){
 	int tmp = *iA;
@@ -37,6 +38,77 @@ void SwapStruc::set(GtkToggleButton *button){
 		toggle();
 	}
 }
+
+
+
+void OrderWidget::build(GtkContainer *parent_container, int *num_names, char name_list[80][80], ElementList *list_ptr){
+	//make a vbox to hold everything, and put it inside parent_container
+	GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
+	gtk_container_add(parent_container, vbox);
+	GtkWidget *desc_label = gtk_label_new("Here you can chose which sliders to enable and in which order to display them.");
+	gtk_box_pack_start(GTK_BOX(vbox), desc_label, FALSE, TRUE, 0);
+
+	//make an hbox to hold the bulk of the widget, and put it inside the vbox
+	hbox = gtk_hbox_new(FALSE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+
+	//make a vbox to hold the up/down buttons
+	GtkWidget *up_down_box = gtk_vbox_new(FALSE, 2);
+	gtk_container_add(GTK_CONTAINER(hbox), up_down_box);
+	GtkWidget *up_image = gtk_image_new_from_stock(GTK_STOCK_GO_UP, GTK_ICON_SIZE_BUTTON);
+	GtkWidget *up_button = gtk_button_new();
+	gtk_button_set_image(GTK_BUTTON(up_button), up_image);
+	gtk_container_add(GTK_CONTAINER(up_down_box), up_button);
+	GtkWidget *down_image = gtk_image_new_from_stock(GTK_STOCK_GO_DOWN, GTK_ICON_SIZE_BUTTON);
+	GtkWidget *down_button = gtk_button_new();
+	gtk_button_set_image(GTK_BUTTON(down_button), down_image);
+	gtk_container_add(GTK_CONTAINER(up_down_box), down_button);
+
+	//make a vbox to hold the active list
+	GtkWidget *a_box = gtk_vbox_new(FALSE, 2);
+	gtk_container_add(GTK_CONTAINER(hbox), a_box);
+	GtkWidget *active_label = gtk_label_new("ACTIVE");
+	gtk_container_add(GTK_CONTAINER(a_box), active_label);
+
+	//fill the active list
+	for (int i=0; i<*num_names; i++){
+		GtkWidget *item_label = gtk_label_new(name_list[i]);
+		gtk_container_add(GTK_CONTAINER(a_box), item_label);
+	}
+
+	//make a vbox to hold the add/remove buttons
+	GtkWidget *left_right_box = gtk_vbox_new(FALSE, 2);
+	gtk_container_add(GTK_CONTAINER(hbox), left_right_box);
+	GtkWidget *left_image = gtk_image_new_from_stock(GTK_STOCK_GO_BACK, GTK_ICON_SIZE_BUTTON);
+	GtkWidget *left_button = gtk_button_new();
+	gtk_button_set_image(GTK_BUTTON(left_button), left_image);
+	gtk_container_add(GTK_CONTAINER(left_right_box), left_button);
+	GtkWidget *right_image = gtk_image_new_from_stock(GTK_STOCK_GO_FORWARD, GTK_ICON_SIZE_BUTTON);
+	GtkWidget *right_button = gtk_button_new();
+	gtk_button_set_image(GTK_BUTTON(right_button), right_image);
+	gtk_container_add(GTK_CONTAINER(left_right_box), right_button);
+
+	//make a vbox to hold the inactive list
+	GtkWidget *i_box = gtk_vbox_new(FALSE, 2);
+	gtk_container_add(GTK_CONTAINER(hbox), i_box);
+	GtkWidget *inactive_label = gtk_label_new("INACTIVE");
+	gtk_container_add(GTK_CONTAINER(i_box), inactive_label);
+
+	//get the inactive items
+	char unused_name_list[80][80]; //NEED TO MAKE THIS DYNAMIC!
+	int num_unused_names = list_ptr->list_other_names(unused_name_list);
+
+	//fill the inactive list
+	for (int i=0; i<num_unused_names; i++){
+		GtkWidget *item_label = gtk_label_new(unused_name_list[i]);
+		gtk_container_add(GTK_CONTAINER(i_box), item_label);
+	}
+}
+
+
+
+
+
 
 //load the current settings into a temporary tmp_settings variable
 void load_settings(ConfigSettings *settings){
@@ -174,45 +246,6 @@ void add_entry_color(GtkWidget *vbox, const char *label_text, float *item){
 	g_signal_connect(color_button, "color-set", G_CALLBACK(update_color), item);
 }
 
-//create a set of widgets that let you enable/disable and rearrange the visible sliders
-void add_slider_config(GtkWidget *vbox, int *num_names, char name_list[80][80], ElementList *list_ptr){
-	GtkWidget *label = gtk_label_new("Hardware stuff");
-	gtk_box_pack_start(GTK_BOX(vbox), label, FALSE, TRUE, 0);
-	GtkWidget *hbox = gtk_hbox_new(FALSE, 2);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
-	GtkWidget *up_down_box = gtk_vbox_new(FALSE, 2);
-	gtk_container_add(GTK_CONTAINER(hbox), up_down_box);
-	GtkWidget *up_label = gtk_label_new("UP");
-	gtk_container_add(GTK_CONTAINER(up_down_box), up_label);
-	GtkWidget *down_label = gtk_label_new("DOWN");
-	gtk_container_add(GTK_CONTAINER(up_down_box), down_label);
-	GtkWidget *a_box = gtk_vbox_new(FALSE, 2);
-	gtk_container_add(GTK_CONTAINER(hbox), a_box);
-	GtkWidget *active_label = gtk_label_new("ACTIVE");
-	gtk_container_add(GTK_CONTAINER(a_box), active_label);
-	for (int i=0; i<*num_names; i++){
-		GtkWidget *item_label = gtk_label_new(name_list[i]);
-		gtk_container_add(GTK_CONTAINER(a_box), item_label);
-	}
-	GtkWidget *left_right_box = gtk_vbox_new(FALSE, 2);
-	gtk_container_add(GTK_CONTAINER(hbox), left_right_box);
-	GtkWidget *left_label = gtk_label_new("<<");
-	gtk_container_add(GTK_CONTAINER(left_right_box), left_label);
-	GtkWidget *right_label = gtk_label_new(">>");
-	gtk_container_add(GTK_CONTAINER(left_right_box), right_label);
-	GtkWidget *i_box = gtk_vbox_new(FALSE, 2);
-	gtk_container_add(GTK_CONTAINER(hbox), i_box);
-	GtkWidget *inactive_label = gtk_label_new("INACTIVE");
-	gtk_container_add(GTK_CONTAINER(i_box), inactive_label);
-	char unused_name_list[80][80]; //NEED TO MAKE THIS DYNAMIC!
-	int num_unused_names = list_ptr->list_other_names(unused_name_list);
-	for (int i=0; i<num_unused_names; i++){
-		GtkWidget *item_label = gtk_label_new(unused_name_list[i]);
-		gtk_container_add(GTK_CONTAINER(i_box), item_label);
-	}
-
-}
-
 //create a preferences window
 void build_config_window(ConfigSettings *settings){
 	load_settings(settings);
@@ -270,11 +303,9 @@ void build_config_window(ConfigSettings *settings){
 	{
 		//initialize the tab
 		GtkWidget *viewport = tab_init(notebook, "Hardware");
-		GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
-		gtk_container_add(GTK_CONTAINER(viewport), vbox);
 
 		//add the widgets
-		add_slider_config(vbox, &tmp_settings.num_names, tmp_settings.name_list, tmp_settings.list_ptr);
+		order_widget.build(GTK_CONTAINER(viewport), &tmp_settings.num_names, tmp_settings.name_list, tmp_settings.list_ptr);
 	}
 
 
