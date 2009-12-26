@@ -41,7 +41,32 @@ void SwapStruc::set(GtkToggleButton *button){
 
 
 
-void OrderWidget::build(GtkContainer *parent_container, int *num_names, char name_list[80][80], ElementList *list_ptr){
+GtkListStore *OrderWidget::build_list_from_names(int num_names, const char name_list[][80]){
+	GtkListStore *store = gtk_list_store_new(1, G_TYPE_STRING);
+	GtkTreeIter iter;
+	for(int i=0; i<num_names; i++){
+		gtk_list_store_append(store, &iter);
+		gtk_list_store_set(store, &iter, 0, name_list[i], -1);
+	}
+	return(store);
+}
+
+int OrderWidget::update_names_from_list(GtkListStore *store, char name_list[][80]){
+	GtkTreeIter iter;
+	gboolean valid;
+	int k = 0;
+	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter);
+	while (valid){
+		gchar *str_data;
+		gtk_tree_model_get(GTK_TREE_MODEL(store), &iter, 0, &str_data, -1);
+		strcpy(name_list[k++], str_data);
+		g_free(str_data);
+		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter);
+	}
+	return(k);
+}
+
+void OrderWidget::build(GtkContainer *parent_container, int *num_names, char name_list[][80], ElementList *list_ptr){
 	//make a vbox to hold everything, and put it inside parent_container
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
 	gtk_container_add(parent_container, vbox);
@@ -64,17 +89,15 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	gtk_button_set_image(GTK_BUTTON(down_button), down_image);
 	gtk_container_add(GTK_CONTAINER(up_down_box), down_button);
 
-	//make a vbox to hold the active list
-	GtkWidget *a_box = gtk_vbox_new(FALSE, 2);
-	gtk_container_add(GTK_CONTAINER(hbox), a_box);
-	GtkWidget *active_label = gtk_label_new("ACTIVE");
-	gtk_container_add(GTK_CONTAINER(a_box), active_label);
-
 	//fill the active list
-	for (int i=0; i<*num_names; i++){
-		GtkWidget *item_label = gtk_label_new(name_list[i]);
-		gtk_container_add(GTK_CONTAINER(a_box), item_label);
-	}
+	a_store = build_list_from_names(*num_names, name_list);
+	a_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(a_store));
+	GtkCellRenderer *a_renderer;
+	GtkTreeViewColumn *a_column;
+	a_renderer = gtk_cell_renderer_text_new();
+	a_column = gtk_tree_view_column_new_with_attributes("Active Sliders", a_renderer, "text", 0, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(a_list), a_column);
+	gtk_container_add(GTK_CONTAINER(hbox), a_list);
 
 	//make a vbox to hold the add/remove buttons
 	GtkWidget *left_right_box = gtk_vbox_new(FALSE, 2);
@@ -88,21 +111,20 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	gtk_button_set_image(GTK_BUTTON(right_button), right_image);
 	gtk_container_add(GTK_CONTAINER(left_right_box), right_button);
 
-	//make a vbox to hold the inactive list
-	GtkWidget *i_box = gtk_vbox_new(FALSE, 2);
-	gtk_container_add(GTK_CONTAINER(hbox), i_box);
-	GtkWidget *inactive_label = gtk_label_new("INACTIVE");
-	gtk_container_add(GTK_CONTAINER(i_box), inactive_label);
-
 	//get the inactive items
 	char unused_name_list[80][80]; //NEED TO MAKE THIS DYNAMIC!
 	int num_unused_names = list_ptr->list_other_names(unused_name_list);
 
 	//fill the inactive list
-	for (int i=0; i<num_unused_names; i++){
-		GtkWidget *item_label = gtk_label_new(unused_name_list[i]);
-		gtk_container_add(GTK_CONTAINER(i_box), item_label);
-	}
+	i_store = build_list_from_names(num_unused_names, unused_name_list);
+	i_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(i_store));
+	GtkCellRenderer *i_renderer;
+	GtkTreeViewColumn *i_column;
+	i_renderer = gtk_cell_renderer_text_new();
+	i_column = gtk_tree_view_column_new_with_attributes("Inactive Sliders", i_renderer, "text", 0, NULL);
+	gtk_tree_view_append_column(GTK_TREE_VIEW(i_list), i_column);
+	gtk_container_add(GTK_CONTAINER(hbox), i_list);
+
 }
 
 

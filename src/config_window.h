@@ -18,9 +18,16 @@ class SwapStruc {
 };
 
 class OrderWidget {
-	public:
+	private:
 		GtkWidget *hbox;
-		void build(GtkContainer *parent_container, int *num_names, char name_list[80][80], ElementList *list_ptr);
+		GtkListStore *a_store;
+		GtkWidget *a_list;
+		GtkListStore *i_store;
+		GtkWidget *i_list;
+		GtkListStore *build_list_from_names(int num_names, const char name_list[][80]);
+		int update_names_from_list(GtkListStore *store, char name_list[][80]);
+	public:
+		void build(GtkContainer *parent_container, int *num_names, char name_list[][80], ElementList *list_ptr);
 };
 
 //load the current settings into a temporary tmp_settings variable
