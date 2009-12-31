@@ -340,10 +340,12 @@ void ConfigSettings::write_config(){
 	fputs("\n\n", cfile);
 	fputs("\n# Which sliders to display, in order.  They MUST have a tab first and be quoted\n# with double-quotes.  To get a list of the slider names, run this command:\n#    amixer controls\n# NOTE:  This section must go at the end of the file!\n", cfile);
 
+	fputs("\n#EXAMPLE:\n", cfile);
 	fputs("\n#sliders:\n", cfile);
 	fputs("#\t\"Master Playback Volume\"\n", cfile);
 	fputs("#\t\"Front Playback Volume\"\n", cfile);
 	fputs("#\t\"Surround Playback Volume\"\n", cfile);
+	fputs("\nsliders:\n", cfile);
 	for (int n=0; n<num_names; n++){
 		fprintf(cfile, "\t\"%s\"\n", name_list[n]);
 	}
