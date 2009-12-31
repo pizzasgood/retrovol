@@ -51,21 +51,23 @@ GtkListStore *OrderWidget::build_list_from_names(int num_names, const char name_
 	return(store);
 }
 
-int OrderWidget::update_names_from_list(GtkListStore *store, char name_list[][80]){
+//update the name_list to match the GtkListStore
+int OrderWidget::update_names_from_list(char name_list[][80]){
 	GtkTreeIter iter;
 	gboolean valid;
 	int k = 0;
-	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(store), &iter);
+	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(a_store), &iter);
 	while (valid){
 		gchar *str_data;
-		gtk_tree_model_get(GTK_TREE_MODEL(store), &iter, 0, &str_data, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(a_store), &iter, 0, &str_data, -1);
 		strcpy(name_list[k++], str_data);
 		g_free(str_data);
-		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &iter);
+		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(a_store), &iter);
 	}
 	return(k);
 }
 
+//build the widgets
 void OrderWidget::build(GtkContainer *parent_container, int *num_names, char name_list[][80], ElementList *list_ptr){
 	//make a vbox to hold everything, and put it inside parent_container
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
@@ -80,13 +82,19 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	//make a vbox to hold the up/down buttons
 	GtkWidget *up_down_box = gtk_vbox_new(FALSE, 2);
 	gtk_container_add(GTK_CONTAINER(hbox), up_down_box);
+
+	//make the up button
 	GtkWidget *up_image = gtk_image_new_from_stock(GTK_STOCK_GO_UP, GTK_ICON_SIZE_BUTTON);
 	GtkWidget *up_button = gtk_button_new();
 	gtk_button_set_image(GTK_BUTTON(up_button), up_image);
+	g_signal_connect(up_button, "clicked", G_CALLBACK(move_selected_up), this);
 	gtk_container_add(GTK_CONTAINER(up_down_box), up_button);
+
+	//make the down button
 	GtkWidget *down_image = gtk_image_new_from_stock(GTK_STOCK_GO_DOWN, GTK_ICON_SIZE_BUTTON);
 	GtkWidget *down_button = gtk_button_new();
 	gtk_button_set_image(GTK_BUTTON(down_button), down_image);
+	g_signal_connect(down_button, "clicked", G_CALLBACK(move_selected_down), this);
 	gtk_container_add(GTK_CONTAINER(up_down_box), down_button);
 
 	//fill the active list
@@ -102,13 +110,19 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	//make a vbox to hold the add/remove buttons
 	GtkWidget *left_right_box = gtk_vbox_new(FALSE, 2);
 	gtk_container_add(GTK_CONTAINER(hbox), left_right_box);
+
+	//add the add button
 	GtkWidget *left_image = gtk_image_new_from_stock(GTK_STOCK_GO_BACK, GTK_ICON_SIZE_BUTTON);
 	GtkWidget *left_button = gtk_button_new();
 	gtk_button_set_image(GTK_BUTTON(left_button), left_image);
+	g_signal_connect(left_button, "clicked", G_CALLBACK(add_selected), this);
 	gtk_container_add(GTK_CONTAINER(left_right_box), left_button);
+	
+	//add the remove button
 	GtkWidget *right_image = gtk_image_new_from_stock(GTK_STOCK_GO_FORWARD, GTK_ICON_SIZE_BUTTON);
 	GtkWidget *right_button = gtk_button_new();
 	gtk_button_set_image(GTK_BUTTON(right_button), right_image);
+	g_signal_connect(right_button, "clicked", G_CALLBACK(remove_selected), this);
 	gtk_container_add(GTK_CONTAINER(left_right_box), right_button);
 
 	//get the inactive items
@@ -127,6 +141,72 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 
 }
 
+//move the selected item up in the list
+void OrderWidget::move_selected_up(GtkWidget *widget, gpointer data){
+	OrderWidget *order_widget = (OrderWidget *)data;
+	GtkListStore *store = order_widget->a_store;
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(order_widget->a_list));
+	GtkTreeIter iter, position;
+	if(gtk_tree_selection_get_selected(selection, NULL, &iter)){
+		//since for some reason they don't have a gtk_tree_model_iter_prev() function, we'll convert to a path and then navigate backwards, then get an iter from that...
+		GtkTreePath *path = gtk_tree_model_get_path(GTK_TREE_MODEL(store), &iter);
+		if(gtk_tree_path_prev(path)){
+			gtk_tree_model_get_iter(GTK_TREE_MODEL(store), &position, path);
+			gtk_list_store_move_before(store, &iter, &position);
+		}
+		gtk_tree_path_free(path);
+	}
+}
+
+//move the selected item down in the list
+void OrderWidget::move_selected_down(GtkWidget *widget, gpointer data){
+	OrderWidget *order_widget = (OrderWidget *)data;
+	GtkListStore *store = order_widget->a_store;
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(order_widget->a_list));
+	GtkTreeIter iter;
+	if(gtk_tree_selection_get_selected(selection, NULL, &iter)){
+		GtkTreeIter position = iter;
+		if (gtk_tree_model_iter_next(GTK_TREE_MODEL(store), &position)){
+			gtk_list_store_move_after(store, &iter, &position);
+		}
+
+	}
+}
+
+//add the selected item to the list
+void OrderWidget::add_selected(GtkWidget *widget, gpointer data){
+	OrderWidget *order_widget = (OrderWidget *)data;
+	GtkListStore *a_store = order_widget->a_store;
+	GtkListStore *i_store = order_widget->i_store;
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(order_widget->i_list));
+	GtkTreeIter a_iter, i_iter;
+	if(gtk_tree_selection_get_selected(selection, NULL, &i_iter)){
+		gchar *str_data;
+		gtk_tree_model_get(GTK_TREE_MODEL(i_store), &i_iter, 0, &str_data, -1);
+		gtk_list_store_remove(i_store, &i_iter);
+		gtk_list_store_append(a_store, &a_iter);
+		gtk_list_store_set(a_store, &a_iter, 0, str_data, -1);
+		g_free(str_data);
+	}
+}
+
+//remove the selected item from the list
+void OrderWidget::remove_selected(GtkWidget *widget, gpointer data){
+	OrderWidget *order_widget = (OrderWidget *)data;
+	GtkListStore *a_store = order_widget->a_store;
+	GtkListStore *i_store = order_widget->i_store;
+	GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(order_widget->a_list));
+	GtkTreeIter a_iter, i_iter;
+	if(gtk_tree_selection_get_selected(selection, NULL, &a_iter)){
+		gchar *str_data;
+		gtk_tree_model_get(GTK_TREE_MODEL(a_store), &a_iter, 0, &str_data, -1);
+		gtk_list_store_remove(a_store, &a_iter);
+		gtk_list_store_append(i_store, &i_iter);
+		gtk_list_store_set(i_store, &i_iter, 0, str_data, -1);
+		g_free(str_data);
+	}
+}
+
 
 
 
@@ -140,6 +220,7 @@ void load_settings(ConfigSettings *settings){
 
 //save the current settings back to the rc file and apply them
 void save_settings(){
+	tmp_settings.num_names = order_widget.update_names_from_list(tmp_settings.name_list);
 	orig_settings->copy_settings(&tmp_settings);
 	orig_settings->write_config();
 }
