@@ -62,17 +62,23 @@ static void update_int(GtkWidget *widget, gpointer data);
 //create an entry to edit an int value w/ spinbutton
 GtkAdjustment *add_entry_int(GtkWidget *vbox, const char *label_text, int *item);
 
-//update the value pointed to by the data pointer with the value contained by the widget
+//update the bool pointed to by the data pointer with the value contained by the widget
 static void update_bool(GtkWidget *widget, gpointer data);
 
 //update the bool and swap the ints pointed to by the data pointer with the value contained by the widget
 static void update_bool_s(GtkWidget *widget, gpointer data);
+
+//update the string pointed to by the data pointer with the string contained by the widget
+static void update_slider(GtkWidget *widget, gpointer data);
 
 //create an entry to edit a bool value w/ checkbox
 void add_entry_bool_c(GtkWidget *vbox, const char *label_text, bool *item, SwapStruc *swap_struc = NULL);
 
 //create an entry to edit a bool value w/ radiobutton
 void add_entry_bool_r(GtkWidget *vbox, const char *label_text, const char *true_label, const char *false_label, bool *item, SwapStruc *swap_struc = NULL);
+
+//create an entry to choose a slider with a dropdown
+void add_entry_slider_dropdown(GtkWidget *vbox, const char *label_text, char *tray_control_name, ElementList *list_ptr);
 
 //update the value pointed to by the data pointer with the value contained by the widget
 static void update_color(GtkWidget *widget, gpointer data);

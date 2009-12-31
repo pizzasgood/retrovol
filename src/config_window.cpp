@@ -343,6 +343,33 @@ static void update_color(GtkWidget *widget, gpointer data){
 	ConfigSettings::gtonf((float *)data, &color);
 }
 
+//update the string pointed to by the data pointer with the string contained by the widget
+static void update_slider(GtkWidget *widget, gpointer data){
+	gchar *text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
+	strcpy((char*)data, text);
+	g_free(text);
+}
+
+//create an entry to choose a slider with a dropdown
+void add_entry_slider_dropdown(GtkWidget *vbox, const char *label_text, char *tray_control_name, ElementList *list_ptr){
+	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+	GtkWidget *label = gtk_label_new(label_text);
+	gtk_container_add(GTK_CONTAINER(hbox), label);
+	GtkWidget *combo = gtk_combo_box_new_text();
+	//get the text
+	char name_list[80][80]; //NEED TO MAKE THIS DYNAMIC!
+	int num_names = list_ptr->list_all_int_names(name_list);
+	for(int i=0; i<num_names; i++){
+		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), name_list[i]);
+		if (strcmp(name_list[i], tray_control_name) == 0){
+			gtk_combo_box_set_active(GTK_COMBO_BOX(combo), i);
+		}
+	}
+	gtk_container_add(GTK_CONTAINER(hbox), combo);
+	g_signal_connect(combo, "changed", G_CALLBACK(update_slider), tray_control_name);
+}
+
 //create an entry to edit a color value
 void add_entry_color(GtkWidget *vbox, const char *label_text, float *item){
 	GdkColor color;
@@ -363,7 +390,7 @@ void build_config_window(ConfigSettings *settings){
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size(GTK_WINDOW(window), 600, 500);
+	gtk_window_set_default_size(GTK_WINDOW(window), 550, 300);
 	gtk_window_set_title(GTK_WINDOW(window), "Retrovol - Configuration");
 
 	//create the overall vbox
@@ -401,6 +428,7 @@ void build_config_window(ConfigSettings *settings){
 		add_entry_color(vbox, "Unlit Color", tmp_settings.unlit_color);
 		add_entry_color(vbox, "Lit Color", tmp_settings.lit_color);
 		add_entry_bool_c(vbox, "Enable Tray Icon", &tmp_settings.enable_tray_icon);
+		add_entry_slider_dropdown(vbox, "Tray Slider", tmp_settings.tray_control_name, tmp_settings.list_ptr);
 		tray_slider_swap_struc.iA = &(tmp_settings.tray_slider_width);
 		tray_slider_swap_struc.iB = &(tmp_settings.tray_slider_height);
 		tray_slider_swap_struc.control = &tmp_settings.tray_slider_vertical;

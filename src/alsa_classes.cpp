@@ -462,6 +462,16 @@ int ElementList::list_other_names(char list[][80]){
 	return(k);
 }
 
+int ElementList::list_all_int_names(char list[][80]){
+	int k=0;
+	for(int n=0; n<num_elems; n++){
+		if (strcmp("INTEGER", elems[n].type) == 0){
+			strcpy(list[k++], elems[n].name);
+		}
+	}
+	return(k);
+}
+
 void ElementList::populate_items(){
 	num_items=0;
 	//Since there aren't that many elements, I figure it's more efficient to just
