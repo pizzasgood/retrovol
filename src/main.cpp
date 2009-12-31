@@ -441,7 +441,7 @@ int main(int argc, char** argv) {
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
 
-	for (int i=0; i<argc; i++){
+	for (int i=1; i<argc; i++){
 		if (strcmp(argv[i], "-bg") == 0){
 			if (i+1 < argc && strlen(argv[i+1]) == 7){
 				cmdline_enable_bg_color = true;
@@ -450,6 +450,12 @@ int main(int argc, char** argv) {
 			} else {
 				fprintf(stderr, "ERROR:  The -bg option requires a color to be supplied in the format #rrggbb\n");
 			}
+		} else {
+			fprintf(stderr, "Usage: %s [-bg #rrggbb]\n", argv[0]);
+			fprintf(stderr, "Volume mixer with bargraph style sliders.\n");
+			fprintf(stderr, "The -bg option lets you specify the background color of the tray icon.\n");
+			fprintf(stderr, "Reads ~/.retrovolrc for more configuration options.\n");
+			exit(1);
 		}
 	}
 
