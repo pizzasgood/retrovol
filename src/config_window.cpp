@@ -88,14 +88,14 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	GtkWidget *up_button = gtk_button_new();
 	gtk_button_set_image(GTK_BUTTON(up_button), up_image);
 	g_signal_connect(up_button, "clicked", G_CALLBACK(move_selected_up), this);
-	gtk_container_add(GTK_CONTAINER(up_down_box), up_button);
+	gtk_box_pack_start(GTK_BOX(up_down_box), up_button, FALSE, TRUE, 0);
 
 	//make the down button
 	GtkWidget *down_image = gtk_image_new_from_stock(GTK_STOCK_GO_DOWN, GTK_ICON_SIZE_BUTTON);
 	GtkWidget *down_button = gtk_button_new();
 	gtk_button_set_image(GTK_BUTTON(down_button), down_image);
 	g_signal_connect(down_button, "clicked", G_CALLBACK(move_selected_down), this);
-	gtk_container_add(GTK_CONTAINER(up_down_box), down_button);
+	gtk_box_pack_start(GTK_BOX(up_down_box), down_button, FALSE, TRUE, 0);
 
 	//fill the active list
 	a_store = build_list_from_names(*num_names, name_list);
@@ -116,14 +116,14 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	GtkWidget *left_button = gtk_button_new();
 	gtk_button_set_image(GTK_BUTTON(left_button), left_image);
 	g_signal_connect(left_button, "clicked", G_CALLBACK(add_selected), this);
-	gtk_container_add(GTK_CONTAINER(left_right_box), left_button);
+	gtk_box_pack_start(GTK_BOX(left_right_box), left_button, FALSE, TRUE, 0);
 	
 	//add the remove button
 	GtkWidget *right_image = gtk_image_new_from_stock(GTK_STOCK_GO_FORWARD, GTK_ICON_SIZE_BUTTON);
 	GtkWidget *right_button = gtk_button_new();
 	gtk_button_set_image(GTK_BUTTON(right_button), right_image);
 	g_signal_connect(right_button, "clicked", G_CALLBACK(remove_selected), this);
-	gtk_container_add(GTK_CONTAINER(left_right_box), right_button);
+	gtk_box_pack_start(GTK_BOX(left_right_box), right_button, FALSE, TRUE, 0);
 
 	//get the inactive items
 	char unused_name_list[80][80]; //NEED TO MAKE THIS DYNAMIC!
@@ -355,7 +355,7 @@ void build_config_window(ConfigSettings *settings){
 
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-	gtk_window_set_default_size(GTK_WINDOW(window), 300, 500);
+	gtk_window_set_default_size(GTK_WINDOW(window), 600, 500);
 	gtk_window_set_title(GTK_WINDOW(window), "Retrovol - Configuration");
 
 	//create the overall vbox
