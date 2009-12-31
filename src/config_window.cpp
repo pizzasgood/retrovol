@@ -77,7 +77,7 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 
 	//make an hbox to hold the bulk of the widget, and put it inside the vbox
 	hbox = gtk_hbox_new(FALSE, 2);
-	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+	gtk_container_add(GTK_CONTAINER(vbox), hbox);
 
 	//make a vbox to hold the up/down buttons
 	GtkWidget *up_down_box = gtk_vbox_new(FALSE, 2);
@@ -97,6 +97,10 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	g_signal_connect(down_button, "clicked", G_CALLBACK(move_selected_down), this);
 	gtk_box_pack_start(GTK_BOX(up_down_box), down_button, FALSE, TRUE, 0);
 
+	//make a scrolled-window to hold the list
+	GtkWidget *a_scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+	gtk_container_add(GTK_CONTAINER(hbox), a_scrolled_window);
+
 	//fill the active list
 	a_store = build_list_from_names(*num_names, name_list);
 	a_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(a_store));
@@ -105,7 +109,7 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	a_renderer = gtk_cell_renderer_text_new();
 	a_column = gtk_tree_view_column_new_with_attributes("Active Sliders", a_renderer, "text", 0, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(a_list), a_column);
-	gtk_container_add(GTK_CONTAINER(hbox), a_list);
+	gtk_container_add(GTK_CONTAINER(a_scrolled_window), a_list);
 
 	//make a vbox to hold the add/remove buttons
 	GtkWidget *left_right_box = gtk_vbox_new(FALSE, 2);
@@ -129,6 +133,10 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	char unused_name_list[80][80]; //NEED TO MAKE THIS DYNAMIC!
 	int num_unused_names = list_ptr->list_other_names(unused_name_list);
 
+	//make a scrolled-window to hold the list
+	GtkWidget *i_scrolled_window = gtk_scrolled_window_new(NULL, NULL);
+	gtk_container_add(GTK_CONTAINER(hbox), i_scrolled_window);
+
 	//fill the inactive list
 	i_store = build_list_from_names(num_unused_names, unused_name_list);
 	i_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(i_store));
@@ -137,7 +145,7 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	i_renderer = gtk_cell_renderer_text_new();
 	i_column = gtk_tree_view_column_new_with_attributes("Inactive Sliders", i_renderer, "text", 0, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(i_list), i_column);
-	gtk_container_add(GTK_CONTAINER(hbox), i_list);
+	gtk_container_add(GTK_CONTAINER(i_scrolled_window), i_list);
 
 }
 
