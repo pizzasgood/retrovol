@@ -421,7 +421,7 @@ bool loop(int argc, char** argv) {
 	}
 	
 	//finish the window stuff
-	gtk_widget_show_all(settings.main_window);
+	//gtk_widget_show_all(settings.main_window);
 	g_signal_connect(settings.main_window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
 	
 
