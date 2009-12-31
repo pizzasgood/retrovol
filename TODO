@@ -7,14 +7,11 @@
 	commandline options to override the config file
 	commandline option to specify config file, else use ~/.retrovolrc
 	four radio boxes to switch view: Playback, Capture, All, Custom
-	custom sliders that operate multiple sliders at once
+	?custom sliders that operate multiple sliders at once
 	status bar - shows full name of the device below cursor, along with numeric info - make optional in config file
-	:menu bar:
-		preferences
-			gui to change order of sliders and enable/disable
+        get the i18n caught up with the current strings
 
 :tray icon:
 	use non-deprecated functions to position slider (inside a popup menu?)
-	use transparent background so taskbar shows through.
-	?should scrolling to increase sound level automatically unmute?  Would have to affect normal sliders too, so I think not.
+	?replace eggtrayicon with the new statusicon of gtk that can be scrolled on? - probably do this as a compile option
 	
