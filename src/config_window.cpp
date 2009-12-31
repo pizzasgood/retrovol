@@ -435,6 +435,8 @@ void build_config_window(ConfigSettings *settings){
 		add_entry_bool_r(vbox, "Tray Slider Orientation", "Vertical", "Horizontal", NULL, &tray_slider_swap_struc);
 		tray_slider_swap_struc.adj_A = add_entry_int(vbox, "Tray Slider Width", tray_slider_swap_struc.iA);
 		tray_slider_swap_struc.adj_B = add_entry_int(vbox, "Tray Slider Height", tray_slider_swap_struc.iB);
+		add_entry_bool_c(vbox, "Enable Tray Icon Background Color", &tmp_settings.enable_tray_icon_background_color);
+		add_entry_color(vbox, "Tray Icon Background Color", tmp_settings.tray_icon_background_color);
 	}
 
 	//Hardware tab

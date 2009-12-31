@@ -44,6 +44,10 @@ ConfigSettings::ConfigSettings(){
 	_d_lit_color[2]=0.0;
 	
 	_d_enable_tray_icon = true;
+	_d_enable_tray_icon_background_color = false;
+	_d_tray_icon_background_color[0]=0.8;
+	_d_tray_icon_background_color[1]=0.8;
+	_d_tray_icon_background_color[2]=0.8;
 	_d_tray_slider_vertical = true;
 	_d_tray_slider_width=20;
 	_d_tray_slider_height=102;
@@ -90,6 +94,11 @@ void ConfigSettings::apply_defaults(){
 	tray_slider_vertical = _d_tray_slider_vertical;
 	tray_slider_width = _d_tray_slider_width;
 	tray_slider_height = _d_tray_slider_height;
+	
+	enable_tray_icon_background_color = _d_enable_tray_icon_background_color;
+	tray_icon_background_color[0] = _d_tray_icon_background_color[0];
+	tray_icon_background_color[1] = _d_tray_icon_background_color[1];
+	tray_icon_background_color[2] = _d_tray_icon_background_color[2];
 	
 
 }
@@ -153,6 +162,10 @@ void ConfigSettings::copy_settings(ConfigSettings *ptr){
 	tray_slider_width = ptr->tray_slider_width;
 	tray_slider_height = ptr->tray_slider_height;
 	strcpy(tray_control_name, ptr->tray_control_name);
+	enable_tray_icon_background_color = ptr->enable_tray_icon_background_color;
+	tray_icon_background_color[0] = ptr->tray_icon_background_color[0];
+	tray_icon_background_color[1] = ptr->tray_icon_background_color[1];
+	tray_icon_background_color[2] = ptr->tray_icon_background_color[2];
 	for(int i=0; i<num_names; i++){
 		strcpy(name_list[i], ptr->name_list[i]);
 	}
@@ -222,6 +235,10 @@ void ConfigSettings::parse_config(char *config_file){
 		} else if (strcmp(tmpptr, "enable_tray_icon")==0){
 			tmpptr=strtok(NULL, "=\n");
 			enable_tray_icon=(bool)atoi(tmpptr);
+		} else if (strcmp(tmpptr, "tray_icon_background_color")==0){
+			tmpptr=strtok(NULL, "=\n");
+			htonf(tray_icon_background_color, tmpptr);
+			enable_tray_icon_background_color=true;
 		} else if (strcmp(tmpptr, "tray_slider_vertical")==0){
 			tmpptr=strtok(NULL, "=\n");
 			tray_slider_vertical=(bool)atoi(tmpptr);
@@ -322,6 +339,12 @@ void ConfigSettings::write_config(){
 	fputs("\n# Enable the tray_icon\n", cfile);
 	fprintf(cfile, "#enable_tray_icon=%d\n", _d_enable_tray_icon);
 	if (enable_tray_icon != _d_enable_tray_icon){ fprintf(cfile, "enable_tray_icon=%d\n", enable_tray_icon); }
+
+	fputs("\n# Background color of tray_icon (default is default GTK background color).  Note:  the commandline -bg option overrides this\n", cfile);
+	nftoh(_d_tray_icon_background_color, tmpstr1);
+	nftoh(tray_icon_background_color, tmpstr2);
+	fprintf(cfile, "#tray_icon_background_color=%s\n", tmpstr1);
+	if (enable_tray_icon_background_color){ fprintf(cfile, "tray_icon_background_color=%s\n", tmpstr2); }
 
 	fputs("\n# Set this to 1 to make the slider on the tray_icon vertical, or 0 for horizontal\n", cfile);
 	fprintf(cfile, "#tray_slider_vertical=%d\n", _d_tray_slider_vertical);

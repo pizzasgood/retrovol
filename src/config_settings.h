@@ -59,6 +59,8 @@ class ConfigSettings {
 		char tray_control_name[80]; //NEED TO MAKE THIS DYNAMIC
 		
 		char icon_file_names[4][80]; //NEED TO MAKE THIS DYNAMIC
+		bool enable_tray_icon_background_color, _d_enable_tray_icon_background_color;	//specify a background color
+		float tray_icon_background_color[3], _d_tray_icon_background_color[3];		//
 		
 		
 		//apply the defaults

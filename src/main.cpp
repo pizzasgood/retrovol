@@ -30,6 +30,8 @@ static ConfigSettings settings;
 //add the leading slash here, so that it can simply be concatenated with the results of getenv("HOME") later.
 const char config_file[] = "/.retrovolrc";
 static ElementList *list_ptr;
+bool cmdline_enable_bg_color = false;
+char cmdline_bg_color[7];
 
 
 
@@ -226,6 +228,26 @@ bool loop(int argc, char** argv) {
 			
 		//set up tray icon
 		settings.tray_icon = GTK_WIDGET(egg_tray_icon_new("Retrovol Tray Icon"));
+		//set the background color
+		bool enable_tray_icon_background_color = settings.enable_tray_icon_background_color; 
+		GdkColor bg_color;
+		char bg_color_str[7];
+		if (cmdline_enable_bg_color){
+			enable_tray_icon_background_color = true;
+			strcpy(bg_color_str, cmdline_bg_color);
+		} else if (settings.enable_tray_icon_background_color){
+			settings.nftoh(settings.tray_icon_background_color, bg_color_str);
+		}
+		if (enable_tray_icon_background_color){
+			if (gdk_color_parse(bg_color_str, &bg_color)){
+				GtkStyle *style = gtk_style_copy(gtk_widget_get_style(settings.tray_icon));
+				style->bg[GTK_STATE_NORMAL] = bg_color;
+				gtk_widget_set_style(settings.tray_icon, style);
+			} else {
+				fprintf(stderr, "Error:  Failed to set background color to %s\n", bg_color_str);
+			}
+		}
+		//set up the images
 		settings.tray_icon_image = gtk_image_new();
 		gtk_container_add( GTK_CONTAINER(settings.tray_icon), settings.tray_icon_image );
 		gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), VOL_MEDIUM_IMAGE);
@@ -418,6 +440,18 @@ int main(int argc, char** argv) {
 	setlocale(LC_ALL, "");
 	bindtextdomain(PACKAGE, LOCALEDIR);
 	textdomain(PACKAGE);
+
+	for (int i=0; i<argc; i++){
+		if (strcmp(argv[i], "-bg") == 0){
+			if (i+1 < argc && strlen(argv[i+1]) == 7){
+				cmdline_enable_bg_color = true;
+				strcpy(cmdline_bg_color, argv[i+1]);
+				i++;
+			} else {
+				fprintf(stderr, "ERROR:  The -bg option requires a color to be supplied in the format #rrggbb\n");
+			}
+		}
+	}
 
 	while (loop(argc, argv));
 
