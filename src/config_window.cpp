@@ -131,7 +131,12 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 
 	//get the inactive items
 	char unused_name_list[80][80]; //NEED TO MAKE THIS DYNAMIC!
-	int num_unused_names = list_ptr->list_other_names(unused_name_list);
+	int num_unused_names;
+	if (*num_names == 0){
+		num_unused_names = list_ptr->list_all_names(unused_name_list);
+	} else {
+		num_unused_names = list_ptr->list_other_names(unused_name_list);
+	}
 
 	//make a scrolled-window to hold the list
 	GtkWidget *i_scrolled_window = gtk_scrolled_window_new(NULL, NULL);
