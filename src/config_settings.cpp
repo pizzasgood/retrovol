@@ -19,7 +19,7 @@ ConfigSettings::ConfigSettings(){
 	//defaults
 	strcpy(_d_card, "hw:0");
 	_d_vertical = false;
-	_d_window_width=256;
+	_d_window_width=270;
 	_d_window_height=256;
 	_d_slider_width=102;
 	_d_slider_height=20;
