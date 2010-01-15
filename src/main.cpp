@@ -32,6 +32,7 @@ const char config_file[] = "/.retrovolrc";
 static ElementList *list_ptr;
 bool cmdline_enable_bg_color = false;
 char cmdline_bg_color[7];
+bool start_hidden = true;
 
 
 
@@ -421,7 +422,7 @@ bool loop(int argc, char** argv) {
 	}
 	
 	//finish the window stuff
-	//gtk_widget_show_all(settings.main_window);
+	if (!start_hidden){ gtk_widget_show_all(settings.main_window); }
 	g_signal_connect(settings.main_window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
 	
 
@@ -450,11 +451,14 @@ int main(int argc, char** argv) {
 			} else {
 				fprintf(stderr, "ERROR:  The -bg option requires a color to be supplied in the format #rrggbb\n");
 			}
+		} else if (strcmp(argv[i], "-show") == 0 || strcmp(argv[i], "--show") == 0){
+			start_hidden = false;
 		} else {
-			fprintf(stderr, "Usage: %s [-bg #rrggbb]\n", argv[0]);
+			fprintf(stderr, "Usage: %s [-bg #rrggbb] [-show]\n", argv[0]);
 			fprintf(stderr, "Volume mixer with bargraph style sliders.\n");
-			fprintf(stderr, "The -bg option lets you specify the background color of the tray icon.\n");
-			fprintf(stderr, "Reads ~/.retrovolrc for more configuration options.\n");
+			fprintf(stderr, "Reads ~/.retrovolrc for configuration options.  Additionally, the following\noptions may be given on the commandline:\n");
+			fprintf(stderr, "\t-bg #rrggbb     specify the background color of the tray icon\n");
+			fprintf(stderr, "\t-show           show the main window initially\n");
 			exit(1);
 		}
 	}
