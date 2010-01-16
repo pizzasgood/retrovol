@@ -431,6 +431,8 @@ bool loop(int argc, char** argv) {
 	
 	//finish the window stuff
 	if (!start_hidden){ gtk_widget_show_all(settings.main_window); }
+	//have the window shown again if we restart
+	start_hidden = false;
 	g_signal_connect(settings.main_window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
 	
 
