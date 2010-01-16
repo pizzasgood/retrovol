@@ -12,6 +12,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <signal.h>
 #include <gtk/gtk.h>
 #include "retro_slider.h"
 #include "alsa_classes.h"
@@ -35,6 +36,11 @@ char cmdline_bg_color[7];
 bool start_hidden = true;
 
 
+
+//signal handler to make the main window appear (if not already up)
+void popup_handler(int signum){
+	gtk_widget_show_all(settings.main_window);
+}
 
 //callback that handles changing an enumerated control
 void change_combo_box(GtkWidget *combo_box, Element *elem){
@@ -462,6 +468,9 @@ int main(int argc, char** argv) {
 			exit(1);
 		}
 	}
+
+	//when SIGUSR1 is recieved, pop up the window
+	signal(SIGUSR1, popup_handler);
 
 	while (loop(argc, argv));
 
