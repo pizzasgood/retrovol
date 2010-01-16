@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
+#include <unistd.h>
 #include <gtk/gtk.h>
 #include "retro_slider.h"
 #include "alsa_classes.h"
@@ -30,6 +31,7 @@
 static ConfigSettings settings;
 //add the leading slash here, so that it can simply be concatenated with the results of getenv("HOME") later.
 const char config_file[] = "/.retrovolrc";
+const char pid_filename[] = "/var/run/retrovol.pid";
 static ElementList *list_ptr;
 bool cmdline_enable_bg_color = false;
 char cmdline_bg_color[7];
@@ -469,11 +471,35 @@ int main(int argc, char** argv) {
 		}
 	}
 
+	//create a PID file if not already running, else pop up a window in the running instance and then exit
+	FILE *pidfile = fopen(pid_filename, "r");
+	bool created_file = false;
+	if (pidfile != NULL){
+		char pid_string[16];
+		fgets(pid_string, 16, pidfile);
+		fclose(pidfile);
+		if (kill(atoi(pid_string), SIGUSR1) == 0){
+			exit(0);
+		}
+	}
+	//if we reached this point, we need to create the file
+	pidfile = fopen(pid_filename, "w");
+	if (pidfile != NULL){
+		fprintf(pidfile, "%d\n", getpid());
+		fclose(pidfile);
+		created_file = true;
+	} else {
+		fprintf(stderr, "Error: could not create %s\n", pid_filename);
+	}
+
 	//when SIGUSR1 is recieved, pop up the window
 	signal(SIGUSR1, popup_handler);
 
+	//main program - in a while loop so that it can easily restart to refresh itself
 	while (loop(argc, argv));
 
+	//clean up after ourselves
+	if (created_file){ remove(pid_filename); }
 	return(0);
 }
 
