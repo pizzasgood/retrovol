@@ -14,6 +14,11 @@
 #include "config_settings.h"
 #include "config_window.h"
 
+//i18n stuff
+#include "gettext.h"
+#include <locale.h>
+#define _(String) gettext (String)
+
 
 ConfigSettings tmp_settings;
 ConfigSettings *orig_settings;
@@ -72,7 +77,7 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	//make a vbox to hold everything, and put it inside parent_container
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
 	gtk_container_add(parent_container, vbox);
-	GtkWidget *desc_label = gtk_label_new("Here you can chose which sliders to enable and in which order to display them.");
+	GtkWidget *desc_label = gtk_label_new(_("Here you can chose which sliders to enable and in which order to display them."));
 	gtk_box_pack_start(GTK_BOX(vbox), desc_label, FALSE, TRUE, 0);
 
 	//make an hbox to hold the bulk of the widget, and put it inside the vbox
@@ -107,7 +112,7 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	GtkCellRenderer *a_renderer;
 	GtkTreeViewColumn *a_column;
 	a_renderer = gtk_cell_renderer_text_new();
-	a_column = gtk_tree_view_column_new_with_attributes("Active Sliders", a_renderer, "text", 0, NULL);
+	a_column = gtk_tree_view_column_new_with_attributes(_("Active Sliders"), a_renderer, "text", 0, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(a_list), a_column);
 	gtk_container_add(GTK_CONTAINER(a_scrolled_window), a_list);
 
@@ -148,7 +153,7 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	GtkCellRenderer *i_renderer;
 	GtkTreeViewColumn *i_column;
 	i_renderer = gtk_cell_renderer_text_new();
-	i_column = gtk_tree_view_column_new_with_attributes("Inactive Sliders", i_renderer, "text", 0, NULL);
+	i_column = gtk_tree_view_column_new_with_attributes(_("Inactive Sliders"), i_renderer, "text", 0, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(i_list), i_column);
 	gtk_container_add(GTK_CONTAINER(i_scrolled_window), i_list);
 
@@ -396,7 +401,7 @@ void build_config_window(ConfigSettings *settings){
 	window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
 	gtk_window_set_default_size(GTK_WINDOW(window), 550, 300);
-	gtk_window_set_title(GTK_WINDOW(window), "Retrovol - Configuration");
+	gtk_window_set_title(GTK_WINDOW(window), _("Retrovol - Configuration"));
 
 	//create the overall vbox
 	GtkWidget *over_box;
@@ -412,43 +417,43 @@ void build_config_window(ConfigSettings *settings){
 	//dimensions, colors, etc.
 	{
 		//initialize the tab
-		GtkWidget *viewport = tab_init(notebook, "Main");
+		GtkWidget *viewport = tab_init(notebook, _("Main"));
 		GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
 		gtk_container_add(GTK_CONTAINER(viewport), vbox);
 
 		//add the widgets
-		add_entry_int(vbox, "Window Width", &tmp_settings.window_width);
-		add_entry_int(vbox, "Window Height", &tmp_settings.window_height);
+		add_entry_int(vbox, _("Window Width"), &tmp_settings.window_width);
+		add_entry_int(vbox, _("Window Height"), &tmp_settings.window_height);
 		slider_swap_struc.iA = &(tmp_settings.slider_width);
 		slider_swap_struc.iB = &(tmp_settings.slider_height);
 		slider_swap_struc.control = &tmp_settings.vertical;
-		add_entry_bool_r(vbox, "Slider Orientation", "Vertical", "Horizontal", NULL, &slider_swap_struc);
-		slider_swap_struc.adj_A = add_entry_int(vbox, "Slider Width", slider_swap_struc.iA);
-		slider_swap_struc.adj_B = add_entry_int(vbox, "Slider Height", slider_swap_struc.iB);
-		add_entry_int(vbox, "Slider Margins", &tmp_settings.slider_margin);
-		add_entry_int(vbox, "Segment Thickness", &tmp_settings.seg_thickness);
-		add_entry_int(vbox, "Segment Spacing", &tmp_settings.seg_spacing);
-		add_entry_color(vbox, "Background Color", tmp_settings.background_color);
-		add_entry_color(vbox, "Border Color", tmp_settings.border_color);
-		add_entry_color(vbox, "Unlit Color", tmp_settings.unlit_color);
-		add_entry_color(vbox, "Lit Color", tmp_settings.lit_color);
-		add_entry_bool_c(vbox, "Enable Tray Icon", &tmp_settings.enable_tray_icon);
-		add_entry_slider_dropdown(vbox, "Tray Slider", tmp_settings.tray_control_name, tmp_settings.list_ptr);
+		add_entry_bool_r(vbox, _("Slider Orientation"), _("Vertical"), _("Horizontal"), NULL, &slider_swap_struc);
+		slider_swap_struc.adj_A = add_entry_int(vbox, _("Slider Width"), slider_swap_struc.iA);
+		slider_swap_struc.adj_B = add_entry_int(vbox, _("Slider Height"), slider_swap_struc.iB);
+		add_entry_int(vbox, _("Slider Margins"), &tmp_settings.slider_margin);
+		add_entry_int(vbox, _("Segment Thickness"), &tmp_settings.seg_thickness);
+		add_entry_int(vbox, _("Segment Spacing"), &tmp_settings.seg_spacing);
+		add_entry_color(vbox, _("Background Color"), tmp_settings.background_color);
+		add_entry_color(vbox, _("Border Color"), tmp_settings.border_color);
+		add_entry_color(vbox, _("Unlit Color"), tmp_settings.unlit_color);
+		add_entry_color(vbox, _("Lit Color"), tmp_settings.lit_color);
+		add_entry_bool_c(vbox, _("Enable Tray Icon"), &tmp_settings.enable_tray_icon);
+		add_entry_slider_dropdown(vbox, _("Tray Slider"), tmp_settings.tray_control_name, tmp_settings.list_ptr);
 		tray_slider_swap_struc.iA = &(tmp_settings.tray_slider_width);
 		tray_slider_swap_struc.iB = &(tmp_settings.tray_slider_height);
 		tray_slider_swap_struc.control = &tmp_settings.tray_slider_vertical;
-		add_entry_bool_r(vbox, "Tray Slider Orientation", "Vertical", "Horizontal", NULL, &tray_slider_swap_struc);
-		tray_slider_swap_struc.adj_A = add_entry_int(vbox, "Tray Slider Width", tray_slider_swap_struc.iA);
-		tray_slider_swap_struc.adj_B = add_entry_int(vbox, "Tray Slider Height", tray_slider_swap_struc.iB);
-		add_entry_bool_c(vbox, "Enable Tray Icon Background Color", &tmp_settings.enable_tray_icon_background_color);
-		add_entry_color(vbox, "Tray Icon Background Color", tmp_settings.tray_icon_background_color);
+		add_entry_bool_r(vbox, _("Tray Slider Orientation"), _("Vertical"), _("Horizontal"), NULL, &tray_slider_swap_struc);
+		tray_slider_swap_struc.adj_A = add_entry_int(vbox, _("Tray Slider Width"), tray_slider_swap_struc.iA);
+		tray_slider_swap_struc.adj_B = add_entry_int(vbox, _("Tray Slider Height"), tray_slider_swap_struc.iB);
+		add_entry_bool_c(vbox, _("Enable Tray Icon Background Color"), &tmp_settings.enable_tray_icon_background_color);
+		add_entry_color(vbox, _("Tray Icon Background Color"), tmp_settings.tray_icon_background_color);
 	}
 
 	//Hardware tab
 	//default card, sliders to use, order, etc.
 	{
 		//initialize the tab
-		GtkWidget *viewport = tab_init(notebook, "Hardware");
+		GtkWidget *viewport = tab_init(notebook, _("Hardware"));
 
 		//add the widgets
 		order_widget.build(GTK_CONTAINER(viewport), &tmp_settings.num_names, tmp_settings.name_list, tmp_settings.list_ptr);

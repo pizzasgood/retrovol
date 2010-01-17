@@ -13,6 +13,11 @@
 #include "alsa_classes.h"
 #include "config_settings.h"
 
+//i18n stuff
+#include "gettext.h"
+#include <locale.h>
+#define _(String) gettext (String)
+
 
 ConfigSettings::ConfigSettings(){
 	num_names = 0;
@@ -181,7 +186,7 @@ void ConfigSettings::parse_config(char *config_file){
 	
 	FILE *cfile = fopen(_config_file, "r");	
 	if (!cfile){
-		fprintf(stdout, "Cannot read file: %s\nUsing defaults...\n", _config_file);
+		fprintf(stdout, _("Cannot read file: %s\nUsing defaults...\n"), _config_file);
 		return;
 	}
 	
@@ -284,29 +289,29 @@ void ConfigSettings::write_config(){
 	char tmpstr2[8];
 	FILE *cfile = fopen(_config_file, "w");	
 	if (!cfile){
-		fprintf(stdout, "Cannot open file: %s\n for writing\n", _config_file);
+		fprintf(stdout, _("Cannot open file: %s\n for writing\n"), _config_file);
 		return;
 	}
 	
-	fputs("# Config file for retrovol\n", cfile);
-	fputs("# This file should reside in the user's home directory and be named .retrovolrc\n", cfile);
+	fputs(_("# Config file for retrovol\n"), cfile);
+	fputs(_("# This file should reside in the user's home directory and be named .retrovolrc\n"), cfile);
 
 	fputs("\n", cfile);
-	fputs("\n# Which soundcard to use\n", cfile);
+	fputs(_("\n# Which soundcard to use\n"), cfile);
 	fprintf(cfile, "#card=%s\n", _d_card);
 	if (strcmp(card, _d_card) != 0){ fprintf(cfile, "card=%s\n", card); }
 
-	fputs("\n# Set this to 1 to make the sliders vertical, or 0 for horizontal (only applies to the main window)\n", cfile);
+	fputs(_("\n# Set this to 1 to make the sliders vertical, or 0 for horizontal (only applies to the main window)\n"), cfile);
 	fprintf(cfile, "#vertical=%d\n", _d_vertical);
 	if (vertical != _d_vertical){ fprintf(cfile, "vertical=%d\n", vertical); }
 
-	fputs("\n# Window dimensions\n", cfile);
+	fputs(_("\n# Window dimensions\n"), cfile);
 	fprintf(cfile, "#window_width=%d\n", _d_window_width);
 	if (window_width != _d_window_width){ fprintf(cfile, "window_width=%d\n", window_width); }
 	fprintf(cfile, "#window_height=%d\n", _d_window_height);
 	if (window_height != _d_window_height){ fprintf(cfile, "window_height=%d\n", window_height); }
 
-	fputs("\n# Slider dimensions\n", cfile);
+	fputs(_("\n# Slider dimensions\n"), cfile);
 	fprintf(cfile, "#slider_width=%d\n", _d_slider_width);
 	if (slider_width != _d_slider_width){ fprintf(cfile, "slider_width=%d\n", slider_width); }
 	fprintf(cfile, "#slider_height=%d\n", _d_slider_height);
@@ -318,7 +323,7 @@ void ConfigSettings::write_config(){
 	fprintf(cfile, "#seg_spacing=%d\n", _d_seg_spacing);
 	if (seg_spacing != _d_seg_spacing){ fprintf(cfile, "seg_spacing=%d\n", seg_spacing); }
 
-	fputs("\n# Slider colorscheme\n", cfile);
+	fputs(_("\n# Slider colorscheme\n"), cfile);
 	nftoh(_d_background_color, tmpstr1);
 	nftoh(background_color, tmpstr2);
 	fprintf(cfile, "#background_color=%s\n", tmpstr1);
@@ -336,34 +341,34 @@ void ConfigSettings::write_config(){
 	fprintf(cfile, "#lit_color=%s\n", tmpstr1);
 	if (strcmp(tmpstr1, tmpstr2) != 0){ fprintf(cfile, "lit_color=%s\n", tmpstr2); }
 
-	fputs("\n# Enable the tray_icon\n", cfile);
+	fputs(_("\n# Enable the tray_icon\n"), cfile);
 	fprintf(cfile, "#enable_tray_icon=%d\n", _d_enable_tray_icon);
 	if (enable_tray_icon != _d_enable_tray_icon){ fprintf(cfile, "enable_tray_icon=%d\n", enable_tray_icon); }
 
-	fputs("\n# Background color of tray_icon (default is default GTK background color).  Note:  the commandline -bg option overrides this\n", cfile);
+	fputs(_("\n# Background color of tray_icon (default is default GTK background color).  Note:  the commandline -bg option overrides this\n"), cfile);
 	nftoh(_d_tray_icon_background_color, tmpstr1);
 	nftoh(tray_icon_background_color, tmpstr2);
 	fprintf(cfile, "#tray_icon_background_color=%s\n", tmpstr1);
 	if (enable_tray_icon_background_color){ fprintf(cfile, "tray_icon_background_color=%s\n", tmpstr2); }
 
-	fputs("\n# Set this to 1 to make the slider on the tray_icon vertical, or 0 for horizontal\n", cfile);
+	fputs(_("\n# Set this to 1 to make the slider on the tray_icon vertical, or 0 for horizontal\n"), cfile);
 	fprintf(cfile, "#tray_slider_vertical=%d\n", _d_tray_slider_vertical);
 	if (tray_slider_vertical != _d_tray_slider_vertical){ fprintf(cfile, "tray_slider_vertical=%d\n", tray_slider_vertical); }
 
-	fputs("\n# Tray slider dimensions\n", cfile);
+	fputs(_("\n# Tray slider dimensions\n"), cfile);
 	fprintf(cfile, "#tray_slider_width=%d\n", _d_tray_slider_width);
 	if (tray_slider_width != _d_tray_slider_width){ fprintf(cfile, "tray_slider_width=%d\n", tray_slider_width); }
 	fprintf(cfile, "#tray_slider_height=%d\n", _d_tray_slider_height);
 	if (tray_slider_height != _d_tray_slider_height){ fprintf(cfile, "tray_slider_height=%d\n", tray_slider_height); }
 	
-	fputs("\n# Which slider to link with the tray_icon\n", cfile);
+	fputs(_("\n# Which slider to link with the tray_icon\n"), cfile);
 	fprintf(cfile, "#tray_control=%s\n", "Master Playback Volume");
 	if (strlen(tray_control_name) > 0 && strcmp(tray_control_name, "Master Playback Volume") != 0){ fprintf(cfile, "tray_control=%s\n", tray_control_name); }
 
 	fputs("\n\n", cfile);
-	fputs("\n# Which sliders to display, in order.  They MUST have a tab first and be quoted\n# with double-quotes.  To get a list of the slider names, run this command:\n#    amixer controls\n# NOTE:  This section must go at the end of the file!\n", cfile);
+	fputs(_("\n# Which sliders to display, in order.  They MUST have a tab first and be quoted\n# with double-quotes.  To get a list of the slider names, run this command:\n#    amixer controls\n# NOTE:  This section must go at the end of the file!\n"), cfile);
 
-	fputs("\n#EXAMPLE:\n", cfile);
+	fputs(_("\n#EXAMPLE:\n"), cfile);
 	fputs("\n#sliders:\n", cfile);
 	fputs("#\t\"Master Playback Volume\"\n", cfile);
 	fputs("#\t\"Front Playback Volume\"\n", cfile);

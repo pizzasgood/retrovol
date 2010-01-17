@@ -253,7 +253,7 @@ bool loop(int argc, char** argv) {
 				style->bg[GTK_STATE_NORMAL] = bg_color;
 				gtk_widget_set_style(settings.tray_icon, style);
 			} else {
-				fprintf(stderr, "Error:  Failed to set background color to %s\n", bg_color_str);
+				fprintf(stderr, _("Error:  Failed to set background color to %s\n"), bg_color_str);
 			}
 		}
 		//set up the images
@@ -287,10 +287,10 @@ bool loop(int argc, char** argv) {
 
 	//define the menu
 	GtkItemFactoryEntry menu_items[] = {
-		{ (gchar*)"/_File",           NULL,              NULL,                      0, (gchar*)"<Branch>" },
-		{ (gchar*)"/File/_Configure", (gchar*)"<CTRL>C", G_CALLBACK(configure),     0, (gchar*)"<StockItem>", GTK_STOCK_NEW },
-		{ (gchar*)"/File/_Quit",      (gchar*)"<CTRL>Q", G_CALLBACK(close_window),  0, (gchar*)"<StockItem>", GTK_STOCK_QUIT },
-		{ (gchar*)"/File/_Exit",      (gchar*)"<CTRL>E", G_CALLBACK(gtk_main_quit), 0, (gchar*)"<StockItem>", GTK_STOCK_QUIT }
+		{ (gchar*)_("/_File"),           NULL,              NULL,                      0, (gchar*)"<Branch>" },
+		{ (gchar*)_("/File/_Configure"), (gchar*)"<CTRL>C", G_CALLBACK(configure),     0, (gchar*)"<StockItem>", GTK_STOCK_NEW },
+		{ (gchar*)_("/File/_Quit"),      (gchar*)"<CTRL>Q", G_CALLBACK(close_window),  0, (gchar*)"<StockItem>", GTK_STOCK_QUIT },
+		{ (gchar*)_("/File/_Exit"),      (gchar*)"<CTRL>E", G_CALLBACK(gtk_main_quit), 0, (gchar*)"<StockItem>", GTK_STOCK_QUIT }
 	};
 	gint nmenu_items = sizeof (menu_items) / sizeof (menu_items[0]);
 
@@ -459,16 +459,16 @@ int main(int argc, char** argv) {
 				strcpy(cmdline_bg_color, argv[i+1]);
 				i++;
 			} else {
-				fprintf(stderr, "ERROR:  The -bg option requires a color to be supplied in the format #rrggbb\n");
+				fprintf(stderr, _("ERROR:  The -bg option requires a color to be supplied in the format #rrggbb\n"));
 			}
 		} else if (strcmp(argv[i], "-show") == 0 || strcmp(argv[i], "--show") == 0){
 			start_hidden = false;
 		} else {
-			fprintf(stderr, "Usage: %s [-bg #rrggbb] [-show]\n", argv[0]);
-			fprintf(stderr, "Volume mixer with bargraph style sliders.\n");
-			fprintf(stderr, "Reads ~/.retrovolrc for configuration options.  Additionally, the following\noptions may be given on the commandline:\n");
-			fprintf(stderr, "\t-bg #rrggbb     specify the background color of the tray icon\n");
-			fprintf(stderr, "\t-show           show the main window initially\n");
+			fprintf(stderr, _("Usage: %s [-bg #rrggbb] [-show]\n"), argv[0]);
+			fprintf(stderr, _("Volume mixer with bargraph style sliders.\n"));
+			fprintf(stderr, _("Reads ~/.retrovolrc for configuration options.  Additionally, the following\noptions may be given on the commandline:\n"));
+			fprintf(stderr, _("\t-bg #rrggbb     specify the background color of the tray icon\n"));
+			fprintf(stderr, _("\t-show           show the main window initially\n"));
 			exit(1);
 		}
 	}
@@ -491,7 +491,7 @@ int main(int argc, char** argv) {
 		fclose(pidfile);
 		created_file = true;
 	} else {
-		fprintf(stderr, "Error: could not create %s\n", pid_filename);
+		fprintf(stderr, _("Error: could not create %s\n"), pid_filename);
 	}
 
 	//when SIGUSR1 is recieved, pop up the window

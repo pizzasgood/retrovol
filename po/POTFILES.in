@@ -1,2 +1,4 @@
 # List of source files which contain translatable strings.
 src/main.cpp
+src/config_settings.cpp
+src/config_window.cpp
