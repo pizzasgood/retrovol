@@ -9,7 +9,6 @@
 	four radio boxes to switch view: Playback, Capture, All, Custom
 	?custom sliders that operate multiple sliders at once
 	status bar - shows full name of the device below cursor, along with numeric info - make optional in config file
-        get the i18n caught up with the current strings
 
 :tray icon:
 	use non-deprecated functions to position slider (inside a popup menu?)
