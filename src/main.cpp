@@ -219,7 +219,7 @@ bool loop(int argc, char** argv) {
 		settings.tray_slider->init(tray_frame, (void*)settings.tray_control, &Element::get_callback, &Element::set_callback);
 
 		//set up the small window that holds the tray_slider
-		settings.slider_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+		settings.slider_window = gtk_window_new (GTK_WINDOW_POPUP);
 		gtk_window_set_resizable(GTK_WINDOW(settings.slider_window), false);
 		gtk_window_set_decorated(GTK_WINDOW(settings.slider_window), false);
 		gtk_window_set_skip_taskbar_hint(GTK_WINDOW(settings.slider_window), true);
