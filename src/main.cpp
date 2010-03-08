@@ -35,7 +35,7 @@ const char pid_filename[] = "/var/run/retrovol.pid";
 static ElementList *list_ptr;
 bool cmdline_enable_bg_color = false;
 char cmdline_bg_color[7];
-bool start_hidden = true;
+bool start_hidden = false;
 
 
 
@@ -461,14 +461,14 @@ int main(int argc, char** argv) {
 			} else {
 				fprintf(stderr, _("ERROR:  The -bg option requires a color to be supplied in the format #rrggbb\n"));
 			}
-		} else if (strcmp(argv[i], "-show") == 0 || strcmp(argv[i], "--show") == 0){
-			start_hidden = false;
+		} else if (strcmp(argv[i], "-hide") == 0 || strcmp(argv[i], "--hide") == 0){
+			start_hidden = true;
 		} else {
-			fprintf(stderr, _("Usage: %s [-bg #rrggbb] [-show]\n"), argv[0]);
+			fprintf(stderr, _("Usage: %s [-bg #rrggbb] [-hide]\n"), argv[0]);
 			fprintf(stderr, _("Volume mixer with bargraph style sliders.\n"));
 			fprintf(stderr, _("Reads ~/.retrovolrc for configuration options.  Additionally, the following\noptions may be given on the commandline:\n"));
 			fprintf(stderr, _("\t-bg #rrggbb     specify the background color of the tray icon\n"));
-			fprintf(stderr, _("\t-show           show the main window initially\n"));
+			fprintf(stderr, _("\t-hide           hide the main window initially\n"));
 			exit(1);
 		}
 	}
