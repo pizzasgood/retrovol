@@ -34,7 +34,7 @@ const char config_file[] = "/.retrovolrc";
 const char pid_filename[] = "/var/run/retrovol.pid";
 static ElementList *list_ptr;
 bool cmdline_enable_bg_color = false;
-char cmdline_bg_color[7];
+char cmdline_bg_color[8];
 bool start_hidden = false;
 
 
