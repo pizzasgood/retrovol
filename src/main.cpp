@@ -461,12 +461,16 @@ int main(int argc, char** argv) {
 			} else {
 				fprintf(stderr, _("ERROR:  The -bg option requires a color to be supplied in the format #rrggbb\n"));
 			}
+		} else if (strcmp(argv[i], "-v") == 0 || strcmp(argv[i], "--version") == 0){
+			printf("%s %s\n", argv[0], VERSION);
+			exit(0);
 		} else if (strcmp(argv[i], "-hide") == 0 || strcmp(argv[i], "--hide") == 0){
 			start_hidden = true;
 		} else {
 			fprintf(stderr, _("Usage: %s [-bg #rrggbb] [-hide]\n"), argv[0]);
 			fprintf(stderr, _("Volume mixer with bargraph style sliders.\n"));
 			fprintf(stderr, _("Reads ~/.retrovolrc for configuration options.  Additionally, the following\noptions may be given on the commandline:\n"));
+			fprintf(stderr, _("\t-v              print the version number and exit\n"));
 			fprintf(stderr, _("\t-bg #rrggbb     specify the background color of the tray icon\n"));
 			fprintf(stderr, _("\t-hide           hide the main window initially\n"));
 			exit(1);
