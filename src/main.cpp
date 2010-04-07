@@ -240,7 +240,7 @@ bool loop(int argc, char** argv) {
 		//set the background color
 		bool enable_tray_icon_background_color = settings.enable_tray_icon_background_color; 
 		GdkColor bg_color;
-		char bg_color_str[7];
+		char bg_color_str[8];
 		if (cmdline_enable_bg_color){
 			enable_tray_icon_background_color = true;
 			strcpy(bg_color_str, cmdline_bg_color);
