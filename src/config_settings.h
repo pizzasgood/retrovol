@@ -54,6 +54,7 @@ class ConfigSettings {
 		float lit_color[3], _d_lit_color[3];			//color of lit segments
 		
 		bool enable_tray_icon, _d_enable_tray_icon;		//enable the tray icon
+		bool enable_tray_menu, _d_enable_tray_menu;		//right-click on tray shows a menu instead of opening the main window
 		bool tray_slider_vertical, _d_tray_slider_vertical;	//when true, the tray_slider is vertical
 		int tray_slider_width, _d_tray_slider_width;		//dimensions of the tray_slider
 		int tray_slider_height, _d_tray_slider_height;		//

@@ -438,6 +438,7 @@ void build_config_window(ConfigSettings *settings){
 		add_entry_color(vbox, _("Unlit Color"), tmp_settings.unlit_color);
 		add_entry_color(vbox, _("Lit Color"), tmp_settings.lit_color);
 		add_entry_bool_c(vbox, _("Enable Tray Icon"), &tmp_settings.enable_tray_icon);
+		add_entry_bool_c(vbox, _("Enable Tray Menu"), &tmp_settings.enable_tray_menu);
 		add_entry_slider_dropdown(vbox, _("Tray Slider"), tmp_settings.tray_control_name, tmp_settings.list_ptr);
 		tray_slider_swap_struc.iA = &(tmp_settings.tray_slider_width);
 		tray_slider_swap_struc.iB = &(tmp_settings.tray_slider_height);

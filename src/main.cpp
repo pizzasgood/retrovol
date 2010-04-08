@@ -86,15 +86,16 @@ gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *ev
 				gtk_widget_show_all(slider_window);
 			}
 			break;
-		case 3:		//right mouse button - display main window
-			gtk_menu_popup(GTK_MENU(settings.tray_icon_menu), NULL, NULL, NULL, NULL, event->button, event->time);
-			/* -- TODO: make this old behavior optional instead of the above
-			if (GTK_WIDGET_VISIBLE(settings.main_window)){
-				gtk_widget_hide_all(settings.main_window);
+		case 3:		//right mouse button - display tray menu or main window, depending on settings.enable_tray_menu
+			if (settings.enable_tray_menu){
+				gtk_menu_popup(GTK_MENU(settings.tray_icon_menu), NULL, NULL, NULL, NULL, event->button, event->time);
 			} else {
-				gtk_widget_show_all(settings.main_window);
+				if (GTK_WIDGET_VISIBLE(settings.main_window)){
+					gtk_widget_hide_all(settings.main_window);
+				} else {
+					gtk_widget_show_all(settings.main_window);
+				}
 			}
-			*/
 			break;
 		case 2:		//middle mouse button - mute
 			if (settings.tray_control->switch_id >= 0){
@@ -287,30 +288,32 @@ bool loop(int argc, char** argv) {
 
 		//set up the popup menu
 		//TODO: add stock icons
-		GtkWidget *exit_entry = gtk_menu_item_new_with_mnemonic("_Exit");
-		GtkWidget *show_entry = gtk_menu_item_new_with_mnemonic("_Full Window");
-		g_signal_connect(G_OBJECT(exit_entry), "activate", G_CALLBACK(gtk_main_quit), NULL);
-		g_signal_connect(G_OBJECT(show_entry), "activate", G_CALLBACK(open_window), NULL);
-		settings.tray_icon_menu = gtk_menu_new();
+		if (settings.enable_tray_menu){
+			GtkWidget *exit_entry = gtk_menu_item_new_with_mnemonic("_Exit");
+			GtkWidget *show_entry = gtk_menu_item_new_with_mnemonic("_Full Window");
+			g_signal_connect(G_OBJECT(exit_entry), "activate", G_CALLBACK(gtk_main_quit), NULL);
+			g_signal_connect(G_OBJECT(show_entry), "activate", G_CALLBACK(open_window), NULL);
+			settings.tray_icon_menu = gtk_menu_new();
 
-		//Decide which order to stack the menu, so that the entry under the mouse
-		//initially will hopefully be show_entry, which is what the user is most
-		//likely trying to use, as opposed to exit_entry, which they probably do
-		//not want to accidentally hit...
-		int icon_x,icon_y;
-		gtk_window_get_position(GTK_WINDOW(settings.tray_icon), &icon_x, &icon_y);
-		if (icon_y > 200){
-			//taskbar is on bottom, so put show_entry on bottom for ergonomics
-			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
-			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), show_entry);
-		} else {
-			//taskbar is on top, so put show_entry on top for ergonomics
-			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), show_entry);
-			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
+			//Decide which order to stack the menu, so that the entry under the mouse
+			//initially will hopefully be show_entry, which is what the user is most
+			//likely trying to use, as opposed to exit_entry, which they probably do
+			//not want to accidentally hit...
+			int icon_x,icon_y;
+			gtk_window_get_position(GTK_WINDOW(settings.tray_icon), &icon_x, &icon_y);
+			if (icon_y > 200){
+				//taskbar is on bottom, so put show_entry on bottom for ergonomics
+				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
+				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), show_entry);
+			} else {
+				//taskbar is on top, so put show_entry on top for ergonomics
+				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), show_entry);
+				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
+			}
+			
+			//make menu potentially visible
+			gtk_widget_show_all(settings.tray_icon_menu);
 		}
-		
-		//make menu potentially visible
-		gtk_widget_show_all(settings.tray_icon_menu);
 
 	}
 	
@@ -333,12 +336,31 @@ bool loop(int argc, char** argv) {
 	gtk_container_add(GTK_CONTAINER(settings.main_window), over_box);
 
 	//define the menu
-	GtkItemFactoryEntry menu_items[] = {
+	GtkItemFactoryEntry menu_items_1[] = {
 		{ (gchar*)_("/_File"),           NULL,              NULL,                      0, (gchar*)"<Branch>" },
 		{ (gchar*)_("/File/_Configure"), (gchar*)"<CTRL>C", G_CALLBACK(configure),     0, (gchar*)"<StockItem>", GTK_STOCK_NEW },
 		{ (gchar*)_("/File/_Quit"),      (gchar*)"<CTRL>Q", G_CALLBACK(close_window),  0, (gchar*)"<StockItem>", GTK_STOCK_QUIT },
 	};
-	gint nmenu_items = sizeof (menu_items) / sizeof (menu_items[0]);
+	gint nmenu_items_1 = sizeof (menu_items_1) / sizeof (menu_items_1[0]);
+	
+	GtkItemFactoryEntry menu_items_2[] = {
+		{ (gchar*)_("/_File"),           NULL,              NULL,                      0, (gchar*)"<Branch>" },
+		{ (gchar*)_("/File/_Configure"), (gchar*)"<CTRL>C", G_CALLBACK(configure),     0, (gchar*)"<StockItem>", GTK_STOCK_NEW },
+		{ (gchar*)_("/File/_Exit completely"),      (gchar*)"<CTRL>E", G_CALLBACK(gtk_main_quit),  0, (gchar*)"<StockItem>", GTK_STOCK_QUIT },
+		{ (gchar*)_("/File/_Quit"),      (gchar*)"<CTRL>Q", G_CALLBACK(close_window),  0, (gchar*)"<StockItem>", GTK_STOCK_QUIT },
+	};
+	gint nmenu_items_2 = sizeof (menu_items_2) / sizeof (menu_items_2[0]);
+
+	GtkItemFactoryEntry *menu_items;
+	gint nmenu_items;
+	//if the tray menu is enabled, don't have the "Exit" entry in the main menu
+	if (settings.enable_tray_menu){
+		menu_items = menu_items_1;
+		nmenu_items = nmenu_items_1;
+	} else {
+		menu_items = menu_items_2;
+		nmenu_items = nmenu_items_2;
+	}
 
 	//build the menu
 	GtkWidget *menubar;

@@ -31,6 +31,9 @@
 #  Enbable the tray_icon
 #enable_tray_icon=1
 
+#  Enbable the tray_menu
+#enable_tray_menu=1
+
 #  Set this to 1 to make the slider on the tray_icon vertical, or 0 for horizontal
 #tray_slider_vertical=1
 

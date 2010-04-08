@@ -49,6 +49,7 @@ ConfigSettings::ConfigSettings(){
 	_d_lit_color[2]=0.0;
 	
 	_d_enable_tray_icon = true;
+	_d_enable_tray_menu = true;
 	_d_enable_tray_icon_background_color = false;
 	_d_tray_icon_background_color[0]=0.8;
 	_d_tray_icon_background_color[1]=0.8;
@@ -96,6 +97,7 @@ void ConfigSettings::apply_defaults(){
 	lit_color[2] = _d_lit_color[2];
 	
 	enable_tray_icon = _d_enable_tray_icon;
+	enable_tray_menu = _d_enable_tray_menu;
 	tray_slider_vertical = _d_tray_slider_vertical;
 	tray_slider_width = _d_tray_slider_width;
 	tray_slider_height = _d_tray_slider_height;
@@ -163,6 +165,7 @@ void ConfigSettings::copy_settings(ConfigSettings *ptr){
 		lit_color[i] = ptr->lit_color[i];
 	}
 	enable_tray_icon = ptr->enable_tray_icon;
+	enable_tray_menu = ptr->enable_tray_menu;
 	tray_slider_vertical = ptr->tray_slider_vertical;
 	tray_slider_width = ptr->tray_slider_width;
 	tray_slider_height = ptr->tray_slider_height;
@@ -240,6 +243,9 @@ void ConfigSettings::parse_config(char *config_file){
 		} else if (strcmp(tmpptr, "enable_tray_icon")==0){
 			tmpptr=strtok(NULL, "=\n");
 			enable_tray_icon=(bool)atoi(tmpptr);
+		} else if (strcmp(tmpptr, "enable_tray_menu")==0){
+			tmpptr=strtok(NULL, "=\n");
+			enable_tray_menu=(bool)atoi(tmpptr);
 		} else if (strcmp(tmpptr, "tray_icon_background_color")==0){
 			tmpptr=strtok(NULL, "=\n");
 			htonf(tray_icon_background_color, tmpptr);
@@ -344,6 +350,10 @@ void ConfigSettings::write_config(){
 	fputs(_("\n# Enable the tray_icon\n"), cfile);
 	fprintf(cfile, "#enable_tray_icon=%d\n", _d_enable_tray_icon);
 	if (enable_tray_icon != _d_enable_tray_icon){ fprintf(cfile, "enable_tray_icon=%d\n", enable_tray_icon); }
+
+	fputs(_("\n# Enable the tray_menu\n"), cfile);
+	fprintf(cfile, "#enable_tray_menu=%d\n", _d_enable_tray_menu);
+	if (enable_tray_menu != _d_enable_tray_menu){ fprintf(cfile, "enable_tray_menu=%d\n", enable_tray_menu); }
 
 	fputs(_("\n# Background color of tray_icon (default is default GTK background color).  Note:  the commandline -bg option overrides this\n"), cfile);
 	nftoh(_d_tray_icon_background_color, tmpstr1);
