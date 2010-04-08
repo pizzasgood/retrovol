@@ -72,7 +72,7 @@ gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *ev
 			} else {
 				int x, y;
 				gtk_window_get_size(GTK_WINDOW(slider_window), &x, &y);
-				gtk_widget_set_uposition(slider_window, event->x_root - event->x - x/2 + widget->allocation.width/2, event->y_root-event->y-y-3);
+				gtk_window_move(GTK_WINDOW(slider_window), event->x_root - event->x - x/2 + widget->allocation.width/2, event->y_root-event->y-y-3);
 				gtk_widget_show_all(slider_window);
 			}
 			break;
