@@ -437,6 +437,17 @@ void build_config_window(ConfigSettings *settings){
 		add_entry_color(vbox, _("Border Color"), tmp_settings.border_color);
 		add_entry_color(vbox, _("Unlit Color"), tmp_settings.unlit_color);
 		add_entry_color(vbox, _("Lit Color"), tmp_settings.lit_color);
+	}
+
+	//Tray tab
+	//dimensions, colors, etc.
+	{
+		//initialize the tab
+		GtkWidget *viewport = tab_init(notebook, _("Tray"));
+		GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
+		gtk_container_add(GTK_CONTAINER(viewport), vbox);
+
+		//add the widgets
 		add_entry_bool_c(vbox, _("Enable Tray Icon"), &tmp_settings.enable_tray_icon);
 		add_entry_bool_c(vbox, _("Enable Tray Menu"), &tmp_settings.enable_tray_menu);
 		add_entry_slider_dropdown(vbox, _("Tray Slider"), tmp_settings.tray_control_name, tmp_settings.list_ptr);
