@@ -274,13 +274,13 @@ bool loop(int argc, char** argv) {
 
 		//set up the popup menu
 		//TODO: add stock icons
-		GtkWidget *config_entry = gtk_menu_item_new_with_mnemonic("_Configure");
 		GtkWidget *exit_entry = gtk_menu_item_new_with_mnemonic("_Exit");
-		g_signal_connect(G_OBJECT(config_entry), "activate", G_CALLBACK(open_window), NULL);
+		GtkWidget *config_entry = gtk_menu_item_new_with_mnemonic("_Full Window");
 		g_signal_connect(G_OBJECT(exit_entry), "activate", G_CALLBACK(gtk_main_quit), NULL);
+		g_signal_connect(G_OBJECT(config_entry), "activate", G_CALLBACK(open_window), NULL);
 		settings.tray_icon_menu = gtk_menu_new();
-		gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), config_entry);
 		gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
+		gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), config_entry);
 		
 		//make everything visible
 		gtk_widget_show_all(settings.tray_icon);
