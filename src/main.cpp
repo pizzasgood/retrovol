@@ -77,11 +77,14 @@ gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *ev
 			}
 			break;
 		case 3:		//right mouse button - display main window
+			gtk_menu_popup(GTK_MENU(settings.tray_icon_menu), NULL, NULL, NULL, NULL, event->button, event->time);
+			/* -- TODO: make this old behavior optional instead of the above
 			if (GTK_WIDGET_VISIBLE(settings.main_window)){
 				gtk_widget_hide_all(settings.main_window);
 			} else {
 				gtk_widget_show_all(settings.main_window);
 			}
+			*/
 			break;
 		case 2:		//middle mouse button - mute
 			if (settings.tray_control->switch_id >= 0){
@@ -157,6 +160,11 @@ void word_wrap(char *wrapped, char *orig){
 //callback for the configure window
 void configure( GtkWidget *w, gpointer data){
 	build_config_window(&settings);
+}
+
+//callback that opens the main window
+void open_window(GtkWidget *w, gpointer data){
+	gtk_widget_show_all(settings.main_window);
 }
 
 //callback that closes the main window
@@ -263,8 +271,20 @@ bool loop(int argc, char** argv) {
 		g_signal_connect(G_OBJECT(settings.tray_icon), "button_press_event", G_CALLBACK (&tray_button_press_event_callback), settings.slider_window);
 		g_signal_connect(G_OBJECT(settings.tray_icon), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), settings.tray_slider);
 		gtk_widget_set_events (settings.tray_icon, GDK_BUTTON_PRESS_MASK | GDK_SCROLL_MASK);
+
+		//set up the popup menu
+		//TODO: add stock icons
+		GtkWidget *config_entry = gtk_menu_item_new_with_mnemonic("_Configure");
+		GtkWidget *exit_entry = gtk_menu_item_new_with_mnemonic("_Exit");
+		g_signal_connect(G_OBJECT(config_entry), "activate", G_CALLBACK(open_window), NULL);
+		g_signal_connect(G_OBJECT(exit_entry), "activate", G_CALLBACK(gtk_main_quit), NULL);
+		settings.tray_icon_menu = gtk_menu_new();
+		gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), config_entry);
+		gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
 		
+		//make everything visible
 		gtk_widget_show_all(settings.tray_icon);
+		gtk_widget_show_all(settings.tray_icon_menu);
 	}
 	
 
@@ -290,7 +310,6 @@ bool loop(int argc, char** argv) {
 		{ (gchar*)_("/_File"),           NULL,              NULL,                      0, (gchar*)"<Branch>" },
 		{ (gchar*)_("/File/_Configure"), (gchar*)"<CTRL>C", G_CALLBACK(configure),     0, (gchar*)"<StockItem>", GTK_STOCK_NEW },
 		{ (gchar*)_("/File/_Quit"),      (gchar*)"<CTRL>Q", G_CALLBACK(close_window),  0, (gchar*)"<StockItem>", GTK_STOCK_QUIT },
-		{ (gchar*)_("/File/_Exit"),      (gchar*)"<CTRL>E", G_CALLBACK(gtk_main_quit), 0, (gchar*)"<StockItem>", GTK_STOCK_QUIT }
 	};
 	gint nmenu_items = sizeof (menu_items) / sizeof (menu_items[0]);
 

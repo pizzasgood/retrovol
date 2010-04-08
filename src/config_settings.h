@@ -21,6 +21,7 @@ class ConfigSettings {
 		GtkWidget *slider_window;
 		GtkWidget *tray_icon;
 		GtkWidget *tray_icon_image;
+		GtkWidget *tray_icon_menu;
 		retro_slider *tray_slider;
 		Element *tray_control;
 		bool restart;
