@@ -282,19 +282,36 @@ bool loop(int argc, char** argv) {
 		g_signal_connect(G_OBJECT(settings.tray_icon), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), settings.tray_slider);
 		gtk_widget_set_events (settings.tray_icon, GDK_BUTTON_PRESS_MASK | GDK_SCROLL_MASK);
 
+		//make icon visible
+		gtk_widget_show_all(settings.tray_icon);
+
 		//set up the popup menu
 		//TODO: add stock icons
 		GtkWidget *exit_entry = gtk_menu_item_new_with_mnemonic("_Exit");
-		GtkWidget *config_entry = gtk_menu_item_new_with_mnemonic("_Full Window");
+		GtkWidget *show_entry = gtk_menu_item_new_with_mnemonic("_Full Window");
 		g_signal_connect(G_OBJECT(exit_entry), "activate", G_CALLBACK(gtk_main_quit), NULL);
-		g_signal_connect(G_OBJECT(config_entry), "activate", G_CALLBACK(open_window), NULL);
+		g_signal_connect(G_OBJECT(show_entry), "activate", G_CALLBACK(open_window), NULL);
 		settings.tray_icon_menu = gtk_menu_new();
-		gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
-		gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), config_entry);
+
+		//Decide which order to stack the menu, so that the entry under the mouse
+		//initially will hopefully be show_entry, which is what the user is most
+		//likely trying to use, as opposed to exit_entry, which they probably do
+		//not want to accidentally hit...
+		int icon_x,icon_y;
+		gtk_window_get_position(GTK_WINDOW(settings.tray_icon), &icon_x, &icon_y);
+		if (icon_y > 200){
+			//taskbar is on bottom, so put show_entry on bottom for ergonomics
+			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
+			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), show_entry);
+		} else {
+			//taskbar is on top, so put show_entry on top for ergonomics
+			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), show_entry);
+			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
+		}
 		
-		//make everything visible
-		gtk_widget_show_all(settings.tray_icon);
+		//make menu potentially visible
 		gtk_widget_show_all(settings.tray_icon_menu);
+
 	}
 	
 
