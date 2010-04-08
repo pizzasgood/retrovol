@@ -70,6 +70,7 @@ ConfigSettings::ConfigSettings(){
 
 void ConfigSettings::apply_defaults(){
 	restart = false;
+	resume_main = false;
 	strcpy(card, _d_card);
 	vertical = _d_vertical;
 	window_width = _d_window_width;

@@ -290,8 +290,10 @@ bool loop(int argc, char** argv) {
 		//TODO: add stock icons
 		if (settings.enable_tray_menu){
 			GtkWidget *exit_entry = gtk_menu_item_new_with_mnemonic("_Exit");
+			GtkWidget *config_entry = gtk_menu_item_new_with_mnemonic("_Config Window");
 			GtkWidget *show_entry = gtk_menu_item_new_with_mnemonic("_Full Window");
 			g_signal_connect(G_OBJECT(exit_entry), "activate", G_CALLBACK(gtk_main_quit), NULL);
+			g_signal_connect(G_OBJECT(config_entry), "activate", G_CALLBACK(configure), NULL);
 			g_signal_connect(G_OBJECT(show_entry), "activate", G_CALLBACK(open_window), NULL);
 			settings.tray_icon_menu = gtk_menu_new();
 
@@ -304,10 +306,12 @@ bool loop(int argc, char** argv) {
 			if (icon_y > 200){
 				//taskbar is on bottom, so put show_entry on bottom for ergonomics
 				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
+				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), config_entry);
 				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), show_entry);
 			} else {
 				//taskbar is on top, so put show_entry on top for ergonomics
 				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), show_entry);
+				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), config_entry);
 				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
 			}
 			
@@ -499,8 +503,6 @@ bool loop(int argc, char** argv) {
 	
 	//finish the window stuff
 	if (!start_hidden){ gtk_widget_show_all(settings.main_window); }
-	//have the window shown again if we restart
-	start_hidden = false;
 	g_signal_connect(settings.main_window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
 	
 
@@ -510,6 +512,14 @@ bool loop(int argc, char** argv) {
 	//finished with gtk setup
 	gtk_main();
 	
+	//have the window shown again if it was open before we restarted
+	if (settings.resume_main){
+		settings.resume_main = false;
+		start_hidden = false;
+	} else {
+		start_hidden = true;
+	}
+
 	return(settings.restart);
 }
 

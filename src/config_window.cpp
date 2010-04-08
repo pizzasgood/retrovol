@@ -248,12 +248,15 @@ static void cancel_config_window(GtkWidget *widget, gpointer data){
 	gtk_widget_destroy(window);
 }
 
-//close the window and save the settings
+//close the windows and save the settings
 static void apply_config_window(GtkWidget *widget, gpointer data){
 	bool enable_tray_icon = orig_settings->enable_tray_icon;
 	save_settings();
 	//set the restart flag and close all the windows
 	orig_settings->restart = true;
+	if (GTK_WIDGET_VISIBLE(orig_settings->main_window)){
+		orig_settings->resume_main = true;
+	}
 	gtk_widget_destroy(window);
 	if (enable_tray_icon){
 		gtk_widget_destroy(orig_settings->slider_window);

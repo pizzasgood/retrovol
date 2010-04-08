@@ -25,6 +25,7 @@ class ConfigSettings {
 		retro_slider *tray_slider;
 		Element *tray_control;
 		bool restart;
+		bool resume_main;
 
 		char _config_file[80]; //NEED TO MAKE THIS DYNAMIC
 		
