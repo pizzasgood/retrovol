@@ -70,9 +70,19 @@ gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *ev
 			if (GTK_WIDGET_VISIBLE(slider_window)){
 				gtk_widget_hide_all(slider_window);
 			} else {
-				int x, y;
-				gtk_window_get_size(GTK_WINDOW(slider_window), &x, &y);
-				gtk_window_move(GTK_WINDOW(slider_window), event->x_root - event->x - x/2 + widget->allocation.width/2, event->y_root-event->y-y-3);
+				int slider_width, slider_height, icon_width, icon_height, x_pos, y_pos;
+				int tray_offset = 0; //this may be needed if the tray border hides the bottom of the slider
+				gtk_window_get_size(GTK_WINDOW(slider_window), &slider_width, &slider_height);
+				gtk_window_get_size(GTK_WINDOW(widget), &icon_width, &icon_height);
+				x_pos = event->x_root - event->x - slider_width/2 + widget->allocation.width/2;
+				if (event->y_root > 200){
+					//tray at bottom
+					y_pos = event->y_root-event->y-slider_height-tray_offset;
+				} else {
+					//tray at top
+					y_pos = icon_height+event->y_root-event->y+tray_offset;
+				}
+				gtk_window_move(GTK_WINDOW(slider_window), x_pos, y_pos);
 				gtk_widget_show_all(slider_window);
 			}
 			break;
