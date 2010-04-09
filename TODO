@@ -1,4 +1,5 @@
 :main window:
+	add balance support
 	?add editable numeric display - Will probably skip this to preserve screen space - make up for it with a tooltip?
 	make sliders select when clicked on (so arrow keys work on them)
 	improve layout of horizontal-mode - mute buttons are funky
@@ -11,6 +12,5 @@
 	status bar - shows full name of the device below cursor, along with numeric info - make optional in config file
 
 :tray icon:
-	use non-deprecated functions to position slider (inside a popup menu?)
 	?replace eggtrayicon with the new statusicon of gtk that can be scrolled on? - probably do this as a compile option
 	
