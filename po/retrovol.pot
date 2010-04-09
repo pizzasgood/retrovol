@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: pizzasgood@gmail.com\n"
-"POT-Creation-Date: 2010-01-16 22:22-0500\n"
+"POT-Creation-Date: 2010-04-08 20:45-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -15,164 +15,187 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.cpp:116
+#: src/main.cpp:130
 #, c-format
 msgid "Volume: %d%%"
 msgstr ""
 
-#: src/main.cpp:119
+#: src/main.cpp:133
 #, c-format
 msgid "Volume: Muted"
 msgstr ""
 
-#: src/main.cpp:256
+#: src/main.cpp:275
 #, c-format
 msgid "Error:  Failed to set background color to %s\n"
 msgstr ""
 
-#: src/main.cpp:290
-msgid "/_File"
-msgstr ""
-
-#: src/main.cpp:291
-msgid "/File/_Configure"
-msgstr ""
-
 #: src/main.cpp:292
-msgid "/File/_Quit"
+msgid "_Exit"
 msgstr ""
 
 #: src/main.cpp:293
-msgid "/File/_Exit"
+msgid "_Config Window"
 msgstr ""
 
-#: src/main.cpp:462
+#: src/main.cpp:294
+msgid "_Full Window"
+msgstr ""
+
+#: src/main.cpp:344 src/main.cpp:351
+msgid "/_File"
+msgstr ""
+
+#: src/main.cpp:345 src/main.cpp:352
+msgid "/File/_Configure"
+msgstr ""
+
+#: src/main.cpp:346 src/main.cpp:354
+msgid "/File/_Quit"
+msgstr ""
+
+#: src/main.cpp:353
+msgid "/File/_Exit completely"
+msgstr ""
+
+#: src/main.cpp:540
 #, c-format
 msgid ""
 "ERROR:  The -bg option requires a color to be supplied in the format "
 "#rrggbb\n"
 msgstr ""
 
-#: src/main.cpp:467
+#: src/main.cpp:548
 #, c-format
-msgid "Usage: %s [-bg #rrggbb] [-show]\n"
+msgid "Usage: %s [-bg #rrggbb] [-hide]\n"
 msgstr ""
 
-#: src/main.cpp:468
+#: src/main.cpp:549
 #, c-format
 msgid "Volume mixer with bargraph style sliders.\n"
 msgstr ""
 
-#: src/main.cpp:469
+#: src/main.cpp:550
 #, c-format
 msgid ""
 "Reads ~/.retrovolrc for configuration options.  Additionally, the following\n"
 "options may be given on the commandline:\n"
 msgstr ""
 
-#: src/main.cpp:470
+#: src/main.cpp:551
+#, c-format
+msgid "\t-v              print the version number and exit\n"
+msgstr ""
+
+#: src/main.cpp:552
 #, c-format
 msgid "\t-bg #rrggbb     specify the background color of the tray icon\n"
 msgstr ""
 
-#: src/main.cpp:471
+#: src/main.cpp:553
 #, c-format
-msgid "\t-show           show the main window initially\n"
+msgid "\t-hide           hide the main window initially\n"
 msgstr ""
 
-#: src/main.cpp:494
+#: src/main.cpp:576
 #, c-format
 msgid "Error: could not create %s\n"
 msgstr ""
 
-#: src/config_settings.cpp:189
+#: src/config_settings.cpp:193
 #, c-format
 msgid ""
 "Cannot read file: %s\n"
 "Using defaults...\n"
 msgstr ""
 
-#: src/config_settings.cpp:292
+#: src/config_settings.cpp:299
 #, c-format
 msgid ""
 "Cannot open file: %s\n"
 " for writing\n"
 msgstr ""
 
-#: src/config_settings.cpp:296
+#: src/config_settings.cpp:303
 msgid "# Config file for retrovol\n"
 msgstr ""
 
-#: src/config_settings.cpp:297
+#: src/config_settings.cpp:304
 msgid ""
 "# This file should reside in the user's home directory and be named ."
 "retrovolrc\n"
 msgstr ""
 
-#: src/config_settings.cpp:300
+#: src/config_settings.cpp:307
 msgid ""
 "\n"
 "# Which soundcard to use\n"
 msgstr ""
 
-#: src/config_settings.cpp:304
+#: src/config_settings.cpp:311
 msgid ""
 "\n"
 "# Set this to 1 to make the sliders vertical, or 0 for horizontal (only "
 "applies to the main window)\n"
 msgstr ""
 
-#: src/config_settings.cpp:308
+#: src/config_settings.cpp:315
 msgid ""
 "\n"
 "# Window dimensions\n"
 msgstr ""
 
-#: src/config_settings.cpp:314
+#: src/config_settings.cpp:321
 msgid ""
 "\n"
 "# Slider dimensions\n"
 msgstr ""
 
-#: src/config_settings.cpp:326
+#: src/config_settings.cpp:333
 msgid ""
 "\n"
 "# Slider colorscheme\n"
 msgstr ""
 
-#: src/config_settings.cpp:344
+#: src/config_settings.cpp:351
 msgid ""
 "\n"
 "# Enable the tray_icon\n"
 msgstr ""
 
-#: src/config_settings.cpp:348
+#: src/config_settings.cpp:355
+msgid ""
+"\n"
+"# Enable the tray_menu\n"
+msgstr ""
+
+#: src/config_settings.cpp:359
 msgid ""
 "\n"
 "# Background color of tray_icon (default is default GTK background color).  "
 "Note:  the commandline -bg option overrides this\n"
 msgstr ""
 
-#: src/config_settings.cpp:354
+#: src/config_settings.cpp:365
 msgid ""
 "\n"
 "# Set this to 1 to make the slider on the tray_icon vertical, or 0 for "
 "horizontal\n"
 msgstr ""
 
-#: src/config_settings.cpp:358
+#: src/config_settings.cpp:369
 msgid ""
 "\n"
 "# Tray slider dimensions\n"
 msgstr ""
 
-#: src/config_settings.cpp:364
+#: src/config_settings.cpp:375
 msgid ""
 "\n"
 "# Which slider to link with the tray_icon\n"
 msgstr ""
 
-#: src/config_settings.cpp:369
+#: src/config_settings.cpp:380
 msgid ""
 "\n"
 "# Which sliders to display, in order.  They MUST have a tab first and be "
@@ -182,7 +205,7 @@ msgid ""
 "# NOTE:  This section must go at the end of the file!\n"
 msgstr ""
 
-#: src/config_settings.cpp:371
+#: src/config_settings.cpp:382
 msgid ""
 "\n"
 "#EXAMPLE:\n"
@@ -202,98 +225,106 @@ msgstr ""
 msgid "Inactive Sliders"
 msgstr ""
 
-#: src/config_window.cpp:404
+#: src/config_window.cpp:407
 msgid "Retrovol - Configuration"
 msgstr ""
 
-#: src/config_window.cpp:420
+#: src/config_window.cpp:423
 msgid "Main"
 msgstr ""
 
-#: src/config_window.cpp:425
+#: src/config_window.cpp:428
 msgid "Window Width"
 msgstr ""
 
-#: src/config_window.cpp:426
+#: src/config_window.cpp:429
 msgid "Window Height"
 msgstr ""
 
-#: src/config_window.cpp:430
+#: src/config_window.cpp:433
 msgid "Slider Orientation"
 msgstr ""
 
-#: src/config_window.cpp:430 src/config_window.cpp:445
+#: src/config_window.cpp:433 src/config_window.cpp:460
 msgid "Vertical"
 msgstr ""
 
-#: src/config_window.cpp:430 src/config_window.cpp:445
+#: src/config_window.cpp:433 src/config_window.cpp:460
 msgid "Horizontal"
 msgstr ""
 
-#: src/config_window.cpp:431
+#: src/config_window.cpp:434
 msgid "Slider Width"
 msgstr ""
 
-#: src/config_window.cpp:432
+#: src/config_window.cpp:435
 msgid "Slider Height"
 msgstr ""
 
-#: src/config_window.cpp:433
+#: src/config_window.cpp:436
 msgid "Slider Margins"
 msgstr ""
 
-#: src/config_window.cpp:434
+#: src/config_window.cpp:437
 msgid "Segment Thickness"
 msgstr ""
 
-#: src/config_window.cpp:435
+#: src/config_window.cpp:438
 msgid "Segment Spacing"
 msgstr ""
 
-#: src/config_window.cpp:436
+#: src/config_window.cpp:439
 msgid "Background Color"
 msgstr ""
 
-#: src/config_window.cpp:437
+#: src/config_window.cpp:440
 msgid "Border Color"
 msgstr ""
 
-#: src/config_window.cpp:438
+#: src/config_window.cpp:441
 msgid "Unlit Color"
 msgstr ""
 
-#: src/config_window.cpp:439
+#: src/config_window.cpp:442
 msgid "Lit Color"
 msgstr ""
 
-#: src/config_window.cpp:440
+#: src/config_window.cpp:449
+msgid "Tray"
+msgstr ""
+
+#: src/config_window.cpp:454
 msgid "Enable Tray Icon"
 msgstr ""
 
-#: src/config_window.cpp:441
-msgid "Tray Slider"
-msgstr ""
-
-#: src/config_window.cpp:445
-msgid "Tray Slider Orientation"
-msgstr ""
-
-#: src/config_window.cpp:446
-msgid "Tray Slider Width"
-msgstr ""
-
-#: src/config_window.cpp:447
-msgid "Tray Slider Height"
-msgstr ""
-
-#: src/config_window.cpp:448
-msgid "Enable Tray Icon Background Color"
-msgstr ""
-
-#: src/config_window.cpp:449
-msgid "Tray Icon Background Color"
+#: src/config_window.cpp:455
+msgid "Enable Tray Menu"
 msgstr ""
 
 #: src/config_window.cpp:456
+msgid "Tray Slider"
+msgstr ""
+
+#: src/config_window.cpp:460
+msgid "Tray Slider Orientation"
+msgstr ""
+
+#: src/config_window.cpp:461
+msgid "Tray Slider Width"
+msgstr ""
+
+#: src/config_window.cpp:462
+msgid "Tray Slider Height"
+msgstr ""
+
+#: src/config_window.cpp:463
+msgid "Enable Tray Icon Background Color"
+msgstr ""
+
+#: src/config_window.cpp:464
+msgid "Tray Icon Background Color"
+msgstr ""
+
+#: src/config_window.cpp:471
 msgid "Hardware"
 msgstr ""
