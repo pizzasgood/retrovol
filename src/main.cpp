@@ -44,6 +44,12 @@ void popup_handler(int signum){
 	gtk_widget_show_all(settings.main_window);
 }
 
+//signal handler to exit cleanly on SIGINT and  SIGTERM
+void exit_handler(int signum){
+	settings.restart = false;
+	gtk_main_quit();
+}
+
 //callback that handles changing an enumerated control
 void change_combo_box(GtkWidget *combo_box, Element *elem){
 	int state = gtk_combo_box_get_active(GTK_COMBO_BOX(combo_box));
@@ -578,6 +584,10 @@ int main(int argc, char** argv) {
 
 	//when SIGUSR1 is recieved, pop up the window
 	signal(SIGUSR1, popup_handler);
+
+	//when SIGINT or SIGTERM is recieved, exit cleanly
+	signal(SIGINT, exit_handler);
+	signal(SIGTERM, exit_handler);
 
 	//main program - in a while loop so that it can easily restart to refresh itself
 	while (loop(argc, argv));
