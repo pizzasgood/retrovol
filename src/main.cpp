@@ -241,7 +241,7 @@ bool loop(int argc, char** argv) {
 		settings.tray_slider = new retro_slider;
 		settings.set_tray_slider(&list);
 		settings.apply_to_tray_slider(settings.tray_slider);
-		settings.tray_slider->init(tray_frame, (void*)settings.tray_control, &Element::get_callback, &Element::set_callback);
+		settings.tray_slider->init(tray_frame, (void*)settings.tray_control, &Element::get_callback, &Element::set_callback, (settings.tray_control->values > 1));
 
 		//set up the small window that holds the tray_slider
 		settings.slider_window = gtk_window_new (GTK_WINDOW_POPUP);
@@ -427,7 +427,7 @@ bool loop(int argc, char** argv) {
 			}
 			//make the slider and associate with a control
 			settings.apply_to_slider(&sliders[i]);
-			sliders[i].init(frame, (void*)list.items[i], &Element::get_callback, &Element::set_callback);
+			sliders[i].init(frame, (void*)list.items[i], &Element::get_callback, &Element::set_callback, (list.items[i]->values > 1));
 		
 		} else if (strcmp(list.items[i]->type, "BOOLEAN") == 0){
 			//booleans need checkboxes

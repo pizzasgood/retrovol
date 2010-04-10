@@ -7,13 +7,15 @@
 
 class retro_slider{
 	private:
+		int channels;				//the number of channels
+
 		int y_to_seg(int ypos);
 		int y_to_val(int ypos);
 		int val_to_seg(float _val);
 		float seg_to_val(int _seg);
 		void *obj;
-		float (*get_func)(void*);
-		float (*set_func)(void*,float);
+		float (*get_func)(void*, int);
+		float (*set_func)(void*,float, int);
 		
 		//pointers to the GtkWidgets
 		GtkWidget *frame;
@@ -22,12 +24,13 @@ class retro_slider{
 		
 	public:
 		retro_slider();
-		retro_slider(GtkWidget *_frame, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float));
-		void init(GtkWidget *_frame, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float));
+		retro_slider(GtkWidget *_frame, int _width, int _height, void *_obj, float (*_get_func)(void*,int), float (*_set_func)(void*,float,int), bool _stereo=false);
+		void init(GtkWidget *_frame, void *_obj, float (*_get_func)(void*,int), float (*_set_func)(void*,float,int), bool _stereo=false);
 		
 		
-		float val;				//the current value
-		int seg;				//index of the highest segment to be 'lit', with 0 at the top
+		bool stereo;				//whether it is one or two channels
+		float val[2];				//the current value
+		int seg[2];				//index of the highest segment to be 'lit', with 0 at the top
 
 		int margin;
 		int seg_thickness;		//thickness of each line

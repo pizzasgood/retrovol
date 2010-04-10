@@ -37,7 +37,7 @@ retro_slider::retro_slider(){
 	lit_color[1]=0.8;
 	lit_color[2]=0.0;
 }
-retro_slider::retro_slider(GtkWidget *_frame, int _width, int _height, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float)){
+retro_slider::retro_slider(GtkWidget *_frame, int _width, int _height, void *_obj, float (*_get_func)(void*,int), float (*_set_func)(void*,float,int), bool _stereo){
 	width=_width;
 	height=_height;
 	//default values
@@ -45,13 +45,16 @@ retro_slider::retro_slider(GtkWidget *_frame, int _width, int _height, void *_ob
 	seg_thickness = 2;
 	seg_spacing = 1;
 	vertical = true;
-	init(_frame, _obj, _get_func, _set_func);
+	init(_frame, _obj, _get_func, _set_func, _stereo);
 }
-void retro_slider::init(GtkWidget *_frame, void *_obj, float (*_get_func)(void*), float (*_set_func)(void*,float)){
+void retro_slider::init(GtkWidget *_frame, void *_obj, float (*_get_func)(void*,int), float (*_set_func)(void*,float,int), bool _stereo){
 	frame = _frame;
 	obj = _obj;
 	get_func = _get_func;
 	set_func = _set_func;
+	stereo = _stereo;
+
+	channels = stereo ? 2 : 1;
 
 	//add the slider itself
 	drawing_area = gtk_drawing_area_new ();
@@ -78,7 +81,9 @@ void retro_slider::init(GtkWidget *_frame, void *_obj, float (*_get_func)(void*)
 
 
 	//load the initial value
-	val = get_func(obj);
+	for (int i=0; i<channels; i++){
+		val[i] = get_func(obj, i);
+	}
 	
 }
 
@@ -128,8 +133,10 @@ float retro_slider::seg_to_val(int _seg){
 
 //slide that slider!
 void retro_slider::slide_the_slider(float ypos){
-	val = set_func(obj, y_to_val(ypos));
-	seg = val_to_seg(val);
+	for (int i=0; i<channels; i++){
+		val[i] = set_func(obj, y_to_val(ypos), i);
+		seg[i] = val_to_seg(val[i]);
+	}
 }
 
 
@@ -177,22 +184,26 @@ gboolean retro_slider::key_event_callback (GtkWidget *widget, GdkEventKey *event
 	}
 
 	int direction = (delta > 0 ? 1 : -1);
-	int ret=slider->seg;
-	int n=1;
-	while (ret==slider->seg && direction*ret < slider->num_segs && direction+ret >= 0){
-		ret+=n*delta;
-		//limit to between 0 and num_segs
-		if (ret > slider->num_segs){
-			ret = slider->num_segs;
-		} else if (ret < 0){
-			ret = 0;
+
+	for (int i=0; i<slider->channels; i++){
+		int ret=slider->seg[i];
+		int n=1;
+		while (ret==slider->seg[i] && direction*ret < slider->num_segs && direction+ret >= 0){
+			ret+=n*delta;
+			//limit to between 0 and num_segs
+			if (ret > slider->num_segs){
+				ret = slider->num_segs;
+			} else if (ret < 0){
+				ret = 0;
+			}
+			//update values
+			slider->val[i] = slider->set_func(slider->obj, slider->seg_to_val(ret), i);
+			ret = slider->val_to_seg(slider->val[i]);
+			n++;
 		}
-		//update values
-		slider->val = slider->set_func(slider->obj, slider->seg_to_val(ret));
-		ret = slider->val_to_seg(slider->val);
-		n++;
+		slider->seg[i]=ret;
 	}
-	slider->seg=ret;
+
 	gtk_widget_queue_draw_area(widget, 0, 0, widget->allocation.width, widget->allocation.height);
 	return(true);
 }
@@ -238,23 +249,26 @@ gboolean retro_slider::scroll_event_callback (GtkWidget *widget, GdkEventScroll 
 			delta = 1;
 			break;
 	}
-	
-	ret=slider->seg;
-	int n=1;
-	while (ret==slider->seg && delta*ret < slider->num_segs && delta+ret >= 0){
-		ret+=n*delta;
-		//limit to between 0 and num_segs
-		if (ret > slider->num_segs){
-			ret = slider->num_segs;
-		} else if (ret < 0){
-			ret = 0;
+
+	for(int i=0; i<slider->channels; i++){
+		ret=slider->seg[i];
+		int n=1;
+		while (ret==slider->seg[i] && delta*ret < slider->num_segs && delta+ret >= 0){
+			ret+=n*delta;
+			//limit to between 0 and num_segs
+			if (ret > slider->num_segs){
+				ret = slider->num_segs;
+			} else if (ret < 0){
+				ret = 0;
+			}
+			//update values
+			slider->val[i] = slider->set_func(slider->obj, slider->seg_to_val(ret), i);
+			ret = slider->val_to_seg(slider->val[i]);
+			n++;
 		}
-		//update values
-		slider->val = slider->set_func(slider->obj, slider->seg_to_val(ret));
-		ret = slider->val_to_seg(slider->val);
-		n++;
+		slider->seg[i]=ret;
 	}
-	slider->seg=ret;
+
 	//use slider->drawing_area instead of widget so that we can use this same function externally to scroll on the tray icon
 	gtk_widget_queue_draw_area(slider->drawing_area, 0, 0, slider->drawing_area->allocation.width, slider->drawing_area->allocation.height);
 	return(true);
@@ -280,7 +294,9 @@ gboolean retro_slider::configure_event_callback (GtkWidget *widget, GdkEventConf
 	slider->val_per_seg = 100/((float)slider->num_segs);
 	
 	//update the seg variable
-	slider->seg = slider->val_to_seg(slider->val);
+	for (int i=0; i<slider->channels; i++){
+		slider->seg[i] = slider->val_to_seg(slider->val[i]);
+	}
 
 	return(true);
 }
@@ -289,8 +305,10 @@ gboolean retro_slider::configure_event_callback (GtkWidget *widget, GdkEventConf
 gboolean retro_slider::expose_event_callback (GtkWidget *widget, GdkEventExpose *event, retro_slider *slider){
 	
 	//update the value
-	slider->val = slider->get_func(slider->obj);
-	slider->seg = slider->val_to_seg(slider->val);
+	for (int i=0; i<slider->channels; i++){
+		slider->val[i] = slider->get_func(slider->obj, i);
+		slider->seg[i] = slider->val_to_seg(slider->val[i]);
+	}
 	
 	//load the cairo object and draw the border
 	cairo_t *cr;
@@ -308,18 +326,22 @@ gboolean retro_slider::expose_event_callback (GtkWidget *widget, GdkEventExpose 
 	cairo_fill(cr);
 	
 	//draw the segments
-	for (int i=0; i<slider->num_segs; i++){
-		if (i < slider->seg){
-			cairo_set_source_rgb(cr, slider->unlit_color[0], slider->unlit_color[1], slider->unlit_color[2]); //unlit
-		} else {
-			cairo_set_source_rgb(cr, slider->lit_color[0], slider->lit_color[1], slider->lit_color[2]); //lit
+	int chan_width = slider->stereo ? (slider->width-2*slider->margin)/2 : slider->width-2*slider->margin;
+	int chan_height = slider->stereo ? (slider->height-2*slider->margin)/2 : slider->height-2*slider->margin;
+	for (int c=0; c<slider->channels; c++){
+		for (int i=0; i<slider->num_segs; i++){
+			if (i < slider->seg[c]){
+				cairo_set_source_rgb(cr, slider->unlit_color[0], slider->unlit_color[1], slider->unlit_color[2]); //unlit
+			} else {
+				cairo_set_source_rgb(cr, slider->lit_color[0], slider->lit_color[1], slider->lit_color[2]); //lit
+			}
+			if (slider->vertical){
+				cairo_rectangle(cr, slider->margin + c*chan_width, slider->margin+i*slider->seg_offset, chan_width, slider->seg_thickness);
+			} else {
+				cairo_rectangle(cr, slider->width-slider->margin-(i+1)*slider->seg_offset+1, slider->margin + c*chan_height, slider->seg_thickness, chan_height);
+			}
+			cairo_fill(cr);
 		}
-		if (slider->vertical){
-			cairo_rectangle(cr, slider->margin, slider->margin+i*slider->seg_offset, slider->width-2*slider->margin, slider->seg_thickness);
-		} else {
-			cairo_rectangle(cr, slider->width-slider->margin-(i+1)*slider->seg_offset+1, slider->margin, slider->seg_thickness, slider->height-2*slider->margin);
-		}
-		cairo_fill(cr);
 	}
 	
 	//clean up
