@@ -568,8 +568,13 @@ int main(int argc, char** argv) {
 		char pid_string[16];
 		fgets(pid_string, 16, pidfile);
 		fclose(pidfile);
-		if (kill(atoi(pid_string), SIGUSR1) == 0){
-			exit(0);
+		//check if it is a zombie process
+		char command[80];
+		sprintf(command, "ps --no-header -o state %d | grep -q Z", atoi(pid_string)); //TODO:  Use better method (/proc/<pid_string>/state?)
+		if (system(command)){
+			if (kill(atoi(pid_string), SIGUSR1) == 0){
+				exit(0);
+			}
 		}
 	}
 	//if we reached this point, we need to create the file
