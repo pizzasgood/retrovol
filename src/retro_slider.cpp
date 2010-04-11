@@ -132,11 +132,55 @@ float retro_slider::seg_to_val(int _seg){
 
 
 //slide that slider!
-void retro_slider::slide_the_slider(float ypos){
+void retro_slider::slide_the_slider(float ypos, channel_enum chan_mask){
 	for (int i=0; i<channels; i++){
-		val[i] = set_func(obj, y_to_val(ypos), i);
-		seg[i] = val_to_seg(val[i]);
+		//note: this trick only works if channels <= 2....
+		if ((i+1) & chan_mask){
+			val[i] = set_func(obj, y_to_val(ypos), i);
+			seg[i] = val_to_seg(val[i]);
+		}
 	}
+}
+
+
+
+
+//determine which channels should be modified
+retro_slider::channel_enum retro_slider::get_chan_mask(GdkEventKey *event){
+	channel_enum chan_mask = all_chan;
+	if (event->state & GDK_SHIFT_MASK){
+		chan_mask = left_chan;
+	} else if (event->state & GDK_CONTROL_MASK){
+		chan_mask = right_chan;
+	}
+	return(chan_mask);
+}
+retro_slider::channel_enum retro_slider::get_chan_mask(GdkEventScroll *event){
+	channel_enum chan_mask = all_chan;
+	if (event->state & GDK_SHIFT_MASK){
+		chan_mask = left_chan;
+	} else if (event->state & GDK_CONTROL_MASK){
+		chan_mask = right_chan;
+	}
+	return(chan_mask);
+}
+retro_slider::channel_enum retro_slider::get_chan_mask(GdkEventMotion *event){
+	channel_enum chan_mask = all_chan;
+	if (event->state & GDK_SHIFT_MASK){
+		chan_mask = left_chan;
+	} else if (event->state & GDK_CONTROL_MASK){
+		chan_mask = right_chan;
+	}
+	return(chan_mask);
+}
+retro_slider::channel_enum retro_slider::get_chan_mask(GdkEventButton *event){
+	channel_enum chan_mask = all_chan;
+	if (event->state & GDK_SHIFT_MASK){
+		chan_mask = left_chan;
+	} else if (event->state & GDK_CONTROL_MASK){
+		chan_mask = right_chan;
+	}
+	return(chan_mask);
 }
 
 
@@ -144,10 +188,11 @@ void retro_slider::slide_the_slider(float ypos){
 
 //if there was a button press, update the slider
 gboolean retro_slider::button_press_event_callback (GtkWidget *widget, GdkEventButton *event, retro_slider *slider){
+	//slide it
 	if (slider->vertical){
-		slider->slide_the_slider(event->y);
+		slider->slide_the_slider(event->y, slider->get_chan_mask(event));
 	} else {
-		slider->slide_the_slider(slider->width - event->x - 1);
+		slider->slide_the_slider(slider->width - event->x - 1, slider->get_chan_mask(event));
 	}
 	gtk_widget_queue_draw_area(widget, 0, 0, widget->allocation.width, widget->allocation.height);
 	return(true);
@@ -155,8 +200,11 @@ gboolean retro_slider::button_press_event_callback (GtkWidget *widget, GdkEventB
 
 //handle keypresses
 gboolean retro_slider::key_event_callback (GtkWidget *widget, GdkEventKey *event, retro_slider *slider){
-	int delta;
+	//check channel
+	channel_enum chan_mask = slider->get_chan_mask(event);
+
 	//check direction
+	int delta;
 	switch(event->keyval){
 		case GDK_Up:
 			if (slider->vertical){delta = -1;} else {return(false);}
@@ -186,22 +234,25 @@ gboolean retro_slider::key_event_callback (GtkWidget *widget, GdkEventKey *event
 	int direction = (delta > 0 ? 1 : -1);
 
 	for (int i=0; i<slider->channels; i++){
-		int ret=slider->seg[i];
-		int n=1;
-		while (ret==slider->seg[i] && direction*ret < slider->num_segs && direction+ret >= 0){
-			ret+=n*delta;
-			//limit to between 0 and num_segs
-			if (ret > slider->num_segs){
-				ret = slider->num_segs;
-			} else if (ret < 0){
-				ret = 0;
+		//note: this trick only works if channels <= 2....
+		if ((i+1) & chan_mask){
+			int ret=slider->seg[i];
+			int n=1;
+			while (ret==slider->seg[i] && direction*ret < slider->num_segs && direction+ret >= 0){
+				ret+=n*delta;
+				//limit to between 0 and num_segs
+				if (ret > slider->num_segs){
+					ret = slider->num_segs;
+				} else if (ret < 0){
+					ret = 0;
+				}
+				//update values
+				slider->val[i] = slider->set_func(slider->obj, slider->seg_to_val(ret), i);
+				ret = slider->val_to_seg(slider->val[i]);
+				n++;
 			}
-			//update values
-			slider->val[i] = slider->set_func(slider->obj, slider->seg_to_val(ret), i);
-			ret = slider->val_to_seg(slider->val[i]);
-			n++;
+			slider->seg[i]=ret;
 		}
-		slider->seg[i]=ret;
 	}
 
 	gtk_widget_queue_draw_area(widget, 0, 0, widget->allocation.width, widget->allocation.height);
@@ -225,9 +276,9 @@ gboolean retro_slider::motion_notify_event_callback( GtkWidget *widget, GdkEvent
 	//only do anything if a mouse button is pressed
 	if (state & GDK_BUTTON1_MASK || state & GDK_BUTTON2_MASK || state & GDK_BUTTON3_MASK){
 		if (slider->vertical){
-			slider->slide_the_slider(event->y);
+			slider->slide_the_slider(event->y, slider->get_chan_mask(event));
 		} else {
-			slider->slide_the_slider(slider->width - event->x - 1);
+			slider->slide_the_slider(slider->width - event->x - 1, slider->get_chan_mask(event));
 		}
 		gtk_widget_queue_draw_area(widget, 0, 0, widget->allocation.width, widget->allocation.height);
   	}
@@ -239,6 +290,9 @@ gboolean retro_slider::motion_notify_event_callback( GtkWidget *widget, GdkEvent
 gboolean retro_slider::scroll_event_callback (GtkWidget *widget, GdkEventScroll *event, retro_slider *slider){
 	int ret, delta;
 	
+	//check channel
+	channel_enum chan_mask = slider->get_chan_mask(event);
+
 	//check direction
 	switch(event->direction){
 		case GDK_SCROLL_UP:
@@ -251,22 +305,25 @@ gboolean retro_slider::scroll_event_callback (GtkWidget *widget, GdkEventScroll 
 	}
 
 	for(int i=0; i<slider->channels; i++){
-		ret=slider->seg[i];
-		int n=1;
-		while (ret==slider->seg[i] && delta*ret < slider->num_segs && delta+ret >= 0){
-			ret+=n*delta;
-			//limit to between 0 and num_segs
-			if (ret > slider->num_segs){
-				ret = slider->num_segs;
-			} else if (ret < 0){
-				ret = 0;
+		//note: this trick only works if channels <= 2....
+		if ((i+1) & chan_mask){
+			ret=slider->seg[i];
+			int n=1;
+			while (ret==slider->seg[i] && delta*ret < slider->num_segs && delta+ret >= 0){
+				ret+=n*delta;
+				//limit to between 0 and num_segs
+				if (ret > slider->num_segs){
+					ret = slider->num_segs;
+				} else if (ret < 0){
+					ret = 0;
+				}
+				//update values
+				slider->val[i] = slider->set_func(slider->obj, slider->seg_to_val(ret), i);
+				ret = slider->val_to_seg(slider->val[i]);
+				n++;
 			}
-			//update values
-			slider->val[i] = slider->set_func(slider->obj, slider->seg_to_val(ret), i);
-			ret = slider->val_to_seg(slider->val[i]);
-			n++;
+			slider->seg[i]=ret;
 		}
-		slider->seg[i]=ret;
 	}
 
 	//use slider->drawing_area instead of widget so that we can use this same function externally to scroll on the tray icon

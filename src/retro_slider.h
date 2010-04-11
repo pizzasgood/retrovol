@@ -6,6 +6,15 @@
 
 
 class retro_slider{
+	public:
+		//used to specify which channels an action should impact
+		enum channel_enum {
+			left_chan = 1,
+			right_chan = 2,
+			all_chan = 3
+		};
+
+
 	private:
 		int channels;				//the number of channels
 
@@ -21,6 +30,12 @@ class retro_slider{
 		GtkWidget *frame;
 		GtkWidget *drawing_area;
 		GtkWidget *label;
+		
+		//determine which channels should be modified
+		channel_enum get_chan_mask(GdkEventKey *event);
+		channel_enum get_chan_mask(GdkEventScroll *event);
+		channel_enum get_chan_mask(GdkEventMotion *event);
+		channel_enum get_chan_mask(GdkEventButton *event);
 		
 	public:
 		retro_slider();
@@ -53,7 +68,7 @@ class retro_slider{
 		float lit_color[3];			//color of lit segments
 		
 		//slides the slider, updates the val and seg variables
-		void slide_the_slider(float ypos);
+		void slide_the_slider(float ypos, channel_enum chan_mask = all_chan);
 		
 		//all the callbacks for button presses and whatnot
 		static gboolean button_press_event_callback (GtkWidget *widget, GdkEventButton *event, retro_slider *slider);
