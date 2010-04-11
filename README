@@ -19,14 +19,23 @@ scrolled on to change the volume.  It can be middle-clicked to mute/unmute. It
 can be right-clicked to get a menu with an option to display the main window,
 which lists all the volume controls it can detect on your system.
 
+Sliders can be controlled by clicking, draging, scrolling (either up/down or
+left/right), and by using the left/right and PgUp/PgDown keys.  Note that for
+the keyboard to work, you have to select the control with the keyboard.  There
+is no visual feedback yet to show whether a control is selected (this will be
+improved eventually).
+
+For stereo audio controls, you can modify only the left or right channels by
+holding the shift or control keys respectively while manipulating the slider.
+
 Configuration changes can be made in the ~/.retrovolrc file, or through the
 preferences window at File->Configure.  For example, you can change the colors
 to green and blue, make the segments fatter, disable the tray icon, and have
 the main window only display specific sliders.
 
-As of version 0.2, Retrovol will only allow one instance to run at a time.  If
-you attempt to launch a second instance it will instead pop up the main window
-if it isn't already visible.
+Retrovol will only allow one instance to run at a time.  If you attempt to
+launch a second instance it will instead pop up the main window if it isn't
+already visible.
 
 Also, Retrovol accepts a -bg <hexcolor> commandline option to specify the tray
 icon's background color.  Normally it will just use the normal GTK background
