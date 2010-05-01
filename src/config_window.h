@@ -24,7 +24,7 @@ class OrderWidget {
 		GtkWidget *a_list;
 		GtkListStore *i_store;
 		GtkWidget *i_list;
-		GtkListStore *build_list_from_names(int num_names, const char name_list[][80]);
+		GtkListStore *build_list_from_names(int num_numids, const int numid_list[], const char name_list[][80]);
 
 		//move the selected item up in the list
 		static void move_selected_up(GtkWidget *widget, gpointer data);
@@ -36,9 +36,9 @@ class OrderWidget {
 		static void remove_selected(GtkWidget *widget, gpointer data);
 	public:
 		//build the widgets
-		void build(GtkContainer *parent_container, int *num_names, char name_list[][80], ElementList *list_ptr);
-		//update the name_list to match the GtkListStore
-		int update_names_from_list(char name_list[][80]);
+		void build(GtkContainer *parent_container, int *num_numids, int numid_list[], char name_list[][80], ElementList *list_ptr);
+		//update the numid_list and name_list to match the GtkListStore
+		int update_names_from_list(int numid_list[], char name_list[][80]);
 };
 
 //load the current settings into a temporary tmp_settings variable
@@ -78,7 +78,7 @@ void add_entry_bool_c(GtkWidget *vbox, const char *label_text, bool *item, SwapS
 void add_entry_bool_r(GtkWidget *vbox, const char *label_text, const char *true_label, const char *false_label, bool *item, SwapStruc *swap_struc = NULL);
 
 //create an entry to choose a slider with a dropdown
-void add_entry_slider_dropdown(GtkWidget *vbox, const char *label_text, char *tray_control_name, ElementList *list_ptr);
+void add_entry_slider_dropdown(GtkWidget *vbox, const char *label_text, int tray_control_numid, ElementList *list_ptr);
 
 //update the value pointed to by the data pointer with the value contained by the widget
 static void update_color(GtkWidget *widget, gpointer data);

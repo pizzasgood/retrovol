@@ -46,25 +46,27 @@ void SwapStruc::set(GtkToggleButton *button){
 
 
 
-GtkListStore *OrderWidget::build_list_from_names(int num_names, const char name_list[][80]){
-	GtkListStore *store = gtk_list_store_new(1, G_TYPE_STRING);
+GtkListStore *OrderWidget::build_list_from_names(int num_numids, const int numid_list[], const char name_list[][80]){
+	GtkListStore *store = gtk_list_store_new(2, G_TYPE_INT, G_TYPE_STRING);
 	GtkTreeIter iter;
-	for(int i=0; i<num_names; i++){
+	for(int i=0; i<num_numids; i++){
 		gtk_list_store_append(store, &iter);
-		gtk_list_store_set(store, &iter, 0, name_list[i], -1);
+		gtk_list_store_set(store, &iter, 0, numid_list[i], 1, name_list[i], -1);
 	}
 	return(store);
 }
 
 //update the name_list to match the GtkListStore
-int OrderWidget::update_names_from_list(char name_list[][80]){
+int OrderWidget::update_names_from_list(int numid_list[], char name_list[][80]){
 	GtkTreeIter iter;
 	gboolean valid;
 	int k = 0;
 	valid = gtk_tree_model_get_iter_first(GTK_TREE_MODEL(a_store), &iter);
 	while (valid){
+		gint int_data;
 		gchar *str_data;
-		gtk_tree_model_get(GTK_TREE_MODEL(a_store), &iter, 0, &str_data, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(a_store), &iter, 0, &int_data, 1, &str_data, -1);
+		numid_list[k] = int_data;
 		strcpy(name_list[k++], str_data);
 		g_free(str_data);
 		valid = gtk_tree_model_iter_next(GTK_TREE_MODEL(a_store), &iter);
@@ -73,7 +75,7 @@ int OrderWidget::update_names_from_list(char name_list[][80]){
 }
 
 //build the widgets
-void OrderWidget::build(GtkContainer *parent_container, int *num_names, char name_list[][80], ElementList *list_ptr){
+void OrderWidget::build(GtkContainer *parent_container, int *num_numids, int numid_list[], char name_list[][80], ElementList *list_ptr){
 	//make a vbox to hold everything, and put it inside parent_container
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
 	gtk_container_add(parent_container, vbox);
@@ -107,12 +109,12 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	gtk_container_add(GTK_CONTAINER(hbox), a_scrolled_window);
 
 	//fill the active list
-	a_store = build_list_from_names(*num_names, name_list);
+	a_store = build_list_from_names(*num_numids, numid_list, name_list);
 	a_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(a_store));
 	GtkCellRenderer *a_renderer;
 	GtkTreeViewColumn *a_column;
 	a_renderer = gtk_cell_renderer_text_new();
-	a_column = gtk_tree_view_column_new_with_attributes(_("Active Sliders"), a_renderer, "text", 0, NULL);
+	a_column = gtk_tree_view_column_new_with_attributes(_("Active Sliders"), a_renderer, "text", 1, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(a_list), a_column);
 	gtk_container_add(GTK_CONTAINER(a_scrolled_window), a_list);
 
@@ -135,11 +137,15 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	gtk_box_pack_start(GTK_BOX(left_right_box), right_button, FALSE, TRUE, 0);
 
 	//get the inactive items
+	int unused_numid_list[80]; //NEED TO MAKE THIS DYNAMIC!
 	char unused_name_list[80][80]; //NEED TO MAKE THIS DYNAMIC!
+	int num_unused_numids;
 	int num_unused_names;
-	if (*num_names == 0){
+	if (*num_numids == 0){
+		num_unused_numids = list_ptr->list_all_numids(unused_numid_list);
 		num_unused_names = list_ptr->list_all_names(unused_name_list);
 	} else {
+		num_unused_numids = list_ptr->list_other_numids(unused_numid_list);
 		num_unused_names = list_ptr->list_other_names(unused_name_list);
 	}
 
@@ -148,12 +154,12 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_names, char nam
 	gtk_container_add(GTK_CONTAINER(hbox), i_scrolled_window);
 
 	//fill the inactive list
-	i_store = build_list_from_names(num_unused_names, unused_name_list);
+	i_store = build_list_from_names(num_unused_numids, unused_numid_list, unused_name_list);
 	i_list = gtk_tree_view_new_with_model(GTK_TREE_MODEL(i_store));
 	GtkCellRenderer *i_renderer;
 	GtkTreeViewColumn *i_column;
 	i_renderer = gtk_cell_renderer_text_new();
-	i_column = gtk_tree_view_column_new_with_attributes(_("Inactive Sliders"), i_renderer, "text", 0, NULL);
+	i_column = gtk_tree_view_column_new_with_attributes(_("Inactive Sliders"), i_renderer, "text", 1, NULL);
 	gtk_tree_view_append_column(GTK_TREE_VIEW(i_list), i_column);
 	gtk_container_add(GTK_CONTAINER(i_scrolled_window), i_list);
 
@@ -199,11 +205,12 @@ void OrderWidget::add_selected(GtkWidget *widget, gpointer data){
 	GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(order_widget->i_list));
 	GtkTreeIter a_iter, i_iter;
 	if(gtk_tree_selection_get_selected(selection, NULL, &i_iter)){
+		gint int_data;
 		gchar *str_data;
-		gtk_tree_model_get(GTK_TREE_MODEL(i_store), &i_iter, 0, &str_data, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(i_store), &i_iter, 0, &int_data, 1, &str_data, -1);
 		gtk_list_store_remove(i_store, &i_iter);
 		gtk_list_store_append(a_store, &a_iter);
-		gtk_list_store_set(a_store, &a_iter, 0, str_data, -1);
+		gtk_list_store_set(a_store, &a_iter, 0, int_data, 1, str_data, -1);
 		g_free(str_data);
 	}
 }
@@ -216,11 +223,12 @@ void OrderWidget::remove_selected(GtkWidget *widget, gpointer data){
 	GtkTreeSelection *selection = gtk_tree_view_get_selection(GTK_TREE_VIEW(order_widget->a_list));
 	GtkTreeIter a_iter, i_iter;
 	if(gtk_tree_selection_get_selected(selection, NULL, &a_iter)){
+		gint int_data;
 		gchar *str_data;
-		gtk_tree_model_get(GTK_TREE_MODEL(a_store), &a_iter, 0, &str_data, -1);
+		gtk_tree_model_get(GTK_TREE_MODEL(a_store), &a_iter, 0, &int_data, 1, &str_data, -1);
 		gtk_list_store_remove(a_store, &a_iter);
 		gtk_list_store_append(i_store, &i_iter);
-		gtk_list_store_set(i_store, &i_iter, 0, str_data, -1);
+		gtk_list_store_set(i_store, &i_iter, 0, int_data, 1, str_data, -1);
 		g_free(str_data);
 	}
 }
@@ -238,7 +246,7 @@ void load_settings(ConfigSettings *settings){
 
 //save the current settings back to the rc file and apply them
 void save_settings(){
-	tmp_settings.num_names = order_widget.update_names_from_list(tmp_settings.name_list);
+	tmp_settings.num_numids = order_widget.update_names_from_list(tmp_settings.numid_list, tmp_settings.name_list);
 	orig_settings->copy_settings(&tmp_settings);
 	orig_settings->write_config();
 }
@@ -359,28 +367,32 @@ static void update_color(GtkWidget *widget, gpointer data){
 //update the string pointed to by the data pointer with the string contained by the widget
 static void update_slider(GtkWidget *widget, gpointer data){
 	gchar *text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
-	strcpy((char*)data, text);
+	*(int*)data = atoi(text);
 	g_free(text);
 }
 
 //create an entry to choose a slider with a dropdown
-void add_entry_slider_dropdown(GtkWidget *vbox, const char *label_text, char *tray_control_name, ElementList *list_ptr){
+void add_entry_slider_dropdown(GtkWidget *vbox, const char *label_text, int tray_control_numid, ElementList *list_ptr){
 	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 	GtkWidget *label = gtk_label_new(label_text);
 	gtk_container_add(GTK_CONTAINER(hbox), label);
 	GtkWidget *combo = gtk_combo_box_new_text();
 	//get the text
+	int numid_list[80]; //NEED TO MAKE THIS DYNAMIC!
 	char name_list[80][80]; //NEED TO MAKE THIS DYNAMIC!
-	int num_names = list_ptr->list_all_int_names(name_list);
-	for(int i=0; i<num_names; i++){
-		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), name_list[i]);
-		if (strcmp(name_list[i], tray_control_name) == 0){
+	char tmpstring[80]; //NEED TO MAKE THIS DYNAMIC!
+	int num_numids = list_ptr->list_all_int_numids(numid_list);
+	list_ptr->list_all_int_names(name_list);
+	for(int i=0; i<num_numids; i++){
+		sprintf(tmpstring, "%d:%s", numid_list[i], name_list[i]);
+		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), tmpstring);
+		if (numid_list[i] == tray_control_numid){
 			gtk_combo_box_set_active(GTK_COMBO_BOX(combo), i);
 		}
 	}
 	gtk_container_add(GTK_CONTAINER(hbox), combo);
-	g_signal_connect(combo, "changed", G_CALLBACK(update_slider), tray_control_name);
+	g_signal_connect(combo, "changed", G_CALLBACK(update_slider), &tray_control_numid);
 }
 
 //create an entry to edit a color value
@@ -453,7 +465,7 @@ void build_config_window(ConfigSettings *settings){
 		//add the widgets
 		add_entry_bool_c(vbox, _("Enable Tray Icon"), &tmp_settings.enable_tray_icon);
 		add_entry_bool_c(vbox, _("Enable Tray Menu"), &tmp_settings.enable_tray_menu);
-		add_entry_slider_dropdown(vbox, _("Tray Slider"), tmp_settings.tray_control_name, tmp_settings.list_ptr);
+		add_entry_slider_dropdown(vbox, _("Tray Slider"), tmp_settings.tray_control_numid, tmp_settings.list_ptr);
 		tray_slider_swap_struc.iA = &(tmp_settings.tray_slider_width);
 		tray_slider_swap_struc.iB = &(tmp_settings.tray_slider_height);
 		tray_slider_swap_struc.control = &tmp_settings.tray_slider_vertical;
@@ -471,7 +483,7 @@ void build_config_window(ConfigSettings *settings){
 		GtkWidget *viewport = tab_init(notebook, _("Hardware"));
 
 		//add the widgets
-		order_widget.build(GTK_CONTAINER(viewport), &tmp_settings.num_names, tmp_settings.name_list, tmp_settings.list_ptr);
+		order_widget.build(GTK_CONTAINER(viewport), &tmp_settings.num_numids, tmp_settings.numid_list, tmp_settings.name_list, tmp_settings.list_ptr);
 	}
 
 

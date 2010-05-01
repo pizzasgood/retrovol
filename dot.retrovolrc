@@ -41,18 +41,19 @@
 #tray_slider_width=20
 #tray_slider_height=102
 
-#  Which slider to link with the tray_icon
-#tray_control="Master Playback Volume"
+#  Which slider to link with the tray_icon, identified by numid
+#tray_control=37
 
 
 
-#  Which sliders to display, in order.  They MUST have a tab first and be quoted
-#  with double-quotes.  To get a list of the slider names, run this command:
+# The numids of the sliders to display, in order.  It is okay to have comments
+# after the numbers as long as the numbers are the first non-whitespace
+# characters.  To get a list of the slider numids, run this command:
 #    amixer controls
-#  NOTE:  This section must go at the end of the file!
+# NOTE:  This section must go at the end of the file!
 
 #sliders:
-#	"Master Playback Volume"
-#	"Front Playback Volume"
-#	"Surround Playback Volume"
+#	37	#Master Playback Volume
+#	15	#Front Playback Volume
+#	3	#Surround Playback Volume
 

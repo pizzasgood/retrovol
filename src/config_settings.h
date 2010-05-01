@@ -33,7 +33,8 @@ class ConfigSettings {
 		
 		char card[16], _d_card[16];
 		
-		int num_names;
+		int num_numids;
+		int numid_list[80]; //NEED TO MAKE THIS DYNAMIC
 		char name_list[80][80]; //NEED TO MAKE THIS DYNAMIC
 		
 		bool vertical, _d_vertical;			//when true, the normal sliders are vertical
@@ -59,7 +60,7 @@ class ConfigSettings {
 		bool tray_slider_vertical, _d_tray_slider_vertical;	//when true, the tray_slider is vertical
 		int tray_slider_width, _d_tray_slider_width;		//dimensions of the tray_slider
 		int tray_slider_height, _d_tray_slider_height;		//
-		char tray_control_name[80]; //NEED TO MAKE THIS DYNAMIC
+		int tray_control_numid;
 		
 		char icon_file_names[4][80]; //NEED TO MAKE THIS DYNAMIC
 		bool enable_tray_icon_background_color, _d_enable_tray_icon_background_color;	//specify a background color

@@ -20,7 +20,7 @@
 
 
 ConfigSettings::ConfigSettings(){
-	num_names = 0;
+	num_numids = 0;
 	//defaults
 	strcpy(_d_card, "hw:0");
 	_d_vertical = false;
@@ -150,7 +150,7 @@ void ConfigSettings::apply_to_tray_slider(retro_slider *slider){
 void ConfigSettings::copy_settings(ConfigSettings *ptr){
 	strcpy(card, ptr->card);
 	list_ptr = ptr->list_ptr;
-	num_names = ptr->num_names;
+	num_numids = ptr->num_numids;
 	vertical = ptr->vertical;
 	window_width = ptr->window_width;
 	window_height = ptr->window_height;
@@ -170,12 +170,13 @@ void ConfigSettings::copy_settings(ConfigSettings *ptr){
 	tray_slider_vertical = ptr->tray_slider_vertical;
 	tray_slider_width = ptr->tray_slider_width;
 	tray_slider_height = ptr->tray_slider_height;
-	strcpy(tray_control_name, ptr->tray_control_name);
+	tray_control_numid = ptr->tray_control_numid;
 	enable_tray_icon_background_color = ptr->enable_tray_icon_background_color;
 	tray_icon_background_color[0] = ptr->tray_icon_background_color[0];
 	tray_icon_background_color[1] = ptr->tray_icon_background_color[1];
 	tray_icon_background_color[2] = ptr->tray_icon_background_color[2];
-	for(int i=0; i<num_names; i++){
+	for(int i=0; i<num_numids; i++){
+		numid_list[i] = ptr->numid_list[i];
 		strcpy(name_list[i], ptr->name_list[i]);
 	}
 }
@@ -261,27 +262,25 @@ void ConfigSettings::parse_config(char *config_file){
 			tmpptr=strtok(NULL, "=\n");
 			tray_slider_height=atoi(tmpptr);
 		} else if (strcmp(tmpptr, "tray_control")==0){
-			tmpptr=strtok(NULL, "=\"\n");
-			strcpy(tray_control_name, tmpptr);
+			tmpptr=strtok(NULL, "=\n");
+			tray_control_numid=atoi(tmpptr);
 		} else if (strcmp(tmpptr, "sliders:")==0){
 			int n;
 			for (n=0; fgets(buffer, 80, cfile); n++){
-				//ignore blank lines, comments, and erroneous junk
-				if(buffer[0] != '\t' || buffer[1] == '#' || buffer[1] == '\n'){
+				char *buff = buffer;
+				//skip over any whitespace
+				while (buff[0] && (buff[0] == ' ' || buff[0] == '\t')){ buff++; }
+				//skip any commented lines or newlines
+				if (buff[0] == '#' || buff[0] == '\n'){
 					n--;
 					continue;
 				}
-				//trim off the tab, two quotation marks and terminating newline if it exists
-				char *buffer2 = strchr(buffer, '"')+1;
-				while (buffer[strlen(buffer)-1] == '\n' || buffer[strlen(buffer)-1] == '"'){
-					buffer[strlen(buffer)-1]='\0';
-				}
-				
-				//put it into the array
-				strcpy(name_list[n], buffer2);
-				
+
+				//save the numid and initialize the name to an empty string
+				numid_list[n] = atoi(buff);
+				name_list[n][0] = '\0';
 			}
-			num_names=n;
+			num_numids=n;
 		}
 	}
 	
@@ -372,51 +371,54 @@ void ConfigSettings::write_config(){
 	fprintf(cfile, "#tray_slider_height=%d\n", _d_tray_slider_height);
 	if (tray_slider_height != _d_tray_slider_height){ fprintf(cfile, "tray_slider_height=%d\n", tray_slider_height); }
 	
-	fputs(_("\n# Which slider to link with the tray_icon\n"), cfile);
-	fprintf(cfile, "#tray_control=%s\n", "Master Playback Volume");
-	if (strlen(tray_control_name) > 0 && strcmp(tray_control_name, "Master Playback Volume") != 0){ fprintf(cfile, "tray_control=%s\n", tray_control_name); }
+	fputs(_("\n# Which slider to link with the tray_icon, identified by numid\n"), cfile);
+	fprintf(cfile, "#tray_control=%d\n", 37);
+	//if (tray_control_numid >= 0 && strcmp(tray_control_name, "Master Playback Volume") != 0){ fprintf(cfile, "tray_control=%d\n", tray_control_numid); }
+	if (tray_control_numid >= 0){ fprintf(cfile, "tray_control=%d\n", tray_control_numid); }
 
 	fputs("\n\n", cfile);
-	fputs(_("\n# Which sliders to display, in order.  They MUST have a tab first and be quoted\n# with double-quotes.  To get a list of the slider names, run this command:\n#    amixer controls\n# NOTE:  This section must go at the end of the file!\n"), cfile);
+	fputs(_("\n# The numids of the sliders to display, in order.  It is okay to have comments\n# after the numbers as long as the numbers are the first non-whitespace\n# characters.  To get a list of the slider numids, run this command:\n#    amixer controls\n# NOTE:  This section must go at the end of the file!\n"), cfile);
 
 	fputs(_("\n#EXAMPLE:\n"), cfile);
 	fputs("\n#sliders:\n", cfile);
-	fputs("#\t\"Master Playback Volume\"\n", cfile);
-	fputs("#\t\"Front Playback Volume\"\n", cfile);
-	fputs("#\t\"Surround Playback Volume\"\n", cfile);
+	fputs("#\t37\t#Master Playback Volume\n", cfile);
+	fputs("#\t15\t#Front Playback Volume\n", cfile);
+	fputs("#\t3\t#Surround Playback Volume\n", cfile);
 	fputs("\nsliders:\n", cfile);
-	for (int n=0; n<num_names; n++){
-		fprintf(cfile, "\t\"%s\"\n", name_list[n]);
+	for (int n=0; n<num_numids; n++){
+		fprintf(cfile, "\t%d\t#%s\n", numid_list[n], name_list[n]);
 	}
 
 	fclose(cfile);
 	
 }
 
-//reorder the items in list to match name_list, omitting any that are not in name_list
+//reorder the items in list to match numid_list, omitting any that are not in numid_list
 void ConfigSettings::reorder_list(ElementList *list){
 	list_ptr = list;
 	//this function is not needed unless an order has been defined somewhere
-	if (num_names!=0){
+	if (num_numids!=0){
 		
 		int *order = new int[list_ptr->num_items];
 
 		//find the indexes
 		int k = 0;
-		for (int n=0; n<num_names; n++){
+		for (int n=0; n<num_numids; n++){
 			for (int i=0; i < list_ptr->num_items; i++){
-				if (strcmp(name_list[n], list->items[i]->name) == 0){
+				//use the numid if >= 0, but if < 0 try using name instead - but names aren't necessarily unique
+				if ((numid_list[n] >= 0 && numid_list[n] == list->items[i]->numid) || (numid_list[n] < 0 && strcmp(name_list[n], list->items[i]->name) == 0)){
 					order[k++]=i;
 					break;
 				}
 			}
 		}
 
-		num_names = k;
-		list_ptr->reorder_items(order, num_names);
+		num_numids = k;
+		list_ptr->reorder_items(order, num_numids);
 		delete order;
 		
-		//update the name_list to omit nonexistent items
+		//update the numid_list and name_list to omit nonexistent items
+		list_ptr->list_my_numids(numid_list);
 		list_ptr->list_my_names(name_list);
 	}
 	
@@ -425,32 +427,33 @@ void ConfigSettings::reorder_list(ElementList *list){
 
 //look through the list and set the tray_slider_control to the matching element
 void ConfigSettings::set_tray_slider(ElementList *list){
-	//don't bother searching unless a name has been specified
-	if (strlen(tray_control_name) != 0){
+	//don't bother searching unless a numid has been specified
+	if (tray_control_numid >= 0){
 		for(int i=0; i<list->num_elems; i++){
-			if (strcmp(list->elems[i].name, tray_control_name) == 0){
+			if (list->elems[i].numid == tray_control_numid){
 				tray_control = &(list->elems[i]);
 				break;
 			}
 		}
 	}
-	//if the name was not specified, or was but was not found, then iterate through
+	//if the numid was not specified, or was but was not found, then iterate through
 	//the search_list to find one.
 	char search_list[5][80] = {"Master Playback Volume", "PCM Playback Volume", "Front Playback Volume", "Playback Volume", "Volume"};
 	int attempt = 0;
-	while(attempt < 5 && (strlen(tray_control_name)==0 || !tray_control)){
+	while(attempt < 5 && (tray_control_numid<0 || !tray_control)){
 		for(int i=0; i<list->num_elems; i++){
 			if (strstr(list->elems[i].name, search_list[attempt])){
 				tray_control = &(list->elems[i]);
-				strcpy(tray_control_name, list->elems[i].name);
+				tray_control_numid = list->elems[i].numid;
 				break;
 			}
 		}
 		attempt++;
 	}
-	if(strlen(tray_control_name)==0 || !tray_control){
+	//still nothing, so just take the first element
+	if(tray_control_numid<0 || !tray_control){
 		tray_control = &(list->elems[0]);
-		strcpy(tray_control_name, list->elems[0].name);
+		tray_control_numid = list->elems[0].numid;
 	}
 }
 

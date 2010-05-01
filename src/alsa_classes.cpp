@@ -435,11 +435,28 @@ int ElementList::list_my_names(char list[][80]){
 	return(num_items);
 }
 
+int ElementList::list_my_numids(int list[]){
+	for(int i=0; i<num_items; i++){
+		list[i]=items[i]->numid;
+	}
+	return(num_items);
+}
+
 int ElementList::list_all_names(char list[][80]){
 	int k=0;
 	for(int n=0; n<num_elems; n++){
 		if (!strstr(elems[n].name, "Switch") || (!elems[n].associated && strstr(elems[n].name, "Switch"))){
 			strcpy(list[k++], elems[n].name);
+		}
+	}
+	return(k);
+}
+
+int ElementList::list_all_numids(int list[]){
+	int k=0;
+	for(int n=0; n<num_elems; n++){
+		if (!strstr(elems[n].name, "Switch") || (!elems[n].associated && strstr(elems[n].name, "Switch"))){
+			list[k++]=elems[n].numid;
 		}
 	}
 	return(k);
@@ -462,11 +479,38 @@ int ElementList::list_other_names(char list[][80]){
 	return(k);
 }
 
+int ElementList::list_other_numids(int list[]){
+	int k=0;
+	for(int n=0; n<num_elems; n++){
+		bool other = true;
+		for(int i=0; i<num_items; i++){
+			if(items[i]->numid == elems[n].numid){
+				other = false;
+				break;
+			}
+		}
+		if (other && (!strstr(elems[n].name, "Switch") || (!elems[n].associated && strstr(elems[n].name, "Switch")))){
+			list[k++]=elems[n].numid;
+		}
+	}
+	return(k);
+}
+
 int ElementList::list_all_int_names(char list[][80]){
 	int k=0;
 	for(int n=0; n<num_elems; n++){
 		if (strcmp("INTEGER", elems[n].type) == 0){
 			strcpy(list[k++], elems[n].name);
+		}
+	}
+	return(k);
+}
+
+int ElementList::list_all_int_numids(int list[]){
+	int k=0;
+	for(int n=0; n<num_elems; n++){
+		if (strcmp("INTEGER", elems[n].type) == 0){
+			list[k++]=elems[n].numid;
 		}
 	}
 	return(k);
