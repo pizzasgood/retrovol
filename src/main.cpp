@@ -77,17 +77,34 @@ gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *ev
 				gtk_widget_hide_all(slider_window);
 			} else {
 				int slider_width, slider_height, icon_width, icon_height, x_pos, y_pos;
-				int tray_offset = 0; //this may be needed if the tray border hides the bottom of the slider
+				int tray_offset; //this may be needed if the tray border hides the bottom of the slider
+				//get some dimensions
 				gtk_window_get_size(GTK_WINDOW(slider_window), &slider_width, &slider_height);
 				gtk_window_get_size(GTK_WINDOW(widget), &icon_width, &icon_height);
+				GdkScreen *screen = gdk_screen_get_default();
+				//compute the x position
 				x_pos = event->x_root - event->x - slider_width/2 + widget->allocation.width/2;
-				if (event->y_root > 200){
+				//if the user has supplied an offset, use that, otherwise guess
+				if (settings.tray_slider_offset >= 0){
+					tray_offset = settings.tray_slider_offset;
+				} else {
+					if (event->y_root > gdk_screen_get_height(screen)/2){
+						//tray at bottom
+						tray_offset = gdk_screen_get_height(screen) - icon_height - event->y_root + event->y;
+					} else {
+						//tray at top
+						tray_offset = event->y_root + event->y;
+					}
+				}
+				//compute the y position
+				if (event->y_root > gdk_screen_get_height(screen)/2){
 					//tray at bottom
 					y_pos = event->y_root-event->y-slider_height-tray_offset;
 				} else {
 					//tray at top
 					y_pos = icon_height+event->y_root-event->y+tray_offset;
 				}
+				//do the deed
 				gtk_window_move(GTK_WINDOW(slider_window), x_pos, y_pos);
 				gtk_widget_show_all(slider_window);
 			}

@@ -40,6 +40,7 @@
 #  Tray slider dimensions
 #tray_slider_width=20
 #tray_slider_height=102
+#tray_slider_offset=-1
 
 #  Which slider to link with the tray_icon, identified by numid
 #tray_control=37

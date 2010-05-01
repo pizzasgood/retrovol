@@ -57,6 +57,7 @@ ConfigSettings::ConfigSettings(){
 	_d_tray_slider_vertical = true;
 	_d_tray_slider_width=20;
 	_d_tray_slider_height=102;
+	_d_tray_slider_offset=-1;
 	
 	
 	strcpy(icon_file_names[0], VOL_MUTED_IMAGE);
@@ -102,6 +103,7 @@ void ConfigSettings::apply_defaults(){
 	tray_slider_vertical = _d_tray_slider_vertical;
 	tray_slider_width = _d_tray_slider_width;
 	tray_slider_height = _d_tray_slider_height;
+	tray_slider_offset = _d_tray_slider_offset;
 	
 	enable_tray_icon_background_color = _d_enable_tray_icon_background_color;
 	tray_icon_background_color[0] = _d_tray_icon_background_color[0];
@@ -170,6 +172,7 @@ void ConfigSettings::copy_settings(ConfigSettings *ptr){
 	tray_slider_vertical = ptr->tray_slider_vertical;
 	tray_slider_width = ptr->tray_slider_width;
 	tray_slider_height = ptr->tray_slider_height;
+	tray_slider_offset = ptr->tray_slider_offset;
 	tray_control_numid = ptr->tray_control_numid;
 	enable_tray_icon_background_color = ptr->enable_tray_icon_background_color;
 	tray_icon_background_color[0] = ptr->tray_icon_background_color[0];
@@ -261,6 +264,9 @@ void ConfigSettings::parse_config(char *config_file){
 		} else if (strcmp(tmpptr, "tray_slider_height")==0){
 			tmpptr=strtok(NULL, "=\n");
 			tray_slider_height=atoi(tmpptr);
+		} else if (strcmp(tmpptr, "tray_slider_offset")==0){
+			tmpptr=strtok(NULL, "=\n");
+			tray_slider_offset=atoi(tmpptr);
 		} else if (strcmp(tmpptr, "tray_control")==0){
 			tmpptr=strtok(NULL, "=\n");
 			tray_control_numid=atoi(tmpptr);
@@ -370,6 +376,8 @@ void ConfigSettings::write_config(){
 	if (tray_slider_width != _d_tray_slider_width){ fprintf(cfile, "tray_slider_width=%d\n", tray_slider_width); }
 	fprintf(cfile, "#tray_slider_height=%d\n", _d_tray_slider_height);
 	if (tray_slider_height != _d_tray_slider_height){ fprintf(cfile, "tray_slider_height=%d\n", tray_slider_height); }
+	fprintf(cfile, "#tray_slider_offset=%d\n", _d_tray_slider_offset);
+	if (tray_slider_offset != _d_tray_slider_offset){ fprintf(cfile, "tray_slider_offset=%d\n", tray_slider_offset); }
 	
 	fputs(_("\n# Which slider to link with the tray_icon, identified by numid\n"), cfile);
 	fprintf(cfile, "#tray_control=%d\n", 37);

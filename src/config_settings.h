@@ -60,6 +60,7 @@ class ConfigSettings {
 		bool tray_slider_vertical, _d_tray_slider_vertical;	//when true, the tray_slider is vertical
 		int tray_slider_width, _d_tray_slider_width;		//dimensions of the tray_slider
 		int tray_slider_height, _d_tray_slider_height;		//
+		int tray_slider_offset, _d_tray_slider_offset;		//distance between the icon and the slider
 		int tray_control_numid;
 		
 		char icon_file_names[4][80]; //NEED TO MAKE THIS DYNAMIC

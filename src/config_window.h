@@ -59,6 +59,9 @@ GtkWidget *tab_init(GtkWidget *notebook, const char *label_text);
 //update the value pointed to by the data pointer with the value contained by the widget
 static void update_int(GtkWidget *widget, gpointer data);
 
+//create an entry to edit an unsigned int value w/ spinbutton
+GtkAdjustment *add_entry_uint(GtkWidget *vbox, const char *label_text, int *item);
+
 //create an entry to edit an int value w/ spinbutton
 GtkAdjustment *add_entry_int(GtkWidget *vbox, const char *label_text, int *item);
 

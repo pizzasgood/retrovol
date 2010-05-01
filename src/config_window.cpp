@@ -291,13 +291,26 @@ static void update_int(GtkWidget *widget, gpointer data){
 	*((int *)data) = (int)gtk_adjustment_get_value(GTK_ADJUSTMENT(widget));
 }
 
+//create an entry to edit an unsigned int value w/ spinbutton
+GtkAdjustment *add_entry_uint(GtkWidget *vbox, const char *label_text, int *item){
+	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+	GtkWidget *label = gtk_label_new(label_text);
+	gtk_container_add(GTK_CONTAINER(hbox), label);
+	GtkObject *adjustment = gtk_adjustment_new(*item, 0, 9999, 1, 10, 10);
+	GtkWidget *spin = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), 1, 0);
+	gtk_container_add(GTK_CONTAINER(hbox), spin);
+	g_signal_connect(adjustment, "value-changed", G_CALLBACK(update_int), item);
+	return(GTK_ADJUSTMENT(adjustment));
+}
+
 //create an entry to edit an int value w/ spinbutton
 GtkAdjustment *add_entry_int(GtkWidget *vbox, const char *label_text, int *item){
 	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 	GtkWidget *label = gtk_label_new(label_text);
 	gtk_container_add(GTK_CONTAINER(hbox), label);
-	GtkObject *adjustment = gtk_adjustment_new(*item, 0, 9999, 1, 10, 10);
+	GtkObject *adjustment = gtk_adjustment_new(*item, -9999, 9999, 1, 10, 10);
 	GtkWidget *spin = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), 1, 0);
 	gtk_container_add(GTK_CONTAINER(hbox), spin);
 	g_signal_connect(adjustment, "value-changed", G_CALLBACK(update_int), item);
@@ -437,17 +450,17 @@ void build_config_window(ConfigSettings *settings){
 		gtk_container_add(GTK_CONTAINER(viewport), vbox);
 
 		//add the widgets
-		add_entry_int(vbox, _("Window Width"), &tmp_settings.window_width);
-		add_entry_int(vbox, _("Window Height"), &tmp_settings.window_height);
+		add_entry_uint(vbox, _("Window Width"), &tmp_settings.window_width);
+		add_entry_uint(vbox, _("Window Height"), &tmp_settings.window_height);
 		slider_swap_struc.iA = &(tmp_settings.slider_width);
 		slider_swap_struc.iB = &(tmp_settings.slider_height);
 		slider_swap_struc.control = &tmp_settings.vertical;
 		add_entry_bool_r(vbox, _("Slider Orientation"), _("Vertical"), _("Horizontal"), NULL, &slider_swap_struc);
-		slider_swap_struc.adj_A = add_entry_int(vbox, _("Slider Width"), slider_swap_struc.iA);
-		slider_swap_struc.adj_B = add_entry_int(vbox, _("Slider Height"), slider_swap_struc.iB);
-		add_entry_int(vbox, _("Slider Margins"), &tmp_settings.slider_margin);
-		add_entry_int(vbox, _("Segment Thickness"), &tmp_settings.seg_thickness);
-		add_entry_int(vbox, _("Segment Spacing"), &tmp_settings.seg_spacing);
+		slider_swap_struc.adj_A = add_entry_uint(vbox, _("Slider Width"), slider_swap_struc.iA);
+		slider_swap_struc.adj_B = add_entry_uint(vbox, _("Slider Height"), slider_swap_struc.iB);
+		add_entry_uint(vbox, _("Slider Margins"), &tmp_settings.slider_margin);
+		add_entry_uint(vbox, _("Segment Thickness"), &tmp_settings.seg_thickness);
+		add_entry_uint(vbox, _("Segment Spacing"), &tmp_settings.seg_spacing);
 		add_entry_color(vbox, _("Background Color"), tmp_settings.background_color);
 		add_entry_color(vbox, _("Border Color"), tmp_settings.border_color);
 		add_entry_color(vbox, _("Unlit Color"), tmp_settings.unlit_color);
@@ -470,8 +483,9 @@ void build_config_window(ConfigSettings *settings){
 		tray_slider_swap_struc.iB = &(tmp_settings.tray_slider_height);
 		tray_slider_swap_struc.control = &tmp_settings.tray_slider_vertical;
 		add_entry_bool_r(vbox, _("Tray Slider Orientation"), _("Vertical"), _("Horizontal"), NULL, &tray_slider_swap_struc);
-		tray_slider_swap_struc.adj_A = add_entry_int(vbox, _("Tray Slider Width"), tray_slider_swap_struc.iA);
-		tray_slider_swap_struc.adj_B = add_entry_int(vbox, _("Tray Slider Height"), tray_slider_swap_struc.iB);
+		tray_slider_swap_struc.adj_A = add_entry_uint(vbox, _("Tray Slider Width"), tray_slider_swap_struc.iA);
+		tray_slider_swap_struc.adj_B = add_entry_uint(vbox, _("Tray Slider Height"), tray_slider_swap_struc.iB);
+		add_entry_int(vbox, _("Tray Slider Offset"), &tmp_settings.tray_slider_offset);
 		add_entry_bool_c(vbox, _("Enable Tray Icon Background Color"), &tmp_settings.enable_tray_icon_background_color);
 		add_entry_color(vbox, _("Tray Icon Background Color"), tmp_settings.tray_icon_background_color);
 	}
