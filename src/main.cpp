@@ -36,6 +36,7 @@ static ElementList *list_ptr;
 bool cmdline_enable_bg_color = false;
 char cmdline_bg_color[8];
 bool start_hidden = false;
+bool tray_at_bottom = true; //this will be updated on the fly and is used to detect when the tray moves
 
 
 
@@ -93,7 +94,7 @@ gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *ev
 						tray_offset = gdk_screen_get_height(screen) - icon_height - event->y_root + event->y;
 					} else {
 						//tray at top
-						tray_offset = event->y_root + event->y;
+						tray_offset = event->y_root - event->y;
 					}
 				}
 				//compute the y position
@@ -157,6 +158,14 @@ gboolean update(gpointer data){
 			gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[0]);
 		}
 		gtk_widget_set_tooltip_text(settings.tray_icon_image, tooltiptext);
+		//if the tray was moved, update the menu
+		int icon_x,icon_y;
+		gtk_window_get_position(GTK_WINDOW(settings.tray_icon), &icon_x, &icon_y);
+		GdkScreen *screen = gdk_screen_get_default();
+		if ((bool)(icon_y > gdk_screen_get_height(screen)/2) ^ tray_at_bottom){
+			//the current status does not match the previous status, so update the menu
+			set_menu();
+		}
 		//in case the icon was hidden due to the tray exiting, try reshowing it again
 		gtk_widget_show_all(settings.tray_icon);
 	}
@@ -237,6 +246,48 @@ GtkWidget *get_menubar_menu( GtkWidget  *window, GtkItemFactoryEntry *menu_items
 }
 
 
+//set up the popup menu, if enabled
+void set_menu(){
+	//TODO: add stock icons
+	if (settings.enable_tray_menu){
+		GtkWidget *exit_entry = gtk_menu_item_new_with_mnemonic(_("_Exit"));
+		GtkWidget *config_entry = gtk_menu_item_new_with_mnemonic(_("_Config Window"));
+		GtkWidget *show_entry = gtk_menu_item_new_with_mnemonic(_("_Full Window"));
+		g_signal_connect(G_OBJECT(exit_entry), "activate", G_CALLBACK(gtk_main_quit), NULL);
+		g_signal_connect(G_OBJECT(config_entry), "activate", G_CALLBACK(configure), NULL);
+		g_signal_connect(G_OBJECT(show_entry), "activate", G_CALLBACK(open_window), NULL);
+		if (G_IS_OBJECT(settings.tray_icon_menu)){
+			gtk_widget_destroy(settings.tray_icon_menu);
+		}
+		settings.tray_icon_menu = gtk_menu_new();
+
+		//Decide which order to stack the menu, so that the entry under the mouse
+		//initially will hopefully be show_entry, which is what the user is most
+		//likely trying to use, as opposed to exit_entry, which they probably do
+		//not want to accidentally hit...
+		int icon_x,icon_y;
+		gtk_window_get_position(GTK_WINDOW(settings.tray_icon), &icon_x, &icon_y);
+		GdkScreen *screen = gdk_screen_get_default();
+		if (icon_y > gdk_screen_get_height(screen)/2){
+			//taskbar is on bottom, so put show_entry on bottom for ergonomics
+			tray_at_bottom = true;
+			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
+			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), config_entry);
+			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), show_entry);
+		} else {
+			//taskbar is on top, so put show_entry on top for ergonomics
+			tray_at_bottom = false;
+			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), show_entry);
+			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), config_entry);
+			gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
+		}
+		
+		//make menu potentially visible
+		gtk_widget_show_all(settings.tray_icon_menu);
+	}
+}
+
+
 bool loop(int argc, char** argv) {
 
 	char home[80]; //NEED TO MAKE THIS DYNAMIC
@@ -313,38 +364,8 @@ bool loop(int argc, char** argv) {
 		//make icon visible
 		gtk_widget_show_all(settings.tray_icon);
 
-		//set up the popup menu
-		//TODO: add stock icons
-		if (settings.enable_tray_menu){
-			GtkWidget *exit_entry = gtk_menu_item_new_with_mnemonic(_("_Exit"));
-			GtkWidget *config_entry = gtk_menu_item_new_with_mnemonic(_("_Config Window"));
-			GtkWidget *show_entry = gtk_menu_item_new_with_mnemonic(_("_Full Window"));
-			g_signal_connect(G_OBJECT(exit_entry), "activate", G_CALLBACK(gtk_main_quit), NULL);
-			g_signal_connect(G_OBJECT(config_entry), "activate", G_CALLBACK(configure), NULL);
-			g_signal_connect(G_OBJECT(show_entry), "activate", G_CALLBACK(open_window), NULL);
-			settings.tray_icon_menu = gtk_menu_new();
-
-			//Decide which order to stack the menu, so that the entry under the mouse
-			//initially will hopefully be show_entry, which is what the user is most
-			//likely trying to use, as opposed to exit_entry, which they probably do
-			//not want to accidentally hit...
-			int icon_x,icon_y;
-			gtk_window_get_position(GTK_WINDOW(settings.tray_icon), &icon_x, &icon_y);
-			if (icon_y > 200){
-				//taskbar is on bottom, so put show_entry on bottom for ergonomics
-				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
-				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), config_entry);
-				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), show_entry);
-			} else {
-				//taskbar is on top, so put show_entry on top for ergonomics
-				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), show_entry);
-				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), config_entry);
-				gtk_menu_shell_append(GTK_MENU_SHELL(settings.tray_icon_menu), exit_entry);
-			}
-			
-			//make menu potentially visible
-			gtk_widget_show_all(settings.tray_icon_menu);
-		}
+		//set up the popup menu (the function checks if it should actually do anything)
+		set_menu();
 
 	}
 	

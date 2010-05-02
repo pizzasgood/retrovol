@@ -4,6 +4,11 @@
 #ifndef __MAIN__
 #define __MAIN__
 
+//signal handler to make the main window appear (if not already up)
+void popup_handler(int signum);
+
+//signal handler to exit cleanly on SIGINT and  SIGTERM
+void exit_handler(int signum);
 
 //callback that handles changing an enumerated control
 void change_combo_box(GtkWidget *combo_box, Element *elem);
@@ -26,10 +31,19 @@ void word_wrap(char *wrapped, char *orig);
 //callback for the configure window
 void configure( GtkWidget *w, gpointer data);
 
+//callback that opens the main window
+void open_window(GtkWidget *w, gpointer data);
+
 //callback that closes the main window
 void close_window( GtkWidget *w, gpointer data);
 
 //Returns a menubar widget made from the passed menu_items
 GtkWidget *get_menubar_menu( GtkWidget  *window, GtkItemFactoryEntry *menu_items, gint nmenu_items, const char *menu_name );
+
+//set up the popup menu, if enabled
+void set_menu();
+
+bool loop(int argc, char** argv);
+int main(int argc, char** argv);
 
 #endif
