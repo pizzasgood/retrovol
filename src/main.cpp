@@ -209,6 +209,7 @@ void configure( GtkWidget *w, gpointer data){
 
 //callback that opens the main window
 void open_window(GtkWidget *w, gpointer data){
+	restore_posdim();
 	gtk_widget_show_all(settings.main_window);
 }
 
@@ -287,6 +288,34 @@ void set_menu(){
 	}
 }
 
+//save the position and dimensions of the window
+gboolean save_posdim(GtkWidget *widget, GdkEventConfigure *event, gpointer data){
+	settings.window_x = event->x;
+	settings.window_y = event->y;
+	settings.window_width = event->width;
+	settings.window_height = event->height;
+	settings.write_config();
+}
+
+//restore the position and dimensions of the window
+void restore_posdim(){
+	if (settings.window_x >= 0 || settings.window_y >= 0){
+		GdkScreen *screen = gdk_screen_get_default();
+		int window_w, window_h;
+		gtk_window_get_size(GTK_WINDOW(settings.main_window), &window_w, &window_h);
+		if (settings.window_x + window_w > gdk_screen_get_width(screen)){
+			settings.window_x = gdk_screen_get_width(screen) - window_w;
+		} else if (settings.window_x < 0){
+			settings.window_x = 0;
+		}
+		if (settings.window_y + window_h > gdk_screen_get_height(screen)){
+			settings.window_y = gdk_screen_get_height(screen) - window_h;
+		} else if (settings.window_y < 0){
+			settings.window_y = 0;
+		}
+		gtk_window_move(GTK_WINDOW(settings.main_window), settings.window_x, settings.window_y);
+	}
+}
 
 bool loop(int argc, char** argv) {
 
@@ -373,9 +402,11 @@ bool loop(int argc, char** argv) {
 
 	//set up the window
 	settings.main_window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-	gtk_window_set_position(GTK_WINDOW(settings.main_window), GTK_WIN_POS_CENTER);
+	//gtk_window_set_position(GTK_WINDOW(settings.main_window), GTK_WIN_POS_CENTER);
 	gtk_window_set_default_size(GTK_WINDOW(settings.main_window), settings.window_width, settings.window_height);
 	gtk_window_set_title(GTK_WINDOW(settings.main_window), "Retrovol");
+	restore_posdim();
+	g_signal_connect(settings.main_window, "configure-event", G_CALLBACK (save_posdim), NULL);
 	
 	//if the tray icon is enabled, we want the window to hide rather than closing
 	if (settings.enable_tray_icon){

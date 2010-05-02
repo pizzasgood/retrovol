@@ -450,8 +450,6 @@ void build_config_window(ConfigSettings *settings){
 		gtk_container_add(GTK_CONTAINER(viewport), vbox);
 
 		//add the widgets
-		add_entry_uint(vbox, _("Window Width"), &tmp_settings.window_width);
-		add_entry_uint(vbox, _("Window Height"), &tmp_settings.window_height);
 		slider_swap_struc.iA = &(tmp_settings.slider_width);
 		slider_swap_struc.iB = &(tmp_settings.slider_height);
 		slider_swap_struc.control = &tmp_settings.vertical;

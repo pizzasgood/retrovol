@@ -24,6 +24,8 @@ ConfigSettings::ConfigSettings(){
 	//defaults
 	strcpy(_d_card, "hw:0");
 	_d_vertical = false;
+	_d_window_x=-1;
+	_d_window_y=-1;
 	_d_window_width=270;
 	_d_window_height=256;
 	_d_slider_width=102;
@@ -74,6 +76,8 @@ void ConfigSettings::apply_defaults(){
 	resume_main = false;
 	strcpy(card, _d_card);
 	vertical = _d_vertical;
+	window_x = _d_window_x;
+	window_y = _d_window_y;
 	window_width = _d_window_width;
 	window_height = _d_window_height;
 	slider_width = _d_slider_width;
@@ -154,6 +158,8 @@ void ConfigSettings::copy_settings(ConfigSettings *ptr){
 	list_ptr = ptr->list_ptr;
 	num_numids = ptr->num_numids;
 	vertical = ptr->vertical;
+	window_x = ptr->window_x;
+	window_y = ptr->window_y;
 	window_width = ptr->window_width;
 	window_height = ptr->window_height;
 	slider_width = ptr->slider_width;
@@ -212,6 +218,12 @@ void ConfigSettings::parse_config(char *config_file){
 		} else if (strcmp(tmpptr, "vertical")==0){
 			tmpptr=strtok(NULL, "=\n");
 			vertical=(bool)atoi(tmpptr);
+		} else if (strcmp(tmpptr, "window_x")==0){
+			tmpptr=strtok(NULL, "=\n");
+			window_x=atoi(tmpptr);
+		} else if (strcmp(tmpptr, "window_y")==0){
+			tmpptr=strtok(NULL, "=\n");
+			window_y=atoi(tmpptr);
 		} else if (strcmp(tmpptr, "window_width")==0){
 			tmpptr=strtok(NULL, "=\n");
 			window_width=atoi(tmpptr);
@@ -316,6 +328,12 @@ void ConfigSettings::write_config(){
 	fputs(_("\n# Set this to 1 to make the sliders vertical, or 0 for horizontal (only applies to the main window)\n"), cfile);
 	fprintf(cfile, "#vertical=%d\n", _d_vertical);
 	if (vertical != _d_vertical){ fprintf(cfile, "vertical=%d\n", vertical); }
+
+	fputs(_("\n# Window position\n"), cfile);
+	fprintf(cfile, "#window_x=%d\n", _d_window_x);
+	if (window_x != _d_window_x){ fprintf(cfile, "window_x=%d\n", window_x); }
+	fprintf(cfile, "#window_y=%d\n", _d_window_y);
+	if (window_y != _d_window_y){ fprintf(cfile, "window_y=%d\n", window_y); }
 
 	fputs(_("\n# Window dimensions\n"), cfile);
 	fprintf(cfile, "#window_width=%d\n", _d_window_width);

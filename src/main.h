@@ -43,6 +43,12 @@ GtkWidget *get_menubar_menu( GtkWidget  *window, GtkItemFactoryEntry *menu_items
 //set up the popup menu, if enabled
 void set_menu();
 
+//save the position and dimensions of the window
+gboolean save_posdim(GtkWidget *widget, GdkEventConfigure *event, gpointer data);
+
+//restore the position and dimensions of the window
+void restore_posdim();
+
 bool loop(int argc, char** argv);
 int main(int argc, char** argv);
 

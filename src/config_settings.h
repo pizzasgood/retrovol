@@ -39,6 +39,8 @@ class ConfigSettings {
 		
 		bool vertical, _d_vertical;			//when true, the normal sliders are vertical
 		
+		int window_x, _d_window_x;			//position of the window
+		int window_y, _d_window_y;			//
 		int window_width, _d_window_width;		//dimensions of the window
 		int window_height, _d_window_height;		//
 		

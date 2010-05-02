@@ -9,6 +9,10 @@
 #  Set this to 1 to make the sliders vertical, or 0 for horizontal (only applies to the main window)
 #vertical=0
 
+#  Window position
+#window_x=-1
+#window_y=-1
+
 #  Window dimensions
 #window_width=256
 #window_height=256
