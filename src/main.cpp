@@ -157,6 +157,8 @@ gboolean update(gpointer data){
 			gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[0]);
 		}
 		gtk_widget_set_tooltip_text(settings.tray_icon_image, tooltiptext);
+		//in case the icon was hidden due to the tray exiting, try reshowing it again
+		gtk_widget_show_all(settings.tray_icon);
 	}
 	if (GTK_WIDGET_VISIBLE(settings.main_window)){
 		gtk_widget_queue_draw(settings.main_window);
@@ -305,6 +307,8 @@ bool loop(int argc, char** argv) {
 		g_signal_connect(G_OBJECT(settings.tray_icon), "button_press_event", G_CALLBACK (&tray_button_press_event_callback), settings.slider_window);
 		g_signal_connect(G_OBJECT(settings.tray_icon), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), settings.tray_slider);
 		gtk_widget_set_events (settings.tray_icon, GDK_BUTTON_PRESS_MASK | GDK_SCROLL_MASK);
+		//handle situations where the icon's window dies, such as due to the tray itself exiting
+		g_signal_connect(G_OBJECT(settings.tray_icon), "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
 
 		//make icon visible
 		gtk_widget_show_all(settings.tray_icon);
