@@ -81,7 +81,7 @@ void add_entry_bool_c(GtkWidget *vbox, const char *label_text, bool *item, SwapS
 void add_entry_bool_r(GtkWidget *vbox, const char *label_text, const char *true_label, const char *false_label, bool *item, SwapStruc *swap_struc = NULL);
 
 //create an entry to choose a slider with a dropdown
-void add_entry_slider_dropdown(GtkWidget *vbox, const char *label_text, int tray_control_numid, ElementList *list_ptr);
+void add_entry_slider_dropdown(GtkWidget *vbox, const char *label_text, int *tray_control_numid, ElementList *list_ptr);
 
 //update the value pointed to by the data pointer with the value contained by the widget
 static void update_color(GtkWidget *widget, gpointer data);

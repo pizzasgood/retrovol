@@ -385,7 +385,7 @@ static void update_slider(GtkWidget *widget, gpointer data){
 }
 
 //create an entry to choose a slider with a dropdown
-void add_entry_slider_dropdown(GtkWidget *vbox, const char *label_text, int tray_control_numid, ElementList *list_ptr){
+void add_entry_slider_dropdown(GtkWidget *vbox, const char *label_text, int *tray_control_numid, ElementList *list_ptr){
 	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 	GtkWidget *label = gtk_label_new(label_text);
@@ -400,12 +400,12 @@ void add_entry_slider_dropdown(GtkWidget *vbox, const char *label_text, int tray
 	for(int i=0; i<num_numids; i++){
 		sprintf(tmpstring, "%d:%s", numid_list[i], name_list[i]);
 		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), tmpstring);
-		if (numid_list[i] == tray_control_numid){
+		if (numid_list[i] == *tray_control_numid){
 			gtk_combo_box_set_active(GTK_COMBO_BOX(combo), i);
 		}
 	}
 	gtk_container_add(GTK_CONTAINER(hbox), combo);
-	g_signal_connect(combo, "changed", G_CALLBACK(update_slider), &tray_control_numid);
+	g_signal_connect(combo, "changed", G_CALLBACK(update_slider), tray_control_numid);
 }
 
 //create an entry to edit a color value
@@ -476,7 +476,7 @@ void build_config_window(ConfigSettings *settings){
 		//add the widgets
 		add_entry_bool_c(vbox, _("Enable Tray Icon"), &tmp_settings.enable_tray_icon);
 		add_entry_bool_c(vbox, _("Enable Tray Menu"), &tmp_settings.enable_tray_menu);
-		add_entry_slider_dropdown(vbox, _("Tray Slider"), tmp_settings.tray_control_numid, tmp_settings.list_ptr);
+		add_entry_slider_dropdown(vbox, _("Tray Slider"), &tmp_settings.tray_control_numid, tmp_settings.list_ptr);
 		tray_slider_swap_struc.iA = &(tmp_settings.tray_slider_width);
 		tray_slider_swap_struc.iB = &(tmp_settings.tray_slider_height);
 		tray_slider_swap_struc.control = &tmp_settings.tray_slider_vertical;
