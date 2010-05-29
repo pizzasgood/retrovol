@@ -115,7 +115,7 @@ gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *ev
 				gtk_menu_popup(GTK_MENU(settings.tray_icon_menu), NULL, NULL, NULL, NULL, event->button, event->time);
 			} else {
 				if (GTK_WIDGET_VISIBLE(settings.main_window)){
-					gtk_widget_hide_all(settings.main_window);
+					gtk_widget_hide(settings.main_window);
 				} else {
 					gtk_widget_show_all(settings.main_window);
 				}
