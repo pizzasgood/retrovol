@@ -18,12 +18,13 @@
  * Boston, MA 02111-1307, USA.
  */
 
-#ifndef __EGG_TRAY_ICON_H__
-#define __EGG_TRAY_ICON_H__
+#ifndef UIM_EGG_TRAY_ICON_H
+#define UIM_EGG_TRAY_ICON_H
 
 #include <gtk/gtkplug.h>
-#include <gtk/gtkversion.h>
+#ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
+#endif
 
 G_BEGIN_DECLS
 
@@ -43,12 +44,17 @@ struct _EggTrayIcon
 
   guint stamp;
   
+#ifdef GDK_WINDOWING_X11
   Atom selection_atom;
   Atom manager_atom;
   Atom system_tray_opcode_atom;
   Atom orientation_atom;
+  Atom visual_atom;
   Window manager_window;
+  GdkVisual *manager_visual;
+  gboolean manager_visual_rgba;
 
+#endif
   GtkOrientation orientation;
 };
 
@@ -59,10 +65,8 @@ struct _EggTrayIconClass
 
 GType        egg_tray_icon_get_type       (void);
 
-#if GTK_CHECK_VERSION(2,1,0)
 EggTrayIcon *egg_tray_icon_new_for_screen (GdkScreen   *screen,
 					   const gchar *name);
-#endif
 
 EggTrayIcon *egg_tray_icon_new            (const gchar *name);
 
@@ -77,4 +81,4 @@ GtkOrientation egg_tray_icon_get_orientation (EggTrayIcon *icon);
 					    
 G_END_DECLS
 
-#endif /* __EGG_TRAY_ICON_H__ */
+#endif /* UIM_EGG_TRAY_ICON_H */
