@@ -157,7 +157,12 @@ gboolean update(gpointer data){
 			sprintf(tooltiptext, _("Volume: Muted"));
 			gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[0]);
 		}
-		gtk_widget_set_tooltip_text(settings.tray_icon_image, tooltiptext);
+		#if GTK_CHECK_VERSION(2,12,0)
+			gtk_widget_set_tooltip_text(settings.tray_icon_image, tooltiptext);
+		#else
+			static GtkTooltips *tooltips = gtk_tooltips_new();
+			gtk_tooltips_set_tip(tooltips, settings.tray_icon_image, tooltiptext, NULL);
+		#endif
 		//if the tray was moved, update the menu
 		int icon_x,icon_y;
 		gtk_window_get_position(GTK_WINDOW(settings.tray_icon), &icon_x, &icon_y);
@@ -586,7 +591,12 @@ bool loop(int argc, char** argv) {
 	
 
 	//add some periodic refreshment to keep the icon and window up-to-date
-	g_timeout_add_seconds(1, update, NULL);
+	#if GTK_CHECK_VERSION(2,14,0)
+		g_timeout_add_seconds(1, update, NULL);
+	#else
+		//this is less efficient than g_timeout_add_seconds()
+		g_timeout_add(1000, update, NULL);
+	#endif
 	
 	//finished with gtk setup
 	gtk_main();

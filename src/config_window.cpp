@@ -318,14 +318,14 @@ GtkAdjustment *add_entry_int(GtkWidget *vbox, const char *label_text, int *item)
 }
 
 //update the string pointed to by the data pointer with the value contained by the widget
-static void update_txt_d(GtkWidget *widget, int position, int n_chars, gpointer data){
+static void update_txt_d(GtkWidget *widget, GtkDeleteType arg1, int arg2, gpointer data){
 	update_txt(widget, data);
 }
-static void update_txt_i(GtkWidget *widget, int position, char *chars, int n_chars, gpointer data){
+static void update_txt_i(GtkWidget *widget, char *arg1, int pos, char *arg2, gpointer data){
 	update_txt(widget, data);
 }
 inline static void update_txt(GtkWidget *widget, gpointer data){
-	strcpy((char*)data, gtk_entry_buffer_get_text(GTK_ENTRY_BUFFER(widget)));
+	strcpy((char*)data, gtk_entry_get_text(GTK_ENTRY(widget)));
 }
 
 //create an entry to edit a text value
@@ -338,9 +338,12 @@ GtkEntry *add_entry_txt(GtkWidget *vbox, const char *label_text, char *item, int
 	gtk_entry_set_text(GTK_ENTRY(entry), item);
 	gtk_entry_set_max_length(GTK_ENTRY(entry), len);
 	gtk_container_add(GTK_CONTAINER(hbox), entry);
-	GtkEntryBuffer *buffer = gtk_entry_get_buffer(GTK_ENTRY(entry));
-	g_signal_connect(buffer, "deleted-text", G_CALLBACK(update_txt_d), item);
-	g_signal_connect(buffer, "inserted-text", G_CALLBACK(update_txt_i), item);
+	g_signal_connect_after(entry, "activate", G_CALLBACK(update_txt), item);
+	g_signal_connect_after(entry, "cut-clipboard", G_CALLBACK(update_txt), item);
+	g_signal_connect_after(entry, "paste-clipboard", G_CALLBACK(update_txt), item);
+	g_signal_connect_after(entry, "backspace", G_CALLBACK(update_txt), item);
+	g_signal_connect_after(entry, "delete-from-cursor", G_CALLBACK(update_txt_d), item);
+	g_signal_connect_after(entry, "insert_text", G_CALLBACK(update_txt_i), item);
 	return(GTK_ENTRY(entry));
 }
 

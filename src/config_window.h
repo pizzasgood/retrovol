@@ -66,8 +66,8 @@ GtkAdjustment *add_entry_uint(GtkWidget *vbox, const char *label_text, int *item
 GtkAdjustment *add_entry_int(GtkWidget *vbox, const char *label_text, int *item);
 
 //update the string pointed to by the data pointer with the value contained by the widget
-static void update_txt_d(GtkWidget *widget,  int position, int n_chars, gpointer data);
-static void update_txt_i(GtkWidget *widget,  int position, char *chars, int n_chars, gpointer data);
+static void update_txt_d(GtkWidget *widget, GtkDeleteType arg1, int arg2, gpointer data);
+static void update_txt_i(GtkWidget *widget, char *arg1, int pos, char *arg2, gpointer data);
 static void update_txt(GtkWidget *widget,  gpointer data);
 
 //create an entry to edit a text value
