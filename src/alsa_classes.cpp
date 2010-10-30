@@ -97,6 +97,11 @@ Element::Element(char *_card, int _numid, const char *_name){
 
 	//set the number of values the element has (generally will be 2, for left and right)
 	values = snd_ctl_elem_info_get_count(info);
+
+	//set what iface the element uses
+	snd_ctl_elem_iface_t interface = snd_ctl_elem_id_get_interface(id);
+	strncpy(iface, snd_ctl_elem_iface_name(interface), 16);
+	iface[15] = '\0';
 	
 	//set what datatype the element holds
 	strcpy(type, snd_ctl_elem_type_name(snd_ctl_elem_info_get_type(info)));
@@ -393,13 +398,19 @@ ElementList::ElementList(char *_card){
 	
 	//loop through and store the numid and name for each element in list->elems
 	snd_hctl_elem_t *one_elem = snd_hctl_first_elem(hctl);
+	int k=0;
 	for (int i=0; i++<num_elems; one_elem=snd_hctl_elem_next(one_elem)){
 		//want to use the constructor
 		Element *tmpptr = new Element(card, snd_hctl_elem_get_numid(one_elem), snd_hctl_elem_get_name(one_elem));
-		elems[i-1] = *tmpptr;
+		//let's only bother with elements that have the MIXER iface
+		if(strstr(tmpptr->iface, "MIXER")){
+			elems[k] = *tmpptr;
+			k++;
+		}
 		delete(tmpptr);
 		
 	}
+	num_elems = k;
 
 	//want to track down all "Switch" elements and look to see if they have an associated value elsewhere
 	for (int i=0; i<num_elems; i++){

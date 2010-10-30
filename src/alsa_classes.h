@@ -18,6 +18,7 @@ class Element {
 		int index;
 		char name[256];
 		char short_name[256];
+		char iface[16];
 		char type[16];
 		int values;
 		int switch_id;
