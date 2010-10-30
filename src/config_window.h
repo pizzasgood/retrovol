@@ -65,6 +65,14 @@ GtkAdjustment *add_entry_uint(GtkWidget *vbox, const char *label_text, int *item
 //create an entry to edit an int value w/ spinbutton
 GtkAdjustment *add_entry_int(GtkWidget *vbox, const char *label_text, int *item);
 
+//update the string pointed to by the data pointer with the value contained by the widget
+static void update_txt_d(GtkWidget *widget,  int position, int n_chars, gpointer data);
+static void update_txt_i(GtkWidget *widget,  int position, char *chars, int n_chars, gpointer data);
+static void update_txt(GtkWidget *widget,  gpointer data);
+
+//create an entry to edit a text value
+GtkEntry *add_entry_txt(GtkWidget *vbox, const char *label_text, char *item, int len);
+
 //update the bool pointed to by the data pointer with the value contained by the widget
 static void update_bool(GtkWidget *widget, gpointer data);
 

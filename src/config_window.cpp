@@ -79,7 +79,7 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_numids, int num
 	//make a vbox to hold everything, and put it inside parent_container
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
 	gtk_container_add(parent_container, vbox);
-	GtkWidget *desc_label = gtk_label_new(_("Here you can chose which sliders to enable and in which order to display them."));
+	GtkWidget *desc_label = gtk_label_new(_("Below you can chose which sliders to enable and in which order to display them."));
 	gtk_box_pack_start(GTK_BOX(vbox), desc_label, FALSE, TRUE, 0);
 
 	//make an hbox to hold the bulk of the widget, and put it inside the vbox
@@ -317,6 +317,33 @@ GtkAdjustment *add_entry_int(GtkWidget *vbox, const char *label_text, int *item)
 	return(GTK_ADJUSTMENT(adjustment));
 }
 
+//update the string pointed to by the data pointer with the value contained by the widget
+static void update_txt_d(GtkWidget *widget, int position, int n_chars, gpointer data){
+	update_txt(widget, data);
+}
+static void update_txt_i(GtkWidget *widget, int position, char *chars, int n_chars, gpointer data){
+	update_txt(widget, data);
+}
+inline static void update_txt(GtkWidget *widget, gpointer data){
+	strcpy((char*)data, gtk_entry_buffer_get_text(GTK_ENTRY_BUFFER(widget)));
+}
+
+//create an entry to edit a text value
+GtkEntry *add_entry_txt(GtkWidget *vbox, const char *label_text, char *item, int len){
+	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+	GtkWidget *label = gtk_label_new(label_text);
+	gtk_container_add(GTK_CONTAINER(hbox), label);
+	GtkWidget *entry = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(entry), item);
+	gtk_entry_set_max_length(GTK_ENTRY(entry), len);
+	gtk_container_add(GTK_CONTAINER(hbox), entry);
+	GtkEntryBuffer *buffer = gtk_entry_get_buffer(GTK_ENTRY(entry));
+	g_signal_connect(buffer, "deleted-text", G_CALLBACK(update_txt_d), item);
+	g_signal_connect(buffer, "inserted-text", G_CALLBACK(update_txt_i), item);
+	return(GTK_ENTRY(entry));
+}
+
 //update the value pointed to by the data pointer with the value contained by the widget
 static void update_bool(GtkWidget *widget, gpointer data){
 	*((bool *)data) = (bool)gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
@@ -493,9 +520,12 @@ void build_config_window(ConfigSettings *settings){
 	{
 		//initialize the tab
 		GtkWidget *viewport = tab_init(notebook, _("Hardware"));
+		GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
+		gtk_container_add(GTK_CONTAINER(viewport), vbox);
 
 		//add the widgets
-		order_widget.build(GTK_CONTAINER(viewport), &tmp_settings.num_numids, tmp_settings.numid_list, tmp_settings.name_list, tmp_settings.list_ptr);
+		add_entry_txt(vbox, _("Sound Card"), tmp_settings.card, 15);
+		order_widget.build(GTK_CONTAINER(vbox), &tmp_settings.num_numids, tmp_settings.numid_list, tmp_settings.name_list, tmp_settings.list_ptr);
 	}
 
 
