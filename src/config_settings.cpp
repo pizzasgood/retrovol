@@ -204,9 +204,9 @@ void ConfigSettings::parse_config(char *config_file){
 		return;
 	}
 	
-	char buffer[80];
+	char buffer[256];
 	char *tmpptr;
-	while (fgets(buffer, 80, cfile)){
+	while (fgets(buffer, 256, cfile)){
 		//use the # as a comment, and ignore newlines
 		if (buffer[0] == '#' || buffer[0] == '\n'){
 			continue;
@@ -284,7 +284,7 @@ void ConfigSettings::parse_config(char *config_file){
 			tray_control_numid=atoi(tmpptr);
 		} else if (strcmp(tmpptr, "sliders:")==0){
 			int n;
-			for (n=0; fgets(buffer, 80, cfile); n++){
+			for (n=0; fgets(buffer, 256, cfile); n++){
 				char *buff = buffer;
 				//skip over any whitespace
 				while (buff[0] && (buff[0] == ' ' || buff[0] == '\t')){ buff++; }
@@ -464,7 +464,7 @@ void ConfigSettings::set_tray_slider(ElementList *list){
 	}
 	//if the numid was not specified, or was but was not found, then iterate through
 	//the search_list to find one.
-	char search_list[5][80] = {"Master Playback Volume", "PCM Playback Volume", "Front Playback Volume", "Playback Volume", "Volume"};
+	char search_list[5][256] = {"Master Playback Volume", "PCM Playback Volume", "Front Playback Volume", "Playback Volume", "Volume"};
 	int attempt = 0;
 	while(attempt < 5 && (tray_control_numid<0 || !tray_control)){
 		for(int i=0; i<list->num_elems; i++){

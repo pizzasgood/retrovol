@@ -46,7 +46,7 @@ void SwapStruc::set(GtkToggleButton *button){
 
 
 
-GtkListStore *OrderWidget::build_list_from_names(int num_numids, const int numid_list[], const char name_list[][80]){
+GtkListStore *OrderWidget::build_list_from_names(int num_numids, const int numid_list[], const char name_list[][256]){
 	GtkListStore *store = gtk_list_store_new(2, G_TYPE_INT, G_TYPE_STRING);
 	GtkTreeIter iter;
 	for(int i=0; i<num_numids; i++){
@@ -57,7 +57,7 @@ GtkListStore *OrderWidget::build_list_from_names(int num_numids, const int numid
 }
 
 //update the name_list to match the GtkListStore
-int OrderWidget::update_names_from_list(int numid_list[], char name_list[][80]){
+int OrderWidget::update_names_from_list(int numid_list[], char name_list[][256]){
 	GtkTreeIter iter;
 	gboolean valid;
 	int k = 0;
@@ -75,7 +75,7 @@ int OrderWidget::update_names_from_list(int numid_list[], char name_list[][80]){
 }
 
 //build the widgets
-void OrderWidget::build(GtkContainer *parent_container, int *num_numids, int numid_list[], char name_list[][80], ElementList *list_ptr){
+void OrderWidget::build(GtkContainer *parent_container, int *num_numids, int numid_list[], char name_list[][256], ElementList *list_ptr){
 	//make a vbox to hold everything, and put it inside parent_container
 	GtkWidget *vbox = gtk_vbox_new(FALSE, 2);
 	gtk_container_add(parent_container, vbox);
@@ -137,8 +137,8 @@ void OrderWidget::build(GtkContainer *parent_container, int *num_numids, int num
 	gtk_box_pack_start(GTK_BOX(left_right_box), right_button, FALSE, TRUE, 0);
 
 	//get the inactive items
-	int unused_numid_list[80]; //NEED TO MAKE THIS DYNAMIC!
-	char unused_name_list[80][80]; //NEED TO MAKE THIS DYNAMIC!
+	int unused_numid_list[256]; //NEED TO MAKE THIS DYNAMIC!
+	char unused_name_list[256][256]; //NEED TO MAKE THIS DYNAMIC!
 	int num_unused_numids;
 	int num_unused_names;
 	if (*num_numids == 0){
@@ -392,9 +392,9 @@ void add_entry_slider_dropdown(GtkWidget *vbox, const char *label_text, int *tra
 	gtk_container_add(GTK_CONTAINER(hbox), label);
 	GtkWidget *combo = gtk_combo_box_new_text();
 	//get the text
-	int numid_list[80]; //NEED TO MAKE THIS DYNAMIC!
-	char name_list[80][80]; //NEED TO MAKE THIS DYNAMIC!
-	char tmpstring[80]; //NEED TO MAKE THIS DYNAMIC!
+	int numid_list[256]; //NEED TO MAKE THIS DYNAMIC!
+	char name_list[256][256]; //NEED TO MAKE THIS DYNAMIC!
+	char tmpstring[256]; //NEED TO MAKE THIS DYNAMIC!
 	int num_numids = list_ptr->list_all_int_numids(numid_list);
 	list_ptr->list_all_int_names(name_list);
 	for(int i=0; i<num_numids; i++){

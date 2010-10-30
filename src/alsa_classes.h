@@ -16,8 +16,8 @@ class Element {
 		char *card;
 		int numid;
 		int index;
-		char name[80];
-		char short_name[80];
+		char name[256];
+		char short_name[256];
 		char type[16];
 		int values;
 		int switch_id;
@@ -68,16 +68,16 @@ class ElementList {
 		Element **items;
 		
 		//returns a list of all elements in this list
-		int list_my_names(char list[][80]);
+		int list_my_names(char list[][256]);
 		int list_my_numids(int list[]);
 		//returns a list of all element names
-		int list_all_names(char list[][80]);
+		int list_all_names(char list[][256]);
 		int list_all_numids(int list[]);
 		//returns a list of all elements not in this list
-		int list_other_names(char list[][80]);
+		int list_other_names(char list[][256]);
 		int list_other_numids(int list[]);
 		//returns a list of all int elements
-		int list_all_int_names(char list[][80]);
+		int list_all_int_names(char list[][256]);
 		int list_all_int_numids(int list[]);
 		//populates the items array by sorting elems and skipping switches that are associated with an element
 		void populate_items();

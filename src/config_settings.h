@@ -27,15 +27,15 @@ class ConfigSettings {
 		bool restart;
 		bool resume_main;
 
-		char _config_file[80]; //NEED TO MAKE THIS DYNAMIC
+		char _config_file[256]; //NEED TO MAKE THIS DYNAMIC
 		
 		//the rest is the actual settings stuff
 		
 		char card[16], _d_card[16];
 		
 		int num_numids;
-		int numid_list[80]; //NEED TO MAKE THIS DYNAMIC
-		char name_list[80][80]; //NEED TO MAKE THIS DYNAMIC
+		int numid_list[256]; //NEED TO MAKE THIS DYNAMIC
+		char name_list[256][256]; //NEED TO MAKE THIS DYNAMIC
 		
 		bool vertical, _d_vertical;			//when true, the normal sliders are vertical
 		
@@ -65,7 +65,7 @@ class ConfigSettings {
 		int tray_slider_offset, _d_tray_slider_offset;		//distance between the icon and the slider
 		int tray_control_numid;
 		
-		char icon_file_names[4][80]; //NEED TO MAKE THIS DYNAMIC
+		char icon_file_names[4][256]; //NEED TO MAKE THIS DYNAMIC
 		bool enable_tray_icon_background_color, _d_enable_tray_icon_background_color;	//specify a background color
 		float tray_icon_background_color[3], _d_tray_icon_background_color[3];		//
 		

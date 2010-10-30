@@ -406,7 +406,7 @@ ElementList::ElementList(char *_card){
 		if (strstr(elems[i].name, "Switch")){
 			//okay, we need to grab the name, replace the 'Switch' with a 'Volume', and loop through to
 			//find any elements with that as the first portion of their name
-			char buffer[80];
+			char buffer[256];
 			strncpy(buffer, elems[i].name, strlen(elems[i].name) - 6);
 			buffer[strlen(elems[i].name) - 6] = '\0';
 			strcat(buffer, "Volume");
@@ -428,7 +428,7 @@ ElementList::ElementList(char *_card){
 	
 }
 
-int ElementList::list_my_names(char list[][80]){
+int ElementList::list_my_names(char list[][256]){
 	for(int i=0; i<num_items; i++){
 		strcpy(list[i], items[i]->name);
 	}
@@ -442,7 +442,7 @@ int ElementList::list_my_numids(int list[]){
 	return(num_items);
 }
 
-int ElementList::list_all_names(char list[][80]){
+int ElementList::list_all_names(char list[][256]){
 	int k=0;
 	for(int n=0; n<num_elems; n++){
 		if (!strstr(elems[n].name, "Switch") || (!elems[n].associated && strstr(elems[n].name, "Switch"))){
@@ -462,7 +462,7 @@ int ElementList::list_all_numids(int list[]){
 	return(k);
 }
 
-int ElementList::list_other_names(char list[][80]){
+int ElementList::list_other_names(char list[][256]){
 	int k=0;
 	for(int n=0; n<num_elems; n++){
 		bool other = true;
@@ -496,7 +496,7 @@ int ElementList::list_other_numids(int list[]){
 	return(k);
 }
 
-int ElementList::list_all_int_names(char list[][80]){
+int ElementList::list_all_int_names(char list[][256]){
 	int k=0;
 	for(int n=0; n<num_elems; n++){
 		if (strcmp("INTEGER", elems[n].type) == 0){

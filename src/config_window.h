@@ -24,7 +24,7 @@ class OrderWidget {
 		GtkWidget *a_list;
 		GtkListStore *i_store;
 		GtkWidget *i_list;
-		GtkListStore *build_list_from_names(int num_numids, const int numid_list[], const char name_list[][80]);
+		GtkListStore *build_list_from_names(int num_numids, const int numid_list[], const char name_list[][256]);
 
 		//move the selected item up in the list
 		static void move_selected_up(GtkWidget *widget, gpointer data);
@@ -36,9 +36,9 @@ class OrderWidget {
 		static void remove_selected(GtkWidget *widget, gpointer data);
 	public:
 		//build the widgets
-		void build(GtkContainer *parent_container, int *num_numids, int numid_list[], char name_list[][80], ElementList *list_ptr);
+		void build(GtkContainer *parent_container, int *num_numids, int numid_list[], char name_list[][256], ElementList *list_ptr);
 		//update the numid_list and name_list to match the GtkListStore
-		int update_names_from_list(int numid_list[], char name_list[][80]);
+		int update_names_from_list(int numid_list[], char name_list[][256]);
 };
 
 //load the current settings into a temporary tmp_settings variable

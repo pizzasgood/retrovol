@@ -319,7 +319,7 @@ void restore_posdim(){
 
 bool loop(int argc, char** argv) {
 
-	char home[80]; //NEED TO MAKE THIS DYNAMIC
+	char home[256]; //NEED TO MAKE THIS DYNAMIC
 	strcpy(home, getenv("HOME"));
 
 	//parse the config file
@@ -565,7 +565,7 @@ bool loop(int argc, char** argv) {
 		
 		//display the name of the control
 		GtkWidget *alignment;
-		char wrapped[80];
+		char wrapped[256];
 		if (settings.vertical){
 			alignment = gtk_alignment_new(0.5,1.0,0,0);
 			gtk_box_pack_end(GTK_BOX(vbox), alignment, false, false, 0);
@@ -642,7 +642,7 @@ int main(int argc, char** argv) {
 		fgets(pid_string, 16, pidfile);
 		fclose(pidfile);
 		//check if it is a zombie process
-		char command[80];
+		char command[256];
 		sprintf(command, "ps --no-header -o state %d | grep -q Z", atoi(pid_string)); //TODO:  Use better method (/proc/<pid_string>/state?)
 		if (system(command)){
 			if (kill(atoi(pid_string), SIGUSR1) == 0){
