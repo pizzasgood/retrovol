@@ -198,6 +198,7 @@ egg_tray_icon_clear_manager_window (EggTrayIcon *icon)
 
       icon->manager_window = None;
       icon->manager_visual = NULL;
+      egg_tray_icon_update_manager_window (icon);
     }
 }
 
