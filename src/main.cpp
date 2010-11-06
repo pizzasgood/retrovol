@@ -20,7 +20,9 @@
 #include "config_settings.h"
 #include "config_window.h"
 #include "main.h"
-#include "eggtrayicon.h"
+#if ! GTK_CHECK_VERSION(2,16,0)
+	#include "eggtrayicon.h"
+#endif
 
 //i18n stuff
 #include "gettext.h"
@@ -70,7 +72,7 @@ void refresh_checkbox(GtkWidget *chkbx, GdkEventExpose *event, Element *elem){
 
 
 //callback that handles clicking the tray icon
-gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *event, GtkWidget *slider_window){
+gboolean tray_button_press_event_callback (GObject *widget, GdkEventButton *event, GtkWidget *slider_window){
 	
 	switch(event->button){
 		case 1:		//left mouse button - toggle slider_window
@@ -81,10 +83,25 @@ gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *ev
 				int tray_offset; //this may be needed if the tray border hides the bottom of the slider
 				//get some dimensions
 				gtk_window_get_size(GTK_WINDOW(slider_window), &slider_width, &slider_height);
-				gtk_window_get_size(GTK_WINDOW(widget), &icon_width, &icon_height);
 				GdkScreen *screen = gdk_screen_get_default();
+#if GTK_CHECK_VERSION(2,16,0)
+				GdkScreen *screen_from_tray;
+				GdkRectangle area;
+				GtkOrientation orientation;
+				if (gtk_status_icon_get_geometry(settings.tray_icon, &screen_from_tray, &area, &orientation)){
+					icon_width = area.width;
+					icon_height = area.height;
+				} else {
+					//just outright guess
+					icon_width = 24;
+					icon_height = 24;
+				}
+#else
+				gtk_window_get_size(GTK_WINDOW(widget), &icon_width, &icon_height);
+#endif
 				//compute the x position
-				x_pos = event->x_root - event->x - slider_width/2 + widget->allocation.width/2;
+				//x_pos = event->x_root - event->x - slider_width/2 + widget->allocation.width/2;
+				x_pos = event->x_root - event->x - slider_width/2 + icon_width/2;
 				//if the user has supplied an offset, use that, otherwise guess
 				if (settings.tray_slider_offset >= 0){
 					tray_offset = settings.tray_slider_offset;
@@ -152,27 +169,54 @@ gboolean update(gpointer data){
 				image=0;
 			}
 			sprintf(tooltiptext, _("Volume: %d%%"), val);
+#if GTK_CHECK_VERSION(2,16,0)
+			gtk_status_icon_set_from_file(settings.tray_icon, settings.icon_file_names[image]);
+#else
 			gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[image]);
+#endif
 		} else {
 			sprintf(tooltiptext, _("Volume: Muted"));
+#if GTK_CHECK_VERSION(2,16,0)
+			gtk_status_icon_set_from_file(settings.tray_icon, settings.icon_file_names[0]);
+#else
 			gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[0]);
+#endif
 		}
-		#if GTK_CHECK_VERSION(2,12,0)
+#if GTK_CHECK_VERSION(2,16,0)
+			gtk_status_icon_set_tooltip_text(settings.tray_icon, tooltiptext);
+#elif GTK_CHECK_VERSION(2,12,0)
 			gtk_widget_set_tooltip_text(settings.tray_icon_image, tooltiptext);
-		#else
+#else
 			static GtkTooltips *tooltips = gtk_tooltips_new();
 			gtk_tooltips_set_tip(tooltips, settings.tray_icon_image, tooltiptext, NULL);
-		#endif
+#endif
 		//if the tray was moved, update the menu
-		int icon_x,icon_y;
-		gtk_window_get_position(GTK_WINDOW(settings.tray_icon), &icon_x, &icon_y);
 		GdkScreen *screen = gdk_screen_get_default();
+		int icon_x,icon_y;
+#if GTK_CHECK_VERSION(2,16,0)
+		GdkScreen *screen_from_tray;
+		GdkRectangle area;
+		GtkOrientation orientation;
+		if (gtk_status_icon_get_geometry(settings.tray_icon, &screen_from_tray, &area, &orientation)){
+			icon_x = area.x;
+			icon_y = area.y;
+		} else {
+			icon_x = gdk_screen_get_width(screen);
+			icon_y = gdk_screen_get_height(screen);
+		}
+#else
+		gtk_window_get_position(GTK_WINDOW(settings.tray_icon), &icon_x, &icon_y);
+#endif
 		if ((bool)(icon_y > gdk_screen_get_height(screen)/2) ^ tray_at_bottom){
 			//the current status does not match the previous status, so update the menu
 			set_menu();
 		}
 		//in case the icon was hidden due to the tray exiting, try reshowing it again
+#if GTK_CHECK_VERSION(2,16,0)
+		gtk_status_icon_set_visible(settings.tray_icon, true);
+#else
 		gtk_widget_show_all(settings.tray_icon);
+#endif
 	}
 	if (GTK_WIDGET_VISIBLE(settings.main_window)){
 		gtk_widget_queue_draw(settings.main_window);
@@ -271,9 +315,22 @@ void set_menu(){
 		//initially will hopefully be show_entry, which is what the user is most
 		//likely trying to use, as opposed to exit_entry, which they probably do
 		//not want to accidentally hit...
-		int icon_x,icon_y;
-		gtk_window_get_position(GTK_WINDOW(settings.tray_icon), &icon_x, &icon_y);
 		GdkScreen *screen = gdk_screen_get_default();
+		int icon_x,icon_y;
+#if GTK_CHECK_VERSION(2,16,0)
+		GdkScreen *screen_from_tray;
+		GdkRectangle area;
+		GtkOrientation orientation;
+		if (gtk_status_icon_get_geometry(settings.tray_icon, &screen_from_tray, &area, &orientation)){
+			icon_x = area.x;
+			icon_y = area.y;
+		} else {
+			icon_x = gdk_screen_get_width(screen);
+			icon_y = gdk_screen_get_height(screen);
+		}
+#else
+		gtk_window_get_position(GTK_WINDOW(settings.tray_icon), &icon_x, &icon_y);
+#endif
 		if (icon_y > gdk_screen_get_height(screen)/2){
 			//taskbar is on bottom, so put show_entry on bottom for ergonomics
 			tray_at_bottom = true;
@@ -365,6 +422,10 @@ bool loop(int argc, char** argv) {
 		
 			
 		//set up tray icon
+#if GTK_CHECK_VERSION(2,16,0)
+		settings.tray_icon = gtk_status_icon_new();
+		gtk_status_icon_set_from_file(settings.tray_icon, VOL_MEDIUM_IMAGE);
+#else
 		settings.tray_icon = GTK_WIDGET(egg_tray_icon_new("Retrovol Tray Icon"));
 		//set the background color
 		bool enable_tray_icon_background_color = settings.enable_tray_icon_background_color; 
@@ -389,14 +450,24 @@ bool loop(int argc, char** argv) {
 		settings.tray_icon_image = gtk_image_new();
 		gtk_container_add( GTK_CONTAINER(settings.tray_icon), settings.tray_icon_image );
 		gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), VOL_MEDIUM_IMAGE);
+		//set the event mask
+		gtk_widget_set_events (settings.tray_icon, GDK_BUTTON_PRESS_MASK | GDK_SCROLL_MASK);
+#endif
+
+		//signals
 		g_signal_connect(G_OBJECT(settings.tray_icon), "button_press_event", G_CALLBACK (&tray_button_press_event_callback), settings.slider_window);
 		g_signal_connect(G_OBJECT(settings.tray_icon), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), settings.tray_slider);
-		gtk_widget_set_events (settings.tray_icon, GDK_BUTTON_PRESS_MASK | GDK_SCROLL_MASK);
+
+#if GTK_CHECK_VERSION(2,16,0)
+		//make icon visible
+		gtk_status_icon_set_visible(settings.tray_icon, true);
+#else
 		//handle situations where the icon's window dies, such as due to the tray itself exiting
 		g_signal_connect(G_OBJECT(settings.tray_icon), "delete-event", G_CALLBACK (gtk_widget_hide_on_delete), NULL);
 
 		//make icon visible
 		gtk_widget_show_all(settings.tray_icon);
+#endif
 
 		//set up the popup menu (the function checks if it should actually do anything)
 		set_menu();

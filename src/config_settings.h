@@ -19,7 +19,11 @@ class ConfigSettings {
 		GtkWidget *main_window;
 		GtkWidget *config_window;
 		GtkWidget *slider_window;
+#if GTK_CHECK_VERSION(2,16,0)
+		GtkStatusIcon *tray_icon;
+#else
 		GtkWidget *tray_icon;
+#endif
 		GtkWidget *tray_icon_image;
 		GtkWidget *tray_icon_menu;
 		retro_slider *tray_slider;

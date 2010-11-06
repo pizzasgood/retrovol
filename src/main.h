@@ -19,7 +19,7 @@ void toggle_checkbox(GtkWidget *chkbx, Element *elem);
 void refresh_checkbox(GtkWidget *chkbx, GdkEventExpose *event, Element *elem);
 
 //callback that handles clicking the tray icon
-gboolean tray_button_press_event_callback (GtkWidget *widget, GdkEventButton *event, GtkWidget *slider_window);
+gboolean tray_button_press_event_callback (GObject *widget, GdkEventButton *event, GtkWidget *slider_window);
 
 //update the tray-icon and refresh the window
 gboolean update(gpointer data);

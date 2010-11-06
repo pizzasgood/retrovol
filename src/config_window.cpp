@@ -268,7 +268,11 @@ static void apply_config_window(GtkWidget *widget, gpointer data){
 	gtk_widget_destroy(window);
 	if (enable_tray_icon){
 		gtk_widget_destroy(orig_settings->slider_window);
+#if GTK_CHECK_VERSION(2,16,0)
+		gtk_status_icon_set_visible(orig_settings->tray_icon, false);
+#else
 		gtk_widget_destroy(orig_settings->tray_icon);
+#endif
 	}
 	gtk_widget_destroy(orig_settings->main_window);
 	//and quit gtk
