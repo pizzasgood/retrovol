@@ -389,7 +389,7 @@ ElementList::ElementList(char *_card){
 	
 	//open a pointer to use
 	snd_hctl_t *hctl;
-	snd_hctl_open(&hctl, card, 0);
+	snd_hctl_open(&hctl, card, SND_CTL_NONBLOCK | SND_CTL_ASYNC);
 	snd_hctl_load(hctl);
 	
 	//get the total number and allocate the array
