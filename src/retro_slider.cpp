@@ -92,7 +92,7 @@ void retro_slider::init(GtkWidget *_frame, void *_obj, float (*_get_func)(void*,
 //this translates from the y coordinate above the widget to the index of a segment
 //segments are indexed from 0, starting at the top
 int retro_slider::y_to_seg(int ypos){
-	int ret = (ypos - margin + 0.5*seg_spacing)/seg_offset;
+	int ret = (ypos - margin + seg_spacing/2)/seg_offset;
 	if (ret > num_segs){
 		ret = num_segs;
 	} else if (ret < 0){
