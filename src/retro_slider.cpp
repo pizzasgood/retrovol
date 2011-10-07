@@ -5,6 +5,7 @@
 #include <config.h>
 #endif
 
+#include <math.h>
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 #include "retro_slider.h"
@@ -108,7 +109,7 @@ int retro_slider::y_to_val(int ypos){
 
 //translates from a 0-100 float to the index of the corresponding segment
 int retro_slider::val_to_seg(float _val){
-	int ret = (100-_val)/val_per_seg;
+	int ret = round((100-_val)/val_per_seg);
 	if (ret > num_segs){
 		ret = num_segs;
 	} else if (ret < 0){
@@ -236,22 +237,15 @@ gboolean retro_slider::key_event_callback (GtkWidget *widget, GdkEventKey *event
 	for (int i=0; i<slider->channels; i++){
 		//note: this trick only works if channels <= 2....
 		if ((i+1) & chan_mask){
-			int ret=slider->seg[i];
-			int n=1;
-			while (ret==slider->seg[i] && direction*ret < slider->num_segs && direction+ret >= 0){
-				ret+=n*delta;
-				//limit to between 0 and num_segs
-				if (ret > slider->num_segs){
-					ret = slider->num_segs;
-				} else if (ret < 0){
-					ret = 0;
-				}
-				//update values
-				slider->val[i] = slider->set_func(slider->obj, slider->seg_to_val(ret), i);
-				ret = slider->val_to_seg(slider->val[i]);
-				n++;
+			//save the original value
+			float orig = slider->val[i];
+			//if the hardware value hasn't changed yet, keep increasing the segment until it does
+			while (slider->seg[i] <= slider->num_segs && slider->seg[i] >= 0 && slider->val[i] == orig){
+				//move one segment
+				slider->seg[i] += delta;
+				//set the value to match the new segment, then read it back
+				slider->val[i] = slider->set_func(slider->obj, slider->seg_to_val(slider->seg[i]), i);
 			}
-			slider->seg[i]=ret;
 		}
 	}
 
@@ -288,7 +282,7 @@ gboolean retro_slider::motion_notify_event_callback( GtkWidget *widget, GdkEvent
 
 //handle scrolling
 gboolean retro_slider::scroll_event_callback (GtkWidget *widget, GdkEventScroll *event, retro_slider *slider){
-	int ret, delta;
+	int delta;
 	
 	//check channel
 	channel_enum chan_mask = slider->get_chan_mask(event);
@@ -307,22 +301,15 @@ gboolean retro_slider::scroll_event_callback (GtkWidget *widget, GdkEventScroll 
 	for(int i=0; i<slider->channels; i++){
 		//note: this trick only works if channels <= 2....
 		if ((i+1) & chan_mask){
-			ret=slider->seg[i];
-			int n=1;
-			while (ret==slider->seg[i] && delta*ret < slider->num_segs && delta+ret >= 0){
-				ret+=n*delta;
-				//limit to between 0 and num_segs
-				if (ret > slider->num_segs){
-					ret = slider->num_segs;
-				} else if (ret < 0){
-					ret = 0;
-				}
-				//update values
-				slider->val[i] = slider->set_func(slider->obj, slider->seg_to_val(ret), i);
-				ret = slider->val_to_seg(slider->val[i]);
-				n++;
+			//save the original value
+			float orig = slider->val[i];
+			//if the hardware value hasn't changed yet, keep increasing the segment until it does
+			while (slider->seg[i] <= slider->num_segs && slider->seg[i] >= 0 && slider->val[i] == orig){
+				//move one segment
+				slider->seg[i] += delta;
+				//set the value to match the new segment, then read it back
+				slider->val[i] = slider->set_func(slider->obj, slider->seg_to_val(slider->seg[i]), i);
 			}
-			slider->seg[i]=ret;
 		}
 	}
 
