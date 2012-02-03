@@ -301,7 +301,7 @@ GtkAdjustment *add_entry_uint(GtkWidget *vbox, const char *label_text, int *item
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 	GtkWidget *label = gtk_label_new(label_text);
 	gtk_container_add(GTK_CONTAINER(hbox), label);
-	GtkObject *adjustment = gtk_adjustment_new(*item, 0, 9999, 1, 10, 10);
+	GtkObject *adjustment = gtk_adjustment_new(*item, 0, 9999, 1, 10, 0);
 	GtkWidget *spin = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), 1, 0);
 	gtk_container_add(GTK_CONTAINER(hbox), spin);
 	g_signal_connect(adjustment, "value-changed", G_CALLBACK(update_int), item);
@@ -314,7 +314,7 @@ GtkAdjustment *add_entry_int(GtkWidget *vbox, const char *label_text, int *item)
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 	GtkWidget *label = gtk_label_new(label_text);
 	gtk_container_add(GTK_CONTAINER(hbox), label);
-	GtkObject *adjustment = gtk_adjustment_new(*item, -9999, 9999, 1, 10, 10);
+	GtkObject *adjustment = gtk_adjustment_new(*item, -9999, 9999, 1, 10, 0);
 	GtkWidget *spin = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), 1, 0);
 	gtk_container_add(GTK_CONTAINER(hbox), spin);
 	g_signal_connect(adjustment, "value-changed", G_CALLBACK(update_int), item);
