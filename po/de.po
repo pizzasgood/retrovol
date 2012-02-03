@@ -1,0 +1,393 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: retrovol 0.11\n"
+"Report-Msgid-Bugs-To: pizzasgood@gmail.com\n"
+"POT-Creation-Date: 2012-02-02 22:20-0500\n"
+"PO-Revision-Date: 2012-01-19 15:35+0100\n"
+"Last-Translator: fido <L18L@puppy.forum>\n"
+"Language-Team: German\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/main.cpp:171
+#, c-format
+msgid "Volume: %d%%"
+msgstr "Lautstärke: %d%%"
+
+#: src/main.cpp:178
+#, c-format
+msgid "Volume: Muted"
+msgstr "Lautstärke: stumm"
+
+#: src/main.cpp:303
+msgid "_Exit"
+msgstr "_Ende"
+
+#: src/main.cpp:304
+msgid "_Config Window"
+msgstr "_Konfiguration"
+
+#: src/main.cpp:305
+msgid "_Full Window"
+msgstr "_Fenster"
+
+#: src/main.cpp:446
+#, c-format
+msgid "Error:  Failed to set background color to %s\n"
+msgstr "Fehler:  Setzen der Hintergrundfarbe auf %s fehlgeschlagen\n"
+
+#: src/main.cpp:499 src/main.cpp:506
+msgid "/_File"
+msgstr "/_Datei"
+
+#: src/main.cpp:500 src/main.cpp:507
+msgid "/File/_Configure"
+msgstr "/Datei/Kon_figuration"
+
+#: src/main.cpp:501 src/main.cpp:509
+msgid "/File/_Quit"
+msgstr "/Datei/_Beenden"
+
+#: src/main.cpp:508
+msgid "/File/_Exit completely"
+msgstr "/Datei/_Komplett beenden"
+
+#: src/main.cpp:700
+#, c-format
+msgid ""
+"ERROR:  The -bg option requires a color to be supplied in the format "
+"#rrggbb\n"
+msgstr ""
+"FEHLER:  Die Option -bg erfordert die Angabe einer Farbea im Format #rrggbb\n"
+
+#: src/main.cpp:708
+#, c-format
+msgid "Usage: %s [-bg #rrggbb] [-hide]\n"
+msgstr "Benutzung: %s [-bg #rrggbb] [-hide]\n"
+
+#: src/main.cpp:709
+#, c-format
+msgid "Volume mixer with bargraph style sliders.\n"
+msgstr "Volume-Mixer mit Schieberegler im Bargraph Stil.\n"
+
+#: src/main.cpp:710
+#, c-format
+msgid ""
+"Reads ~/.retrovolrc for configuration options.  Additionally, the following\n"
+"options may be given on the commandline:\n"
+msgstr ""
+"Liest ~/.retrovolrc für Konfigurationsoptionen.  Zusätzlick können folgende\n"
+"Optionen auf der Kommandozeile eingegeben werdenl:\n"
+
+#: src/main.cpp:711
+#, c-format
+msgid "\t-v              print the version number and exit\n"
+msgstr "\t-v              Versionsnummer ausgeben und beenden\n"
+
+#: src/main.cpp:712
+#, c-format
+msgid "\t-bg #rrggbb     specify the background color of the tray icon\n"
+msgstr ""
+"\t-bg #rrggbb     spezifiziert die Hintergrundfarbe des Leisten-Icons\n"
+
+#: src/main.cpp:713
+#, c-format
+msgid "\t-hide           hide the main window initially\n"
+msgstr "\t-hide           versteckt anfangs das Hauptfenster\n"
+
+#: src/main.cpp:741
+#, c-format
+msgid "Error: could not create %s\n"
+msgstr "Fehler: konnte %s nicht erzeugen\n"
+
+#: src/config_settings.cpp:203
+#, c-format
+msgid ""
+"Cannot read file: %s\n"
+"Using defaults...\n"
+msgstr ""
+"Kann Datei %s nicht lesen\n"
+"Benutze Standardwerte...\n"
+
+#: src/config_settings.cpp:316
+#, c-format
+msgid ""
+"Cannot open file: %s\n"
+" for writing\n"
+msgstr ""
+"Kann Datei %s\n"
+" nicht zum Schreiben öffnen\n"
+
+#: src/config_settings.cpp:320
+msgid "# Config file for retrovol\n"
+msgstr "# Konfigurationsdatei für retrovol\n"
+
+#: src/config_settings.cpp:321
+msgid ""
+"# This file should reside in the user's home directory and be named ."
+"retrovolrc\n"
+msgstr ""
+"# Diese Datei sollte im home-Verzeichnise des Benutzers sein und retrovolrc "
+"heißen.\n"
+
+#: src/config_settings.cpp:324
+msgid ""
+"\n"
+"# Which soundcard to use\n"
+msgstr ""
+"\n"
+"# Welche Soundkarte benutzen\n"
+
+#: src/config_settings.cpp:328
+msgid ""
+"\n"
+"# Set this to 1 to make the sliders vertical, or 0 for horizontal (only "
+"applies to the main window)\n"
+msgstr ""
+"\n"
+"# Setze dies auf 1 für vertikale oder auf 0 für horizontale Schieberegler "
+"(gilt nur für das Hauptfenster)\n"
+
+#: src/config_settings.cpp:332
+msgid ""
+"\n"
+"# Window position\n"
+msgstr ""
+"\n"
+"# Fensterposition\n"
+
+#: src/config_settings.cpp:338
+msgid ""
+"\n"
+"# Window dimensions\n"
+msgstr ""
+"\n"
+"# Fenster-Abmessungen\n"
+
+#: src/config_settings.cpp:344
+#, fuzzy
+msgid ""
+"\n"
+"# Slider dimensions\n"
+msgstr ""
+"\n"
+"# Leisten-Schieberegler-Abmessungen\n"
+
+#: src/config_settings.cpp:356
+msgid ""
+"\n"
+"# Slider colorscheme\n"
+msgstr ""
+"\n"
+"# Schieberegler-Farbschema\n"
+
+#: src/config_settings.cpp:374
+msgid ""
+"\n"
+"# Enable the tray_icon\n"
+msgstr ""
+"\n"
+"# Leisten-Icon anzeigen\n"
+
+#: src/config_settings.cpp:378
+msgid ""
+"\n"
+"# Enable the tray_menu\n"
+msgstr ""
+"\n"
+"# Leisten-Menü anzeigen\n"
+
+#: src/config_settings.cpp:382
+msgid ""
+"\n"
+"# Background color of tray_icon (default is default GTK background color).  "
+"Note:  the commandline -bg option overrides this\n"
+msgstr ""
+"\n"
+"# Hintergrundfarbe des Leisten-Icons (Standard ist Standard-GTK-"
+"Hintergrundfarbe).  Hinweis:  Die Kommandozeilenoption -bg überschreibt "
+"dies\n"
+
+#: src/config_settings.cpp:388
+msgid ""
+"\n"
+"# Set this to 1 to make the slider on the tray_icon vertical, or 0 for "
+"horizontal\n"
+msgstr ""
+"\n"
+"# Setze dies auf 1 für vertikalen oder auf 0 für horizontalen Schieberegler "
+"auf dem Leisten-Icon\n"
+
+#: src/config_settings.cpp:392
+msgid ""
+"\n"
+"# Tray slider dimensions\n"
+msgstr ""
+"\n"
+"# Leisten-Schieberegler-Abmessungen\n"
+
+#: src/config_settings.cpp:400
+msgid ""
+"\n"
+"# Which slider to link with the tray_icon, identified by numid\n"
+msgstr ""
+"\n"
+"# Welchen Schieberegler verknüpfen mit dem Leisten-Icon, identifiziert durch "
+"numid\n"
+
+#: src/config_settings.cpp:406
+msgid ""
+"\n"
+"# The numids of the sliders to display, in order.  It is okay to have "
+"comments\n"
+"# after the numbers as long as the numbers are the first non-whitespace\n"
+"# characters.  To get a list of the slider numids, run this command:\n"
+"#    amixer controls\n"
+"# NOTE:  This section must go at the end of the file!\n"
+msgstr ""
+"\n"
+"# Die numids der Schieberegler anzeigen, in Reigenfolge.  Es ist okay, "
+"Kommentare zu haben\n"
+"# hinter den Nummern solange die Nummern die ersten non-whitespace\n"
+"# Zeichen sind.  Um eine Liste der Schieberegler-numids zu erhalten, starte "
+"dieses Kommando:\n"
+"#    amixer controls\n"
+"# HINWEIS:  Diese Section muß an das Ende der Datei gehen!\n"
+
+#: src/config_settings.cpp:408
+msgid ""
+"\n"
+"#EXAMPLE:\n"
+msgstr ""
+"\n"
+"#BEISPIEL:\n"
+
+#: src/config_window.cpp:82
+msgid ""
+"Below you can chose which sliders to enable and in which order to display "
+"them."
+msgstr ""
+"Unten kann man wählen, welche Schieberegler in welcher Reihenfolge angezeigt "
+"werden."
+
+#: src/config_window.cpp:117
+msgid "Active Sliders"
+msgstr "Aktive Schieberegler"
+
+#: src/config_window.cpp:162
+msgid "Inactive Sliders"
+msgstr "Inaktive Schieberegler"
+
+#: src/config_window.cpp:466
+msgid "Retrovol - Configuration"
+msgstr "Retrovol - Konfiguration"
+
+#: src/config_window.cpp:482
+msgid "Main"
+msgstr "Haupt"
+
+#: src/config_window.cpp:490
+msgid "Slider Orientation"
+msgstr "Schieberegler-Richtung"
+
+#: src/config_window.cpp:490 src/config_window.cpp:517
+msgid "Vertical"
+msgstr "Vertikal"
+
+#: src/config_window.cpp:490 src/config_window.cpp:517
+msgid "Horizontal"
+msgstr ""
+
+#: src/config_window.cpp:491
+msgid "Slider Width"
+msgstr "Schieberegler-Breite"
+
+#: src/config_window.cpp:492
+msgid "Slider Height"
+msgstr "Schieberegler-Höhe"
+
+#: src/config_window.cpp:493
+msgid "Slider Margins"
+msgstr "Schieberegler-Ränder"
+
+#: src/config_window.cpp:494
+msgid "Segment Thickness"
+msgstr "Segment-Dicke"
+
+#: src/config_window.cpp:495
+msgid "Segment Spacing"
+msgstr "Segment-Abstand"
+
+#: src/config_window.cpp:496
+msgid "Background Color"
+msgstr "Hintergrundfarbe"
+
+#: src/config_window.cpp:497
+msgid "Border Color"
+msgstr "Randfarbe"
+
+#: src/config_window.cpp:498
+msgid "Unlit Color"
+msgstr "Farbe für Unbeleuchtet"
+
+#: src/config_window.cpp:499
+msgid "Lit Color"
+msgstr "Farbe für Beleuchtet"
+
+#: src/config_window.cpp:506
+msgid "Tray"
+msgstr "Leiste"
+
+#: src/config_window.cpp:511
+msgid "Enable Tray Icon"
+msgstr "Leisten-Icon ermöglichen"
+
+#: src/config_window.cpp:512
+msgid "Enable Tray Menu"
+msgstr "Leisten-Menü ermöglichen"
+
+#: src/config_window.cpp:513
+msgid "Tray Slider"
+msgstr "Leisten-Schieberegler"
+
+#: src/config_window.cpp:517
+msgid "Tray Slider Orientation"
+msgstr "Ausrichtung des Leisten-Schiebereglers"
+
+#: src/config_window.cpp:518
+msgid "Tray Slider Width"
+msgstr "Breite des Leisten-Schiebereglers"
+
+#: src/config_window.cpp:519
+msgid "Tray Slider Height"
+msgstr "Höhe des Leisten-Schiebereglers"
+
+#: src/config_window.cpp:520
+msgid "Tray Slider Offset"
+msgstr "Vorlauf des Leisten-Schiebereglers"
+
+#: src/config_window.cpp:521
+msgid "Enable Tray Icon Background Color"
+msgstr "Hintergrundfarbe ermöglichen für Leisten-Icon"
+
+#: src/config_window.cpp:522
+msgid "Tray Icon Background Color"
+msgstr "Hintergrundfarbe für Leisten-Icon"
+
+#: src/config_window.cpp:529
+msgid "Hardware"
+msgstr ""
+
+#: src/config_window.cpp:534
+msgid "Sound Card"
+msgstr "Soundkarte"
+
+#~ msgid ""
+#~ "\n"
+#~ "# Schieberegler-Abmessungen\n"
+#~ msgstr ""
+#~ "\n"
+#~ "# Slider dimensions\n"
