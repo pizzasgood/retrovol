@@ -1,5 +1,5 @@
 :main window:
-	add balance support
+	add alternate scales (e.g. logarithmic, exponential)
 	?add editable numeric display - Will probably skip this to preserve screen space - make up for it with a tooltip?
 	make sliders select when clicked on (so arrow keys work on them)
 	improve layout of horizontal-mode - mute buttons are funky
