@@ -1,4 +1,4 @@
-RetroVol
+Retrovol
 https://github.com/pizzasgood/retrovol
 git://github.com/pizzasgood/retrovol.git
 
@@ -14,7 +14,7 @@ git://github.com/pizzasgood/retrovol.git
  
 ---- End Legal Jazz ----------------------------------------------------------
 
-RetroVol is a volume setting program.  It adds an icon to the tray that can be
+Retrovol is a volume setting program.  It adds an icon to the tray that can be
 scrolled on to change the volume.  It can be middle-clicked to mute/unmute. It
 can be right-clicked to get a menu with an option to display the main window,
 which lists all the volume controls it can detect on your system.
