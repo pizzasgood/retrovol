@@ -1,0 +1,14 @@
+autom4te.cache
+config.log
+config.h
+config.status
+Makefile
+stamp-h1
+images/Makefile
+po/Makefile
+po/Makefile.in
+po/remove-potcdate.sed
+po/POTFILES
+src/Makefile
+src/retrovol
+src/.deps
