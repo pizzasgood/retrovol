@@ -17,6 +17,7 @@ class Element {
 			LOGARITHMIC,
 			EXPONENTIAL,
 		};
+		#define NUM_SCALE_T 3
 
 		Element(char *_card, int _numid, const char *_name);
 		char *card;

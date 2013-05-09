@@ -396,6 +396,9 @@ bool loop(int argc, char** argv) {
 	list_ptr = &list;
 	//reorder the controls to the order specified in the config file
 	settings.reorder_list(&list);
+
+	//set the scale
+	list.set_scale((Element::scale_t)settings.scaling);
 	
 	//initialize gtk
 	gtk_init(&argc, &argv);

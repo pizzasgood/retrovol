@@ -23,6 +23,7 @@ ConfigSettings::ConfigSettings(){
 	num_numids = 0;
 	//defaults
 	strcpy(_d_card, "hw:0");
+	_d_scaling = Element::LINEAR;
 	_d_vertical = false;
 	_d_window_x=-1;
 	_d_window_y=-1;
@@ -76,6 +77,7 @@ void ConfigSettings::apply_defaults(){
 	restart = false;
 	resume_main = false;
 	strcpy(card, _d_card);
+	scaling = _d_scaling;
 	vertical = _d_vertical;
 	window_x = _d_window_x;
 	window_y = _d_window_y;
@@ -158,6 +160,7 @@ void ConfigSettings::copy_settings(ConfigSettings *ptr){
 	strcpy(card, ptr->card);
 	list_ptr = ptr->list_ptr;
 	num_numids = ptr->num_numids;
+	scaling = ptr->scaling;
 	vertical = ptr->vertical;
 	window_x = ptr->window_x;
 	window_y = ptr->window_y;
@@ -216,6 +219,10 @@ void ConfigSettings::parse_config(char *config_file){
 		if (strcmp(tmpptr, "card")==0){
 			tmpptr=strtok(NULL, "=\"\n");
 			strcpy(card, tmpptr);
+		} else if (strcmp(tmpptr, "scaling")==0){
+			tmpptr=strtok(NULL, "=\n");
+			scaling=atoi(tmpptr);
+			if (scaling < 0 || scaling > NUM_SCALE_T - 1){ scaling = _d_scaling; }  //if out of bounds, use default
 		} else if (strcmp(tmpptr, "vertical")==0){
 			tmpptr=strtok(NULL, "=\n");
 			vertical=(bool)atoi(tmpptr);
@@ -325,6 +332,10 @@ void ConfigSettings::write_config(){
 	fputs(_("\n# Which soundcard to use\n"), cfile);
 	fprintf(cfile, "#card=%s\n", _d_card);
 	if (strcmp(card, _d_card) != 0){ fprintf(cfile, "card=%s\n", card); }
+
+	fputs(_("\n# Set this to 0-2 to define a linear, logarithmic, or exponential volume scale, respectively\n"), cfile);
+	fprintf(cfile, "#scaling=%d\n", _d_scaling);
+	if (scaling != _d_scaling){ fprintf(cfile, "scaling=%d\n", scaling); }
 
 	fputs(_("\n# Set this to 1 to make the sliders vertical, or 0 for horizontal (only applies to the main window)\n"), cfile);
 	fprintf(cfile, "#vertical=%d\n", _d_vertical);

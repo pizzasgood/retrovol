@@ -411,11 +411,38 @@ static void update_color(GtkWidget *widget, gpointer data){
 	ConfigSettings::gtonf((float *)data, &color);
 }
 
+//update the int pointed to by the data pointer with the value contained by the combo box widget
+static void update_int_combo(GtkWidget *widget, gpointer data){
+	*(int*)data = (int)gtk_combo_box_get_active(GTK_COMBO_BOX(widget));
+}
+
 //update the string pointed to by the data pointer with the string contained by the widget
 static void update_slider(GtkWidget *widget, gpointer data){
 	gchar *text = gtk_combo_box_get_active_text(GTK_COMBO_BOX(widget));
 	*(int*)data = atoi(text);
 	g_free(text);
+}
+
+//create an entry to choose a volume scale with a dropdown
+void add_entry_scaling_dropdown(GtkWidget *vbox, const char *label_text, int *scaling){
+	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
+	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
+	GtkWidget *label = gtk_label_new(label_text);
+	gtk_container_add(GTK_CONTAINER(hbox), label);
+	GtkWidget *combo = gtk_combo_box_new_text();
+	//get the text
+	char *name_list[NUM_SCALE_T];
+	name_list[Element::LINEAR] = _("Linear");
+	name_list[Element::LOGARITHMIC] = _("Logarithmic");
+	name_list[Element::EXPONENTIAL] = _("Exponential");
+	for(int i=0; i<NUM_SCALE_T; i++){
+		gtk_combo_box_append_text(GTK_COMBO_BOX(combo), name_list[i]);
+		if (i == *scaling){
+			gtk_combo_box_set_active(GTK_COMBO_BOX(combo), i);
+		}
+	}
+	gtk_container_add(GTK_CONTAINER(hbox), combo);
+	g_signal_connect(combo, "changed", G_CALLBACK(update_int_combo), scaling);
 }
 
 //create an entry to choose a slider with a dropdown
@@ -487,6 +514,7 @@ void build_config_window(ConfigSettings *settings){
 		slider_swap_struc.iA = &(tmp_settings.slider_width);
 		slider_swap_struc.iB = &(tmp_settings.slider_height);
 		slider_swap_struc.control = &tmp_settings.vertical;
+		add_entry_scaling_dropdown(vbox, _("Volume Scaling"), &tmp_settings.scaling);
 		add_entry_bool_r(vbox, _("Slider Orientation"), _("Vertical"), _("Horizontal"), NULL, &slider_swap_struc);
 		slider_swap_struc.adj_A = add_entry_uint(vbox, _("Slider Width"), slider_swap_struc.iA);
 		slider_swap_struc.adj_B = add_entry_uint(vbox, _("Slider Height"), slider_swap_struc.iB);

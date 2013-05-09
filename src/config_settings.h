@@ -42,6 +42,8 @@ class ConfigSettings {
 		int numid_list[256]; //NEED TO MAKE THIS DYNAMIC
 		char name_list[256][256]; //NEED TO MAKE THIS DYNAMIC
 		
+		int scaling, _d_scaling;			//defines the volume scale
+		
 		bool vertical, _d_vertical;			//when true, the normal sliders are vertical
 		
 		int window_x, _d_window_x;			//position of the window

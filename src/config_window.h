@@ -79,6 +79,9 @@ static void update_bool(GtkWidget *widget, gpointer data);
 //update the bool and swap the ints pointed to by the data pointer with the value contained by the widget
 static void update_bool_s(GtkWidget *widget, gpointer data);
 
+//update the int pointed to by the data pointer with the value contained by the combo box widget
+static void update_int_combo(GtkWidget *widget, gpointer data);
+
 //update the string pointed to by the data pointer with the string contained by the widget
 static void update_slider(GtkWidget *widget, gpointer data);
 
@@ -87,6 +90,9 @@ void add_entry_bool_c(GtkWidget *vbox, const char *label_text, bool *item, SwapS
 
 //create an entry to edit a bool value w/ radiobutton
 void add_entry_bool_r(GtkWidget *vbox, const char *label_text, const char *true_label, const char *false_label, bool *item, SwapStruc *swap_struc = NULL);
+
+//create an entry to choose a volume scale with a dropdown
+void add_entry_scaling_dropdown(GtkWidget *vbox, const char *label_text, int *scaling);
 
 //create an entry to choose a slider with a dropdown
 void add_entry_slider_dropdown(GtkWidget *vbox, const char *label_text, int *tray_control_numid, ElementList *list_ptr);
