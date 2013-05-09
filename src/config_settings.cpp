@@ -63,9 +63,10 @@ ConfigSettings::ConfigSettings(){
 	
 	
 	strcpy(icon_file_names[0], VOL_MUTED_IMAGE);
-	strcpy(icon_file_names[1], VOL_LOW_IMAGE);
-	strcpy(icon_file_names[2], VOL_MEDIUM_IMAGE);
-	strcpy(icon_file_names[3], VOL_HIGH_IMAGE);
+	strcpy(icon_file_names[1], VOL_NONE_IMAGE);
+	strcpy(icon_file_names[2], VOL_LOW_IMAGE);
+	strcpy(icon_file_names[3], VOL_MEDIUM_IMAGE);
+	strcpy(icon_file_names[4], VOL_HIGH_IMAGE);
 
 	apply_defaults();
 }

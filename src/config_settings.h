@@ -6,6 +6,7 @@
 
 //define the paths to the volume images
 #define VOL_MUTED_IMAGE IMAGEDIR"/audio-volume-muted.png"
+#define VOL_NONE_IMAGE IMAGEDIR"/audio-volume-none.png"
 #define VOL_LOW_IMAGE IMAGEDIR"/audio-volume-low.png"
 #define VOL_MEDIUM_IMAGE IMAGEDIR"/audio-volume-medium.png"
 #define VOL_HIGH_IMAGE IMAGEDIR"/audio-volume-high.png"
@@ -69,7 +70,7 @@ class ConfigSettings {
 		int tray_slider_offset, _d_tray_slider_offset;		//distance between the icon and the slider
 		int tray_control_numid;
 		
-		char icon_file_names[4][256]; //NEED TO MAKE THIS DYNAMIC
+		char icon_file_names[5][256]; //NEED TO MAKE THIS DYNAMIC
 		bool enable_tray_icon_background_color, _d_enable_tray_icon_background_color;	//specify a background color
 		float tray_icon_background_color[3], _d_tray_icon_background_color[3];		//
 		

@@ -161,12 +161,14 @@ gboolean update(gpointer data){
 		if (settings.tray_control->switch_id >= 0){
 			state = (bool)list_ptr->elems[settings.tray_control->switch_id].get();
 		}
-		if (state && val != 0){
-			int image = 1+3*val/100;
-			if (image > 3){
-				image=3;
+		if (state){
+			int image = 2+3*val/100;
+			if (image > 4){
+				image=4;
 			} else if (image < 0){
 				image=0;
+			} else if (val == 0){
+				image=1;
 			}
 			sprintf(tooltiptext, _("Volume: %d%%"), val);
 #if GTK_CHECK_VERSION(2,16,0)
