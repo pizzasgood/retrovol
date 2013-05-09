@@ -4,7 +4,7 @@ LDADD = @LIBINTL@
 
 AM_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\" -DIMAGEDIR="\"$(imagedir)\""
 
-INCLUDES = `pkg-config --cflags gtk+-2.0`
+AM_CPPFLAGS += `pkg-config --cflags gtk+-2.0`
 
 bin_PROGRAMS = retrovol
 
