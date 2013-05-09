@@ -129,6 +129,13 @@ float retro_slider::seg_to_val(int _seg){
 	return(ret);
 }
 
+//updates the slider to have the latest value
+void retro_slider::update(){
+	for (int i=0; i<channels; i++){
+		val[i] = get_func(obj, i);
+		seg[i] = val_to_seg(val[i]);
+	}
+}
 
 
 
@@ -189,6 +196,9 @@ retro_slider::channel_enum retro_slider::get_chan_mask(GdkEventButton *event){
 
 //if there was a button press, update the slider
 gboolean retro_slider::button_press_event_callback (GtkWidget *widget, GdkEventButton *event, retro_slider *slider){
+	//ensure we start with the latest value
+	slider->update();
+
 	//slide it
 	if (slider->vertical){
 		slider->slide_the_slider(event->y, slider->get_chan_mask(event));
@@ -201,6 +211,9 @@ gboolean retro_slider::button_press_event_callback (GtkWidget *widget, GdkEventB
 
 //handle keypresses
 gboolean retro_slider::key_event_callback (GtkWidget *widget, GdkEventKey *event, retro_slider *slider){
+	//ensure we start with the latest value
+	slider->update();
+
 	//check channel
 	channel_enum chan_mask = slider->get_chan_mask(event);
 
@@ -269,6 +282,10 @@ gboolean retro_slider::motion_notify_event_callback( GtkWidget *widget, GdkEvent
 	
 	//only do anything if a mouse button is pressed
 	if (state & GDK_BUTTON1_MASK || state & GDK_BUTTON2_MASK || state & GDK_BUTTON3_MASK){
+		//ensure we start with the latest value
+		slider->update();
+
+		//do the sliding
 		if (slider->vertical){
 			slider->slide_the_slider(event->y, slider->get_chan_mask(event));
 		} else {
@@ -284,6 +301,9 @@ gboolean retro_slider::motion_notify_event_callback( GtkWidget *widget, GdkEvent
 gboolean retro_slider::scroll_event_callback (GtkWidget *widget, GdkEventScroll *event, retro_slider *slider){
 	int delta;
 	
+	//ensure we start with the latest value
+	slider->update();
+
 	//check channel
 	channel_enum chan_mask = slider->get_chan_mask(event);
 

@@ -22,6 +22,7 @@ class retro_slider{
 		int y_to_val(int ypos);
 		int val_to_seg(float _val);
 		float seg_to_val(int _seg);
+		void update();
 		void *obj;
 		float (*get_func)(void*, int);
 		float (*set_func)(void*,float, int);
