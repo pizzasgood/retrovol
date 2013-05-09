@@ -12,6 +12,12 @@
 //scaled to be in a 0-100 range.
 class Element {
 	public:
+		enum scale_t {
+			LINEAR,
+			LOGARITHMIC,
+			EXPONENTIAL,
+		};
+
 		Element(char *_card, int _numid, const char *_name);
 		char *card;
 		int numid;
@@ -22,6 +28,7 @@ class Element {
 		char type[16];
 		int values;
 		int switch_id;
+		scale_t scaling;
 		bool associated;
 		
 		unsigned int number_of_enums;
@@ -84,6 +91,8 @@ class ElementList {
 		void populate_items();
 		//rearranges the items array so the current indexes are reordered to match 'order'
 		void reorder_items(int *order, int n);
+		//updates the scale for all elements
+		void set_scale(Element::scale_t s);
 };
 
 //replaces any instance of 'oldstr' found in dest with newstr, and returns true if dest was modified

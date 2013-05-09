@@ -28,6 +28,7 @@ Element::Element(char *_card, int _numid, const char *_name){
 	numid = _numid;
 	strcpy(name, _name);
 	switch_id = -1; //this will be changed later if there is an associated switch
+	scaling = LINEAR; //this will be set later
 	associated = false; //this one is also handled later
 	
 	//set the short name by dropping any trailing "Playback*", "Volume*", or "Switch*"
@@ -158,13 +159,35 @@ void Element::print(){
 //this is used internally to scale a number to be from 0-100
 int Element::scale_out(int num){
 	if(max-min==0){ return(num); }
-	return(ceil(100.0*(num-min)/(max-min)));
+	switch (scaling){
+		case LOGARITHMIC:
+			return(round(pow(101.0, (num-min)/(double)(max-min)))-1);
+			break;
+		case EXPONENTIAL:
+			return(round(100.0*log((num-min)/(double)(max-min)+1)/log(2)));
+			break;
+		case LINEAR:
+		default:
+			return(ceil(100.0*(num-min)/(max-min)));
+			break;
+	}
 }
 //this is the inverse of scale_out; it's used to take a 0-100 number and put it
 //into the proper scale for the element to understand
 int Element::scale_in(int num){
 	if(max-min==0){ return(num); }
-	return(floor((num*(max-min)/(100))+min));
+	switch (scaling){
+		case LOGARITHMIC:
+			return(round((log(num+1)/log(101)*(max-min))+min));
+			break;
+		case EXPONENTIAL:
+			return(round((pow(2.0, num/(double)100)-1)*(max-min)+min));
+			break;
+		case LINEAR:
+		default:
+			return(floor((num*(max-min)/(100))+min));
+			break;
+	}
 }
 //this will grab the highest value in the element
 int Element::get(){
@@ -586,6 +609,14 @@ void ElementList::reorder_items(int *order, int n){
 	free(items);
 	items=tmp_items;
 	tmp_items=NULL;
+}
+
+
+//updates the scale for all elements
+void ElementList::set_scale(Element::scale_t s){
+	for (int i=0; i<num_elems; i++){
+		elems[i].scaling = s;
+	}
 }
 
 
