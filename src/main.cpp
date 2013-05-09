@@ -221,6 +221,9 @@ gboolean update(gpointer data){
 	if (GTK_WIDGET_VISIBLE(settings.main_window)){
 		gtk_widget_queue_draw(settings.main_window);
 	}
+	if (GTK_WIDGET_VISIBLE(settings.slider_window)){
+		gtk_widget_queue_draw(settings.slider_window);
+	}
 	
 	return(true);
 }
