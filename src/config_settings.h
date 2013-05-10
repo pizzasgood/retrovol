@@ -43,6 +43,7 @@ class ConfigSettings {
 		char name_list[256][256]; //NEED TO MAKE THIS DYNAMIC
 		
 		int scaling, _d_scaling;			//defines the volume scale
+		bool auto_mute, _d_auto_mute;		//when true, automatically mute the volume when it is set to 0%
 		
 		bool vertical, _d_vertical;			//when true, the normal sliders are vertical
 		

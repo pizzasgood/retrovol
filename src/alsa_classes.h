@@ -29,7 +29,9 @@ class Element {
 		char type[16];
 		int values;
 		int switch_id;
+		Element *switch_ptr;
 		scale_t scaling;
+		bool auto_mute;
 		bool associated;
 		
 		unsigned int number_of_enums;
@@ -94,6 +96,8 @@ class ElementList {
 		void reorder_items(int *order, int n);
 		//updates the scale for all elements
 		void set_scale(Element::scale_t s);
+		//updates the auto_mute for all elements
+		void set_auto_mute(bool a);
 };
 
 //replaces any instance of 'oldstr' found in dest with newstr, and returns true if dest was modified

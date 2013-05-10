@@ -29,6 +29,7 @@ Element::Element(char *_card, int _numid, const char *_name){
 	strcpy(name, _name);
 	switch_id = -1; //this will be changed later if there is an associated switch
 	scaling = LINEAR; //this will be set later
+	auto_mute = true; //this can be set later
 	associated = false; //this one is also handled later
 	
 	//set the short name by dropping any trailing "Playback*", "Volume*", or "Switch*"
@@ -392,6 +393,16 @@ int Element::_set(int num, int n){
 	
 	//don't need the handle open anymore, so close it
 	snd_ctl_close(handle);
+
+
+	//now, if auto_mute is set and this has a switch, handle that
+	if (auto_mute && strcmp(type, "INTEGER") == 0 && switch_ptr){
+		if (num == 0){
+			switch_ptr->set(0);
+		} else {
+			switch_ptr->set(1);
+		}
+	}
 	
 	return(num);
 	
@@ -447,6 +458,7 @@ ElementList::ElementList(char *_card){
 			for (int j=0; j<num_elems; j++){
 				if (strstr(elems[j].name, buffer) && !strstr(elems[j].name, "Switch") && elems[j].index == elems[i].index){
 					elems[j].switch_id = i;
+					elems[j].switch_ptr = &(elems[i]);
 					elems[j].associated = elems[i].associated = true;
 				}
 			}
@@ -616,6 +628,14 @@ void ElementList::reorder_items(int *order, int n){
 void ElementList::set_scale(Element::scale_t s){
 	for (int i=0; i<num_elems; i++){
 		elems[i].scaling = s;
+	}
+}
+
+
+//updates the auto_mute for all elements
+void ElementList::set_auto_mute(bool a){
+	for (int i=0; i<num_elems; i++){
+		elems[i].auto_mute = a;
 	}
 }
 

@@ -399,6 +399,8 @@ bool loop(int argc, char** argv) {
 
 	//set the scale
 	list.set_scale((Element::scale_t)settings.scaling);
+	//set the auto_mute
+	list.set_auto_mute(settings.auto_mute);
 	
 	//initialize gtk
 	gtk_init(&argc, &argv);

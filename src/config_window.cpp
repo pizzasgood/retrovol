@@ -515,6 +515,7 @@ void build_config_window(ConfigSettings *settings){
 		slider_swap_struc.iB = &(tmp_settings.slider_height);
 		slider_swap_struc.control = &tmp_settings.vertical;
 		add_entry_scaling_dropdown(vbox, _("Volume Scaling"), &tmp_settings.scaling);
+		add_entry_bool_c(vbox, _("Auto Mute"), &tmp_settings.auto_mute);
 		add_entry_bool_r(vbox, _("Slider Orientation"), _("Vertical"), _("Horizontal"), NULL, &slider_swap_struc);
 		slider_swap_struc.adj_A = add_entry_uint(vbox, _("Slider Width"), slider_swap_struc.iA);
 		slider_swap_struc.adj_B = add_entry_uint(vbox, _("Slider Height"), slider_swap_struc.iB);
