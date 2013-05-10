@@ -20,6 +20,11 @@
 
 #include "alsa_classes.h"
 
+//i18n stuff
+#include "gettext.h"
+#include <locale.h>
+#define _(String) gettext (String)
+
 
 //Constructor: automatically populates the element with its non-dynamic data
 Element::Element(char *_card, int _numid, const char *_name){
@@ -77,7 +82,7 @@ Element::Element(char *_card, int _numid, const char *_name){
 	
 	//open a handle to use with the card
 	if ((err = snd_ctl_open(&handle, card, 0)) < 0) {
-		fprintf(stderr, "Control %s open error: %s\n", card, snd_strerror(err));
+		fprintf(stderr, _("Control %s open error: %s\n"), card, snd_strerror(err));
 	}
 	
 	snd_ctl_elem_read(handle, control);
@@ -260,7 +265,7 @@ int Element::_get(int n){
 	
 	//open a handle to use with the card
 	if ((err = snd_ctl_open(&handle, card, 0)) < 0) {
-		fprintf(stderr, "Control %s open error: %s\n", card, snd_strerror(err));
+		fprintf(stderr, _("Control %s open error: %s\n"), card, snd_strerror(err));
 	}
 	
 	snd_ctl_elem_read(handle, control);
@@ -309,7 +314,7 @@ void Element::sget(char *ret){
 	
 	//open a handle to use with the card
 	if ((err = snd_ctl_open(&handle, card, 0)) < 0) {
-		fprintf(stderr, "Control %s open error: %s\n", card, snd_strerror(err));
+		fprintf(stderr, _("Control %s open error: %s\n"), card, snd_strerror(err));
 	}
 	
 	snd_ctl_elem_read(handle, control);
@@ -353,7 +358,7 @@ int Element::_set(int num, int n){
 	
 	//open a handle to use with the card
 	if ((err = snd_ctl_open(&handle, card, 0)) < 0) {
-		fprintf(stderr, "Control %s open error: %s\n", card, snd_strerror(err));
+		fprintf(stderr, _("Control %s open error: %s\n"), card, snd_strerror(err));
 	}
 	
 	
