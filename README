@@ -11,6 +11,8 @@ git://github.com/pizzasgood/retrovol.git
  not myself.  I claim no credit for them; they are unmodified.  Copies of the
  GNU GPL and GNU LGPL are included in this package named gpl.txt and lgpl.txt,
  in compliance with Section 4e of the GNU LGPL.
+
+ Note that eggtrayicon is only required for versions of GTK prior to 2.16.
  
 ---- End Legal Jazz ----------------------------------------------------------
 
