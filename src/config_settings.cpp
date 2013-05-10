@@ -70,6 +70,12 @@ ConfigSettings::ConfigSettings(){
 	strcpy(icon_file_names[3], VOL_MEDIUM_IMAGE);
 	strcpy(icon_file_names[4], VOL_HIGH_IMAGE);
 
+	tray_icon = NULL;
+	tray_icon_image = NULL;
+	tray_icon_menu = NULL;
+	tray_slider = NULL;
+	tray_control = NULL;
+
 	apply_defaults();
 }
 
@@ -444,7 +450,7 @@ void ConfigSettings::write_config(){
 void ConfigSettings::reorder_list(ElementList *list){
 	list_ptr = list;
 	//this function is not needed unless an order has been defined somewhere
-	if (num_numids!=0){
+	if (num_numids!=0 && list && list->num_elems > 0){
 		
 		int *order = new int[list_ptr->num_items];
 
@@ -498,7 +504,7 @@ void ConfigSettings::set_tray_slider(ElementList *list){
 		attempt++;
 	}
 	//still nothing, so just take the first element
-	if(tray_control_numid<0 || !tray_control){
+	if((tray_control_numid<0 || !tray_control) && list->num_elems>0){
 		tray_control = &(list->elems[0]);
 		tray_control_numid = list->elems[0].numid;
 	}

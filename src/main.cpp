@@ -76,76 +76,78 @@ gboolean tray_button_press_event_callback (GObject *widget, GdkEventButton *even
 	
 	switch(event->button){
 		case 1:		//left mouse button - toggle slider_window
-			if (GTK_WIDGET_VISIBLE(slider_window)){
-				gtk_widget_hide_all(slider_window);
-			} else {
-				int slider_width, slider_height, icon_width, icon_height, x_pos, y_pos;
-				int tray_offset; //this may be needed if the tray border hides the bottom of the slider
-				//get some dimensions
-				gtk_window_get_size(GTK_WINDOW(slider_window), &slider_width, &slider_height);
-				GdkScreen *screen = gdk_screen_get_default();
+			if (settings.tray_control){
+				if (GTK_WIDGET_VISIBLE(slider_window)){
+					gtk_widget_hide_all(slider_window);
+				} else {
+					int slider_width, slider_height, icon_width, icon_height, x_pos, y_pos;
+					int tray_offset; //this may be needed if the tray border hides the bottom of the slider
+					//get some dimensions
+					gtk_window_get_size(GTK_WINDOW(slider_window), &slider_width, &slider_height);
+					GdkScreen *screen = gdk_screen_get_default();
 #if GTK_CHECK_VERSION(2,16,0)
-				GdkScreen *screen_from_tray;
-				GdkRectangle area;
-				GtkOrientation orientation;
-				if (gtk_status_icon_get_geometry(settings.tray_icon, &screen_from_tray, &area, &orientation)){
-					icon_width = area.width;
-					icon_height = area.height;
-				} else {
-					//just outright guess
-					icon_width = 24;
-					icon_height = 24;
-				}
+					GdkScreen *screen_from_tray;
+					GdkRectangle area;
+					GtkOrientation orientation;
+					if (gtk_status_icon_get_geometry(settings.tray_icon, &screen_from_tray, &area, &orientation)){
+						icon_width = area.width;
+						icon_height = area.height;
+					} else {
+						//just outright guess
+						icon_width = 24;
+						icon_height = 24;
+					}
 #else
-				gtk_window_get_size(GTK_WINDOW(widget), &icon_width, &icon_height);
+					gtk_window_get_size(GTK_WINDOW(widget), &icon_width, &icon_height);
 #endif
-				//compute the x position
-				//x_pos = event->x_root - event->x - slider_width/2 + widget->allocation.width/2;
-				x_pos = event->x_root - event->x - slider_width/2 + icon_width/2;
-				//if the user has supplied an offset, use that, otherwise guess
-				if (settings.tray_slider_offset >= 0){
-					tray_offset = settings.tray_slider_offset;
-				} else {
+					//compute the x position
+					//x_pos = event->x_root - event->x - slider_width/2 + widget->allocation.width/2;
+					x_pos = event->x_root - event->x - slider_width/2 + icon_width/2;
+					//if the user has supplied an offset, use that, otherwise guess
+					if (settings.tray_slider_offset >= 0){
+						tray_offset = settings.tray_slider_offset;
+					} else {
+						if (event->y_root > gdk_screen_get_height(screen)/2){
+							//tray at bottom
+							tray_offset = gdk_screen_get_height(screen) - icon_height - event->y_root + event->y;
+						} else {
+							//tray at top
+							tray_offset = event->y_root - event->y;
+						}
+					}
+					//compute the y position
 					if (event->y_root > gdk_screen_get_height(screen)/2){
 						//tray at bottom
-						tray_offset = gdk_screen_get_height(screen) - icon_height - event->y_root + event->y;
+						y_pos = event->y_root-event->y-slider_height-tray_offset;
 					} else {
 						//tray at top
-						tray_offset = event->y_root - event->y;
+						y_pos = icon_height+event->y_root-event->y+tray_offset;
+					}
+					//do the deed
+					gtk_window_move(GTK_WINDOW(slider_window), x_pos, y_pos);
+					gtk_widget_show_all(slider_window);
+				}
+				break;
+			case 3:		//right mouse button - display tray menu or main window, depending on settings.enable_tray_menu
+				if (settings.enable_tray_menu){
+					gtk_menu_popup(GTK_MENU(settings.tray_icon_menu), NULL, NULL, NULL, NULL, event->button, event->time);
+				} else {
+					if (GTK_WIDGET_VISIBLE(settings.main_window)){
+						gtk_widget_hide(settings.main_window);
+					} else {
+						gtk_widget_show_all(settings.main_window);
 					}
 				}
-				//compute the y position
-				if (event->y_root > gdk_screen_get_height(screen)/2){
-					//tray at bottom
-					y_pos = event->y_root-event->y-slider_height-tray_offset;
-				} else {
-					//tray at top
-					y_pos = icon_height+event->y_root-event->y+tray_offset;
+				break;
+			case 2:		//middle mouse button - mute
+				if (settings.tray_control && settings.tray_control->switch_id >= 0){
+					bool state = !(bool)list_ptr->elems[settings.tray_control->switch_id].get();
+					list_ptr->elems[settings.tray_control->switch_id].set((int)(state));
 				}
-				//do the deed
-				gtk_window_move(GTK_WINDOW(slider_window), x_pos, y_pos);
-				gtk_widget_show_all(slider_window);
-			}
-			break;
-		case 3:		//right mouse button - display tray menu or main window, depending on settings.enable_tray_menu
-			if (settings.enable_tray_menu){
-				gtk_menu_popup(GTK_MENU(settings.tray_icon_menu), NULL, NULL, NULL, NULL, event->button, event->time);
-			} else {
-				if (GTK_WIDGET_VISIBLE(settings.main_window)){
-					gtk_widget_hide(settings.main_window);
-				} else {
-					gtk_widget_show_all(settings.main_window);
-				}
-			}
-			break;
-		case 2:		//middle mouse button - mute
-			if (settings.tray_control->switch_id >= 0){
-				bool state = !(bool)list_ptr->elems[settings.tray_control->switch_id].get();
-				list_ptr->elems[settings.tray_control->switch_id].set((int)(state));
-			}
-			break;
-		default:
-			break;
+				break;
+			default:
+				break;
+		}
 	}
 	
 	update(NULL);
@@ -156,69 +158,71 @@ gboolean tray_button_press_event_callback (GObject *widget, GdkEventButton *even
 gboolean update(gpointer data){
 	bool state = true;
 	if (settings.enable_tray_icon){
-		int val = settings.tray_control->get();
-		char tooltiptext[32];
-		if (settings.tray_control->switch_id >= 0){
-			state = (bool)list_ptr->elems[settings.tray_control->switch_id].get();
-		}
-		if (state){
-			int image = 2+3*val/100;
-			if (image > 4){
-				image=4;
-			} else if (image < 0){
-				image=0;
-			} else if (val == 0){
-				image=1;
+		if (settings.tray_control){
+			int val = settings.tray_control->get();
+			char tooltiptext[32];
+			if (settings.tray_control->switch_id >= 0){
+				state = (bool)list_ptr->elems[settings.tray_control->switch_id].get();
 			}
-			sprintf(tooltiptext, _("Volume: %d%%"), val);
+			if (state){
+				int image = 2+3*val/100;
+				if (image > 4){
+					image=4;
+				} else if (image < 0){
+					image=0;
+				} else if (val == 0){
+					image=1;
+				}
+				sprintf(tooltiptext, _("Volume: %d%%"), val);
 #if GTK_CHECK_VERSION(2,16,0)
-			gtk_status_icon_set_from_file(settings.tray_icon, settings.icon_file_names[image]);
+				gtk_status_icon_set_from_file(settings.tray_icon, settings.icon_file_names[image]);
 #else
-			gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[image]);
+				gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[image]);
 #endif
-		} else {
-			sprintf(tooltiptext, _("Volume: Muted"));
+			} else {
+				sprintf(tooltiptext, _("Volume: Muted"));
 #if GTK_CHECK_VERSION(2,16,0)
-			gtk_status_icon_set_from_file(settings.tray_icon, settings.icon_file_names[0]);
+				gtk_status_icon_set_from_file(settings.tray_icon, settings.icon_file_names[0]);
 #else
-			gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[0]);
+				gtk_image_set_from_file(GTK_IMAGE(settings.tray_icon_image), settings.icon_file_names[0]);
 #endif
-		}
+			}
 #if GTK_CHECK_VERSION(2,16,0)
-			gtk_status_icon_set_tooltip_text(settings.tray_icon, tooltiptext);
+				gtk_status_icon_set_tooltip_text(settings.tray_icon, tooltiptext);
 #elif GTK_CHECK_VERSION(2,12,0)
-			gtk_widget_set_tooltip_text(settings.tray_icon_image, tooltiptext);
+				gtk_widget_set_tooltip_text(settings.tray_icon_image, tooltiptext);
 #else
-			static GtkTooltips *tooltips = gtk_tooltips_new();
-			gtk_tooltips_set_tip(tooltips, settings.tray_icon_image, tooltiptext, NULL);
+				static GtkTooltips *tooltips = gtk_tooltips_new();
+				gtk_tooltips_set_tip(tooltips, settings.tray_icon_image, tooltiptext, NULL);
 #endif
-		//if the tray was moved, update the menu
-		GdkScreen *screen = gdk_screen_get_default();
-		int icon_x,icon_y;
+			//if the tray was moved, update the menu
+			GdkScreen *screen = gdk_screen_get_default();
+			int icon_x,icon_y;
 #if GTK_CHECK_VERSION(2,16,0)
-		GdkScreen *screen_from_tray;
-		GdkRectangle area;
-		GtkOrientation orientation;
-		if (gtk_status_icon_get_geometry(settings.tray_icon, &screen_from_tray, &area, &orientation)){
-			icon_x = area.x;
-			icon_y = area.y;
-		} else {
-			icon_x = gdk_screen_get_width(screen);
-			icon_y = gdk_screen_get_height(screen);
-		}
+			GdkScreen *screen_from_tray;
+			GdkRectangle area;
+			GtkOrientation orientation;
+			if (gtk_status_icon_get_geometry(settings.tray_icon, &screen_from_tray, &area, &orientation)){
+				icon_x = area.x;
+				icon_y = area.y;
+			} else {
+				icon_x = gdk_screen_get_width(screen);
+				icon_y = gdk_screen_get_height(screen);
+			}
 #else
-		gtk_window_get_position(GTK_WINDOW(settings.tray_icon), &icon_x, &icon_y);
+			gtk_window_get_position(GTK_WINDOW(settings.tray_icon), &icon_x, &icon_y);
 #endif
-		if ((bool)(icon_y > gdk_screen_get_height(screen)/2) ^ tray_at_bottom){
-			//the current status does not match the previous status, so update the menu
-			set_menu();
-		}
-		//in case the icon was hidden due to the tray exiting, try reshowing it again
+			if ((bool)(icon_y > gdk_screen_get_height(screen)/2) ^ tray_at_bottom){
+				//the current status does not match the previous status, so update the menu
+				set_menu();
+			}
+			//in case the icon was hidden due to the tray exiting, try reshowing it again
 #if GTK_CHECK_VERSION(2,16,0)
-		gtk_status_icon_set_visible(settings.tray_icon, true);
+			gtk_status_icon_set_visible(settings.tray_icon, true);
 #else
-		gtk_widget_show_all(settings.tray_icon);
+			gtk_widget_show_all(settings.tray_icon);
 #endif
+		}
 	}
 	if (GTK_WIDGET_VISIBLE(settings.main_window)){
 		gtk_widget_queue_draw(settings.main_window);
@@ -412,7 +416,11 @@ bool loop(int argc, char** argv) {
 		settings.tray_slider = new retro_slider;
 		settings.set_tray_slider(&list);
 		settings.apply_to_tray_slider(settings.tray_slider);
-		settings.tray_slider->init(tray_frame, (void*)settings.tray_control, &Element::get_callback, &Element::set_callback, (settings.tray_control->values > 1));
+		if (list.num_elems > 0){
+			settings.tray_slider->init(tray_frame, (void*)settings.tray_control, &Element::get_callback, &Element::set_callback, (settings.tray_control->values > 1));
+		} else {
+			settings.tray_control = NULL;
+		}
 
 		//set up the small window that holds the tray_slider
 		settings.slider_window = gtk_window_new (GTK_WINDOW_POPUP);
@@ -434,7 +442,7 @@ bool loop(int argc, char** argv) {
 		//set up tray icon
 #if GTK_CHECK_VERSION(2,16,0)
 		settings.tray_icon = gtk_status_icon_new();
-		gtk_status_icon_set_from_file(settings.tray_icon, VOL_MEDIUM_IMAGE);
+		gtk_status_icon_set_from_file(settings.tray_icon, VOL_MUTED_IMAGE);
 #else
 		settings.tray_icon = GTK_WIDGET(egg_tray_icon_new("Retrovol Tray Icon"));
 		//set the background color
@@ -466,7 +474,9 @@ bool loop(int argc, char** argv) {
 
 		//signals
 		g_signal_connect(G_OBJECT(settings.tray_icon), "button_press_event", G_CALLBACK (&tray_button_press_event_callback), settings.slider_window);
-		g_signal_connect(G_OBJECT(settings.tray_icon), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), settings.tray_slider);
+		if (settings.tray_control){
+			g_signal_connect(G_OBJECT(settings.tray_icon), "scroll_event", G_CALLBACK (&retro_slider::scroll_event_callback), settings.tray_slider);
+		}
 
 #if GTK_CHECK_VERSION(2,16,0)
 		//make icon visible

@@ -420,11 +420,24 @@ int Element::_set(int num, int n){
 ElementList::ElementList(char *_card){
 	strcpy(card, _card);
 	
+	num_elems = 0;
+	elems = NULL;
+	num_items = 0;
+	items = NULL;
 	
 	//open a pointer to use
+	int error = 0;
 	snd_hctl_t *hctl;
-	snd_hctl_open(&hctl, card, SND_CTL_NONBLOCK | SND_CTL_ASYNC);
-	snd_hctl_load(hctl);
+	error = snd_hctl_open(&hctl, card, SND_CTL_NONBLOCK | SND_CTL_ASYNC);
+	if (error){
+		fprintf(stderr, "Unable to open card %s, snd_hctl_open returned %d\n", card, error);
+		return;
+	}
+	error = snd_hctl_load(hctl);
+	if (error){
+		fprintf(stderr, "Unable to load control for card %s, snd_hctl_load returned %d\n", card, error);
+		return;
+	}
 	
 	//get the total number and allocate the array
 	num_elems = snd_hctl_get_count(hctl);
