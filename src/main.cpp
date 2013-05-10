@@ -673,14 +673,17 @@ bool loop(int argc, char** argv) {
 
 	//add some periodic refreshment to keep the icon and window up-to-date
 	#if GTK_CHECK_VERSION(2,14,0)
-		g_timeout_add_seconds(1, update, NULL);
+		int timeout = g_timeout_add_seconds(1, update, NULL);
 	#else
 		//this is less efficient than g_timeout_add_seconds()
-		g_timeout_add(1000, update, NULL);
+		int timeout = g_timeout_add(1000, update, NULL);
 	#endif
 	
 	//finished with gtk setup
 	gtk_main();
+
+	//stop the timeout
+	g_source_remove(timeout);
 	
 	//have the window shown again if it was open before we restarted
 	if (settings.resume_main){
