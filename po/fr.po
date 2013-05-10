@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: pizzasgood@gmail.com\n"
-"POT-Creation-Date: 2012-02-02 22:20-0500\n"
+"POT-Creation-Date: 2013-05-09 23:07-0400\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Argolance <argolance@free.fr>\n"
 "Language-Team: \n"
@@ -11,69 +11,69 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.cpp:171
+#: src/main.cpp:176
 #, c-format
 msgid "Volume: %d%%"
 msgstr "Volume à %d%%"
 
-#: src/main.cpp:178
+#: src/main.cpp:183
 #, c-format
 msgid "Volume: Muted"
 msgstr "Volume à zero"
 
-#: src/main.cpp:303
+#: src/main.cpp:312
 msgid "_Exit"
 msgstr "_Quitter"
 
-#: src/main.cpp:304
+#: src/main.cpp:313
 msgid "_Config Window"
 msgstr "Fenêtre de _Configuration"
 
-#: src/main.cpp:305
+#: src/main.cpp:314
 msgid "_Full Window"
 msgstr "_Panneau complet"
 
-#: src/main.cpp:446
+#: src/main.cpp:464
 #, c-format
 msgid "Error:  Failed to set background color to %s\n"
 msgstr "Erreur: Impossible d'assigner la couleur de fond %s\n"
 
-#: src/main.cpp:499 src/main.cpp:506
+#: src/main.cpp:519 src/main.cpp:526
 msgid "/_File"
 msgstr "/_Fichier"
 
-#: src/main.cpp:500 src/main.cpp:507
+#: src/main.cpp:520 src/main.cpp:527
 msgid "/File/_Configure"
 msgstr "/_Fichier/Configurer"
 
-#: src/main.cpp:501 src/main.cpp:509
+#: src/main.cpp:521 src/main.cpp:529
 msgid "/File/_Quit"
 msgstr "/_Fichier/Quitter"
 
-#: src/main.cpp:508
+#: src/main.cpp:528
 msgid "/File/_Exit completely"
 msgstr "/Fichier/Quitter complètement"
 
-#: src/main.cpp:700
+#: src/main.cpp:723
 #, c-format
 msgid ""
 "ERROR:  The -bg option requires a color to be supplied in the format "
 "#rrggbb\n"
 msgstr "ERREUR: l'option -bg requiert un format de couleur du type #rrggbb\n"
 
-#: src/main.cpp:708
+#: src/main.cpp:731
 #, c-format
 msgid "Usage: %s [-bg #rrggbb] [-hide]\n"
 msgstr "Usage: %s [-bg #rrggbb] [-hide]\n"
 
-#: src/main.cpp:709
+#: src/main.cpp:732
 #, c-format
 msgid "Volume mixer with bargraph style sliders.\n"
 msgstr ""
 "Mixeur de volume avec potentiometres à glissière - indicateurs visuels de "
 "puissance.\n"
 
-#: src/main.cpp:710
+#: src/main.cpp:733
 #, c-format
 msgid ""
 "Reads ~/.retrovolrc for configuration options.  Additionally, the following\n"
@@ -82,29 +82,29 @@ msgstr ""
 "Lit  ~/.retrovolrc pour les options de configuration. Les options suivantes\n"
 "peuvent être éventuellement données en ligne de commandes:\n"
 
-#: src/main.cpp:711
+#: src/main.cpp:734
 #, c-format
 msgid "\t-v              print the version number and exit\n"
 msgstr "\t-v              Donne le numéro de version et quitte\n"
 
-#: src/main.cpp:712
+#: src/main.cpp:735
 #, c-format
 msgid "\t-bg #rrggbb     specify the background color of the tray icon\n"
 msgstr ""
 "\t-bg #rrggbb     spécifie la couleur de fond de l'icône de la barre des "
 "tâches\n"
 
-#: src/main.cpp:713
+#: src/main.cpp:736
 #, c-format
 msgid "\t-hide           hide the main window initially\n"
 msgstr "\t-hide           Cache le panneau complet démarrage\n"
 
-#: src/main.cpp:741
+#: src/main.cpp:764
 #, c-format
 msgid "Error: could not create %s\n"
 msgstr "Erreur: Impossible de créer %s\n"
 
-#: src/config_settings.cpp:203
+#: src/config_settings.cpp:216
 #, c-format
 msgid ""
 "Cannot read file: %s\n"
@@ -113,7 +113,7 @@ msgstr ""
 "\"Impossible de lire le fichier: %s\n"
 "Paramétres par défaut utilisés...\n"
 
-#: src/config_settings.cpp:316
+#: src/config_settings.cpp:336
 #, c-format
 msgid ""
 "Cannot open file: %s\n"
@@ -122,11 +122,11 @@ msgstr ""
 "Impossible d'ouvrir le fichier: %s\n"
 " pour l'écriture\n"
 
-#: src/config_settings.cpp:320
+#: src/config_settings.cpp:340
 msgid "# Config file for retrovol\n"
 msgstr "# Fichier de configuration de retrovol\n"
 
-#: src/config_settings.cpp:321
+#: src/config_settings.cpp:341
 msgid ""
 "# This file should reside in the user's home directory and be named ."
 "retrovolrc\n"
@@ -134,7 +134,7 @@ msgstr ""
 "# Ce fichier doit en principe se trouver dans le dossier administrateur de "
 "l'utilisateur et être nommé .retrovolrc\n"
 
-#: src/config_settings.cpp:324
+#: src/config_settings.cpp:344
 msgid ""
 "\n"
 "# Which soundcard to use\n"
@@ -142,7 +142,21 @@ msgstr ""
 "\n"
 "#Carte-son à utiliser\n"
 
-#: src/config_settings.cpp:328
+#: src/config_settings.cpp:348
+msgid ""
+"\n"
+"# Set this to 0-2 to define a linear, logarithmic, or exponential volume "
+"scale, respectively\n"
+msgstr ""
+
+#: src/config_settings.cpp:351
+msgid ""
+"\n"
+"# Set this to 1 to make the volume automatically mute when set to 0%, or 0 "
+"to keep it unmuted at 0%\n"
+msgstr ""
+
+#: src/config_settings.cpp:355
 msgid ""
 "\n"
 "# Set this to 1 to make the sliders vertical, or 0 for horizontal (only "
@@ -152,7 +166,7 @@ msgstr ""
 "# I pour disposer les potentiomètres verticalementl, 0 pour les disposer "
 "horizontalement (valeurs appliquées au panneau complet uniquement)\n"
 
-#: src/config_settings.cpp:332
+#: src/config_settings.cpp:359
 msgid ""
 "\n"
 "# Window position\n"
@@ -160,7 +174,7 @@ msgstr ""
 "\n"
 "# Position de la fenêtre\n"
 
-#: src/config_settings.cpp:338
+#: src/config_settings.cpp:365
 msgid ""
 "\n"
 "# Window dimensions\n"
@@ -168,7 +182,7 @@ msgstr ""
 "\n"
 "# Dimensions de la fenêtre\n"
 
-#: src/config_settings.cpp:344
+#: src/config_settings.cpp:371
 msgid ""
 "\n"
 "# Slider dimensions\n"
@@ -176,7 +190,7 @@ msgstr ""
 "\n"
 "# Dimensions du potentiomètre\n"
 
-#: src/config_settings.cpp:356
+#: src/config_settings.cpp:383
 msgid ""
 "\n"
 "# Slider colorscheme\n"
@@ -184,7 +198,7 @@ msgstr ""
 "\n"
 "# Couleurs des potentiomètres\n"
 
-#: src/config_settings.cpp:374
+#: src/config_settings.cpp:401
 msgid ""
 "\n"
 "# Enable the tray_icon\n"
@@ -192,7 +206,7 @@ msgstr ""
 "\n"
 "# Activer l'icône de la barre des tâches\n"
 
-#: src/config_settings.cpp:378
+#: src/config_settings.cpp:405
 msgid ""
 "\n"
 "# Enable the tray_menu\n"
@@ -200,7 +214,7 @@ msgstr ""
 "\n"
 "# Activer le menu contextuel de l'icône\n"
 
-#: src/config_settings.cpp:382
+#: src/config_settings.cpp:409
 msgid ""
 "\n"
 "# Background color of tray_icon (default is default GTK background color).  "
@@ -211,7 +225,7 @@ msgstr ""
 "est celle de GTK).  Note: l'option -bg en ligne de commande prend le pas sur "
 "cela\n"
 
-#: src/config_settings.cpp:388
+#: src/config_settings.cpp:415
 msgid ""
 "\n"
 "# Set this to 1 to make the slider on the tray_icon vertical, or 0 for "
@@ -221,7 +235,7 @@ msgstr ""
 "#  1 pour positionner le potentiomètre de la barre verticalement , ou 0 pour "
 "le positionner horizontalement\n"
 
-#: src/config_settings.cpp:392
+#: src/config_settings.cpp:419
 msgid ""
 "\n"
 "# Tray slider dimensions\n"
@@ -229,7 +243,7 @@ msgstr ""
 "\n"
 "# Taille du potentiomètre de la barre\n"
 
-#: src/config_settings.cpp:400
+#: src/config_settings.cpp:427
 msgid ""
 "\n"
 "# Which slider to link with the tray_icon, identified by numid\n"
@@ -238,7 +252,7 @@ msgstr ""
 "# Potentiomètre lié à l 'icône de la barre des tâches, identifié par le "
 "numéro d'id\n"
 
-#: src/config_settings.cpp:406
+#: src/config_settings.cpp:433
 msgid ""
 "\n"
 "# The numids of the sliders to display, in order.  It is okay to have "
@@ -257,7 +271,7 @@ msgstr ""
 "#    amixer controls\n"
 "# NOTE:  Cette section doit impérativement se trouver en fin de fichier!\n"
 
-#: src/config_settings.cpp:408
+#: src/config_settings.cpp:435
 msgid ""
 "\n"
 "#EXAMPLE:\n"
@@ -280,110 +294,130 @@ msgstr "Potentiomètres activés"
 msgid "Inactive Sliders"
 msgstr "Potentiomètres déactivés"
 
-#: src/config_window.cpp:466
+#: src/config_window.cpp:435
+msgid "Linear"
+msgstr ""
+
+#: src/config_window.cpp:436
+msgid "Logarithmic"
+msgstr ""
+
+#: src/config_window.cpp:437
+msgid "Exponential"
+msgstr ""
+
+#: src/config_window.cpp:493
 msgid "Retrovol - Configuration"
 msgstr "Retrovol - Configuration"
 
-#: src/config_window.cpp:482
+#: src/config_window.cpp:509
 msgid "Main"
 msgstr "Général"
 
-#: src/config_window.cpp:490
+#: src/config_window.cpp:517
+msgid "Volume Scaling"
+msgstr ""
+
+#: src/config_window.cpp:518
+msgid "Auto Mute"
+msgstr ""
+
+#: src/config_window.cpp:519
 msgid "Slider Orientation"
 msgstr ""
 "Potentiomètres à glissière:\n"
 "             Disposition"
 
-#: src/config_window.cpp:490 src/config_window.cpp:517
+#: src/config_window.cpp:519 src/config_window.cpp:546
 msgid "Vertical"
 msgstr "Verticale"
 
-#: src/config_window.cpp:490 src/config_window.cpp:517
+#: src/config_window.cpp:519 src/config_window.cpp:546
 msgid "Horizontal"
 msgstr "Horizontale"
 
-#: src/config_window.cpp:491
+#: src/config_window.cpp:520
 msgid "Slider Width"
 msgstr "Largeur"
 
-#: src/config_window.cpp:492
+#: src/config_window.cpp:521
 msgid "Slider Height"
 msgstr "Hauteur"
 
-#: src/config_window.cpp:493
+#: src/config_window.cpp:522
 msgid "Slider Margins"
 msgstr "Marges"
 
-#: src/config_window.cpp:494
+#: src/config_window.cpp:523
 msgid "Segment Thickness"
 msgstr "Epaisseur des graduations"
 
-#: src/config_window.cpp:495
+#: src/config_window.cpp:524
 msgid "Segment Spacing"
 msgstr "Espace entre les graduations"
 
-#: src/config_window.cpp:496
+#: src/config_window.cpp:525
 msgid "Background Color"
 msgstr ""
 "Couleurs:\n"
 "   Fond"
 
-#: src/config_window.cpp:497
+#: src/config_window.cpp:526
 msgid "Border Color"
 msgstr "Bordure"
 
-#: src/config_window.cpp:498
+#: src/config_window.cpp:527
 msgid "Unlit Color"
 msgstr "Pourcentage de volume inactif"
 
-#: src/config_window.cpp:499
+#: src/config_window.cpp:528
 msgid "Lit Color"
 msgstr "Pourcentage de volume actif"
 
-#: src/config_window.cpp:506
+#: src/config_window.cpp:535
 msgid "Tray"
 msgstr "Barre des tâches"
 
-#: src/config_window.cpp:511
+#: src/config_window.cpp:540
 msgid "Enable Tray Icon"
 msgstr "Potentiomètre disponible?"
 
-#: src/config_window.cpp:512
+#: src/config_window.cpp:541
 msgid "Enable Tray Menu"
 msgstr "Menu contextuel disponible?"
 
-#: src/config_window.cpp:513
+#: src/config_window.cpp:542
 msgid "Tray Slider"
 msgstr "Potentiomètre:"
 
-#: src/config_window.cpp:517
+#: src/config_window.cpp:546
 msgid "Tray Slider Orientation"
 msgstr "Disposition"
 
-#: src/config_window.cpp:518
+#: src/config_window.cpp:547
 msgid "Tray Slider Width"
 msgstr "Largeur"
 
-#: src/config_window.cpp:519
+#: src/config_window.cpp:548
 msgid "Tray Slider Height"
 msgstr "Hauteur"
 
-#: src/config_window.cpp:520
+#: src/config_window.cpp:549
 msgid "Tray Slider Offset"
 msgstr "Positionnement"
 
-#: src/config_window.cpp:521
+#: src/config_window.cpp:550
 msgid "Enable Tray Icon Background Color"
 msgstr "Personnaliser la couleur de fond de l'icône:"
 
-#: src/config_window.cpp:522
+#: src/config_window.cpp:551
 msgid "Tray Icon Background Color"
 msgstr "Couleur"
 
-#: src/config_window.cpp:529
+#: src/config_window.cpp:558
 msgid "Hardware"
 msgstr "Matériel"
 
-#: src/config_window.cpp:534
+#: src/config_window.cpp:563
 msgid "Sound Card"
 msgstr "Carte-son"

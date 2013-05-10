@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: retrovol 0.11\n"
 "Report-Msgid-Bugs-To: pizzasgood@gmail.com\n"
-"POT-Creation-Date: 2012-02-02 22:20-0500\n"
+"POT-Creation-Date: 2013-05-09 23:07-0400\n"
 "PO-Revision-Date: 2012-01-19 15:35+0100\n"
 "Last-Translator: fido <L18L@puppy.forum>\n"
 "Language-Team: German\n"
@@ -12,50 +12,50 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: src/main.cpp:171
+#: src/main.cpp:176
 #, c-format
 msgid "Volume: %d%%"
 msgstr "Lautstärke: %d%%"
 
-#: src/main.cpp:178
+#: src/main.cpp:183
 #, c-format
 msgid "Volume: Muted"
 msgstr "Lautstärke: stumm"
 
-#: src/main.cpp:303
+#: src/main.cpp:312
 msgid "_Exit"
 msgstr "_Ende"
 
-#: src/main.cpp:304
+#: src/main.cpp:313
 msgid "_Config Window"
 msgstr "_Konfiguration"
 
-#: src/main.cpp:305
+#: src/main.cpp:314
 msgid "_Full Window"
 msgstr "_Fenster"
 
-#: src/main.cpp:446
+#: src/main.cpp:464
 #, c-format
 msgid "Error:  Failed to set background color to %s\n"
 msgstr "Fehler:  Setzen der Hintergrundfarbe auf %s fehlgeschlagen\n"
 
-#: src/main.cpp:499 src/main.cpp:506
+#: src/main.cpp:519 src/main.cpp:526
 msgid "/_File"
 msgstr "/_Datei"
 
-#: src/main.cpp:500 src/main.cpp:507
+#: src/main.cpp:520 src/main.cpp:527
 msgid "/File/_Configure"
 msgstr "/Datei/Kon_figuration"
 
-#: src/main.cpp:501 src/main.cpp:509
+#: src/main.cpp:521 src/main.cpp:529
 msgid "/File/_Quit"
 msgstr "/Datei/_Beenden"
 
-#: src/main.cpp:508
+#: src/main.cpp:528
 msgid "/File/_Exit completely"
 msgstr "/Datei/_Komplett beenden"
 
-#: src/main.cpp:700
+#: src/main.cpp:723
 #, c-format
 msgid ""
 "ERROR:  The -bg option requires a color to be supplied in the format "
@@ -63,17 +63,17 @@ msgid ""
 msgstr ""
 "FEHLER:  Die Option -bg erfordert die Angabe einer Farbea im Format #rrggbb\n"
 
-#: src/main.cpp:708
+#: src/main.cpp:731
 #, c-format
 msgid "Usage: %s [-bg #rrggbb] [-hide]\n"
 msgstr "Benutzung: %s [-bg #rrggbb] [-hide]\n"
 
-#: src/main.cpp:709
+#: src/main.cpp:732
 #, c-format
 msgid "Volume mixer with bargraph style sliders.\n"
 msgstr "Volume-Mixer mit Schieberegler im Bargraph Stil.\n"
 
-#: src/main.cpp:710
+#: src/main.cpp:733
 #, c-format
 msgid ""
 "Reads ~/.retrovolrc for configuration options.  Additionally, the following\n"
@@ -82,28 +82,28 @@ msgstr ""
 "Liest ~/.retrovolrc für Konfigurationsoptionen.  Zusätzlick können folgende\n"
 "Optionen auf der Kommandozeile eingegeben werdenl:\n"
 
-#: src/main.cpp:711
+#: src/main.cpp:734
 #, c-format
 msgid "\t-v              print the version number and exit\n"
 msgstr "\t-v              Versionsnummer ausgeben und beenden\n"
 
-#: src/main.cpp:712
+#: src/main.cpp:735
 #, c-format
 msgid "\t-bg #rrggbb     specify the background color of the tray icon\n"
 msgstr ""
 "\t-bg #rrggbb     spezifiziert die Hintergrundfarbe des Leisten-Icons\n"
 
-#: src/main.cpp:713
+#: src/main.cpp:736
 #, c-format
 msgid "\t-hide           hide the main window initially\n"
 msgstr "\t-hide           versteckt anfangs das Hauptfenster\n"
 
-#: src/main.cpp:741
+#: src/main.cpp:764
 #, c-format
 msgid "Error: could not create %s\n"
 msgstr "Fehler: konnte %s nicht erzeugen\n"
 
-#: src/config_settings.cpp:203
+#: src/config_settings.cpp:216
 #, c-format
 msgid ""
 "Cannot read file: %s\n"
@@ -112,7 +112,7 @@ msgstr ""
 "Kann Datei %s nicht lesen\n"
 "Benutze Standardwerte...\n"
 
-#: src/config_settings.cpp:316
+#: src/config_settings.cpp:336
 #, c-format
 msgid ""
 "Cannot open file: %s\n"
@@ -121,11 +121,11 @@ msgstr ""
 "Kann Datei %s\n"
 " nicht zum Schreiben öffnen\n"
 
-#: src/config_settings.cpp:320
+#: src/config_settings.cpp:340
 msgid "# Config file for retrovol\n"
 msgstr "# Konfigurationsdatei für retrovol\n"
 
-#: src/config_settings.cpp:321
+#: src/config_settings.cpp:341
 msgid ""
 "# This file should reside in the user's home directory and be named ."
 "retrovolrc\n"
@@ -133,7 +133,7 @@ msgstr ""
 "# Diese Datei sollte im home-Verzeichnise des Benutzers sein und retrovolrc "
 "heißen.\n"
 
-#: src/config_settings.cpp:324
+#: src/config_settings.cpp:344
 msgid ""
 "\n"
 "# Which soundcard to use\n"
@@ -141,7 +141,21 @@ msgstr ""
 "\n"
 "# Welche Soundkarte benutzen\n"
 
-#: src/config_settings.cpp:328
+#: src/config_settings.cpp:348
+msgid ""
+"\n"
+"# Set this to 0-2 to define a linear, logarithmic, or exponential volume "
+"scale, respectively\n"
+msgstr ""
+
+#: src/config_settings.cpp:351
+msgid ""
+"\n"
+"# Set this to 1 to make the volume automatically mute when set to 0%, or 0 "
+"to keep it unmuted at 0%\n"
+msgstr ""
+
+#: src/config_settings.cpp:355
 msgid ""
 "\n"
 "# Set this to 1 to make the sliders vertical, or 0 for horizontal (only "
@@ -151,7 +165,7 @@ msgstr ""
 "# Setze dies auf 1 für vertikale oder auf 0 für horizontale Schieberegler "
 "(gilt nur für das Hauptfenster)\n"
 
-#: src/config_settings.cpp:332
+#: src/config_settings.cpp:359
 msgid ""
 "\n"
 "# Window position\n"
@@ -159,7 +173,7 @@ msgstr ""
 "\n"
 "# Fensterposition\n"
 
-#: src/config_settings.cpp:338
+#: src/config_settings.cpp:365
 msgid ""
 "\n"
 "# Window dimensions\n"
@@ -167,7 +181,7 @@ msgstr ""
 "\n"
 "# Fenster-Abmessungen\n"
 
-#: src/config_settings.cpp:344
+#: src/config_settings.cpp:371
 #, fuzzy
 msgid ""
 "\n"
@@ -176,7 +190,7 @@ msgstr ""
 "\n"
 "# Leisten-Schieberegler-Abmessungen\n"
 
-#: src/config_settings.cpp:356
+#: src/config_settings.cpp:383
 msgid ""
 "\n"
 "# Slider colorscheme\n"
@@ -184,7 +198,7 @@ msgstr ""
 "\n"
 "# Schieberegler-Farbschema\n"
 
-#: src/config_settings.cpp:374
+#: src/config_settings.cpp:401
 msgid ""
 "\n"
 "# Enable the tray_icon\n"
@@ -192,7 +206,7 @@ msgstr ""
 "\n"
 "# Leisten-Icon anzeigen\n"
 
-#: src/config_settings.cpp:378
+#: src/config_settings.cpp:405
 msgid ""
 "\n"
 "# Enable the tray_menu\n"
@@ -200,7 +214,7 @@ msgstr ""
 "\n"
 "# Leisten-Menü anzeigen\n"
 
-#: src/config_settings.cpp:382
+#: src/config_settings.cpp:409
 msgid ""
 "\n"
 "# Background color of tray_icon (default is default GTK background color).  "
@@ -211,7 +225,7 @@ msgstr ""
 "Hintergrundfarbe).  Hinweis:  Die Kommandozeilenoption -bg überschreibt "
 "dies\n"
 
-#: src/config_settings.cpp:388
+#: src/config_settings.cpp:415
 msgid ""
 "\n"
 "# Set this to 1 to make the slider on the tray_icon vertical, or 0 for "
@@ -221,7 +235,7 @@ msgstr ""
 "# Setze dies auf 1 für vertikalen oder auf 0 für horizontalen Schieberegler "
 "auf dem Leisten-Icon\n"
 
-#: src/config_settings.cpp:392
+#: src/config_settings.cpp:419
 msgid ""
 "\n"
 "# Tray slider dimensions\n"
@@ -229,7 +243,7 @@ msgstr ""
 "\n"
 "# Leisten-Schieberegler-Abmessungen\n"
 
-#: src/config_settings.cpp:400
+#: src/config_settings.cpp:427
 msgid ""
 "\n"
 "# Which slider to link with the tray_icon, identified by numid\n"
@@ -238,7 +252,7 @@ msgstr ""
 "# Welchen Schieberegler verknüpfen mit dem Leisten-Icon, identifiziert durch "
 "numid\n"
 
-#: src/config_settings.cpp:406
+#: src/config_settings.cpp:433
 msgid ""
 "\n"
 "# The numids of the sliders to display, in order.  It is okay to have "
@@ -257,7 +271,7 @@ msgstr ""
 "#    amixer controls\n"
 "# HINWEIS:  Diese Section muß an das Ende der Datei gehen!\n"
 
-#: src/config_settings.cpp:408
+#: src/config_settings.cpp:435
 msgid ""
 "\n"
 "#EXAMPLE:\n"
@@ -281,107 +295,127 @@ msgstr "Aktive Schieberegler"
 msgid "Inactive Sliders"
 msgstr "Inaktive Schieberegler"
 
-#: src/config_window.cpp:466
+#: src/config_window.cpp:435
+msgid "Linear"
+msgstr ""
+
+#: src/config_window.cpp:436
+msgid "Logarithmic"
+msgstr ""
+
+#: src/config_window.cpp:437
+msgid "Exponential"
+msgstr ""
+
+#: src/config_window.cpp:493
 msgid "Retrovol - Configuration"
 msgstr "Retrovol - Konfiguration"
 
-#: src/config_window.cpp:482
+#: src/config_window.cpp:509
 msgid "Main"
 msgstr "Haupt"
 
-#: src/config_window.cpp:490
+#: src/config_window.cpp:517
+msgid "Volume Scaling"
+msgstr ""
+
+#: src/config_window.cpp:518
+msgid "Auto Mute"
+msgstr ""
+
+#: src/config_window.cpp:519
 msgid "Slider Orientation"
 msgstr "Schieberegler-Richtung"
 
-#: src/config_window.cpp:490 src/config_window.cpp:517
+#: src/config_window.cpp:519 src/config_window.cpp:546
 msgid "Vertical"
 msgstr "Vertikal"
 
-#: src/config_window.cpp:490 src/config_window.cpp:517
+#: src/config_window.cpp:519 src/config_window.cpp:546
 msgid "Horizontal"
 msgstr ""
 
-#: src/config_window.cpp:491
+#: src/config_window.cpp:520
 msgid "Slider Width"
 msgstr "Schieberegler-Breite"
 
-#: src/config_window.cpp:492
+#: src/config_window.cpp:521
 msgid "Slider Height"
 msgstr "Schieberegler-Höhe"
 
-#: src/config_window.cpp:493
+#: src/config_window.cpp:522
 msgid "Slider Margins"
 msgstr "Schieberegler-Ränder"
 
-#: src/config_window.cpp:494
+#: src/config_window.cpp:523
 msgid "Segment Thickness"
 msgstr "Segment-Dicke"
 
-#: src/config_window.cpp:495
+#: src/config_window.cpp:524
 msgid "Segment Spacing"
 msgstr "Segment-Abstand"
 
-#: src/config_window.cpp:496
+#: src/config_window.cpp:525
 msgid "Background Color"
 msgstr "Hintergrundfarbe"
 
-#: src/config_window.cpp:497
+#: src/config_window.cpp:526
 msgid "Border Color"
 msgstr "Randfarbe"
 
-#: src/config_window.cpp:498
+#: src/config_window.cpp:527
 msgid "Unlit Color"
 msgstr "Farbe für Unbeleuchtet"
 
-#: src/config_window.cpp:499
+#: src/config_window.cpp:528
 msgid "Lit Color"
 msgstr "Farbe für Beleuchtet"
 
-#: src/config_window.cpp:506
+#: src/config_window.cpp:535
 msgid "Tray"
 msgstr "Leiste"
 
-#: src/config_window.cpp:511
+#: src/config_window.cpp:540
 msgid "Enable Tray Icon"
 msgstr "Leisten-Icon ermöglichen"
 
-#: src/config_window.cpp:512
+#: src/config_window.cpp:541
 msgid "Enable Tray Menu"
 msgstr "Leisten-Menü ermöglichen"
 
-#: src/config_window.cpp:513
+#: src/config_window.cpp:542
 msgid "Tray Slider"
 msgstr "Leisten-Schieberegler"
 
-#: src/config_window.cpp:517
+#: src/config_window.cpp:546
 msgid "Tray Slider Orientation"
 msgstr "Ausrichtung des Leisten-Schiebereglers"
 
-#: src/config_window.cpp:518
+#: src/config_window.cpp:547
 msgid "Tray Slider Width"
 msgstr "Breite des Leisten-Schiebereglers"
 
-#: src/config_window.cpp:519
+#: src/config_window.cpp:548
 msgid "Tray Slider Height"
 msgstr "Höhe des Leisten-Schiebereglers"
 
-#: src/config_window.cpp:520
+#: src/config_window.cpp:549
 msgid "Tray Slider Offset"
 msgstr "Vorlauf des Leisten-Schiebereglers"
 
-#: src/config_window.cpp:521
+#: src/config_window.cpp:550
 msgid "Enable Tray Icon Background Color"
 msgstr "Hintergrundfarbe ermöglichen für Leisten-Icon"
 
-#: src/config_window.cpp:522
+#: src/config_window.cpp:551
 msgid "Tray Icon Background Color"
 msgstr "Hintergrundfarbe für Leisten-Icon"
 
-#: src/config_window.cpp:529
+#: src/config_window.cpp:558
 msgid "Hardware"
 msgstr ""
 
-#: src/config_window.cpp:534
+#: src/config_window.cpp:563
 msgid "Sound Card"
 msgstr "Soundkarte"
 

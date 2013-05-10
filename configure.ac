@@ -1,4 +1,4 @@
-AC_INIT([retrovol],[0.12])
+AC_INIT([retrovol],[0.13])
 AC_CONFIG_HEADERS([config.h])
 AC_CONFIG_FILES([Makefile images/Makefile src/Makefile po/Makefile.in])
 AM_INIT_AUTOMAKE
