@@ -170,7 +170,7 @@ int Element::scale_out(int num){
 			return(round(pow(101.0, (num-min)/(double)(max-min)))-1);
 			break;
 		case EXPONENTIAL:
-			return(round(100.0*log((num-min)/(double)(max-min)+1)/log(2)));
+			return(round(log(100*(num-min)/(double)(max-min)+1)/log(101)*100));
 			break;
 		case LINEAR:
 		default:
@@ -187,7 +187,7 @@ int Element::scale_in(int num){
 			return(round((log(num+1)/log(101)*(max-min))+min));
 			break;
 		case EXPONENTIAL:
-			return(round((pow(2.0, num/(double)100)-1)*(max-min)+min));
+			return(round((pow((101.0), num/(double)100)-1)*(max-min)/100.0+min));
 			break;
 		case LINEAR:
 		default:
