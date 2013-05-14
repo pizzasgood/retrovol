@@ -266,6 +266,7 @@ int Element::_get(int n){
 	//open a handle to use with the card
 	if ((err = snd_ctl_open(&handle, card, 0)) < 0) {
 		fprintf(stderr, _("Control %s open error: %s\n"), card, snd_strerror(err));
+		return 0;
 	}
 	
 	snd_ctl_elem_read(handle, control);
@@ -359,6 +360,7 @@ int Element::_set(int num, int n){
 	//open a handle to use with the card
 	if ((err = snd_ctl_open(&handle, card, 0)) < 0) {
 		fprintf(stderr, _("Control %s open error: %s\n"), card, snd_strerror(err));
+		return 0;
 	}
 	
 	
@@ -431,16 +433,16 @@ ElementList::ElementList(char *_card){
 	items = NULL;
 	
 	//open a pointer to use
-	int error = 0;
+	int err = 0;
 	snd_hctl_t *hctl;
-	error = snd_hctl_open(&hctl, card, SND_CTL_NONBLOCK | SND_CTL_ASYNC);
-	if (error){
-		fprintf(stderr, "Unable to open card %s, snd_hctl_open returned %d\n", card, error);
+	err = snd_hctl_open(&hctl, card, SND_CTL_NONBLOCK | SND_CTL_ASYNC);
+	if (err){
+		fprintf(stderr, _("Unable to open card %s: %s\n"), card, snd_strerror(err));
 		return;
 	}
-	error = snd_hctl_load(hctl);
-	if (error){
-		fprintf(stderr, "Unable to load control for card %s, snd_hctl_load returned %d\n", card, error);
+	err = snd_hctl_load(hctl);
+	if (err){
+		fprintf(stderr, _("Unable to load control for card %s: %s\n"), card, snd_strerror(err));
 		return;
 	}
 	
