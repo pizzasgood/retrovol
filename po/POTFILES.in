@@ -2,3 +2,4 @@
 src/main.cpp
 src/config_settings.cpp
 src/config_window.cpp
+src/alsa_classes.cpp
