@@ -5,11 +5,11 @@
 #define __CONFIG_SETTINGS__
 
 //define the paths to the volume images
-#define VOL_MUTED_IMAGE IMAGEDIR"/audio-volume-muted.png"
-#define VOL_NONE_IMAGE IMAGEDIR"/audio-volume-none.png"
-#define VOL_LOW_IMAGE IMAGEDIR"/audio-volume-low.png"
-#define VOL_MEDIUM_IMAGE IMAGEDIR"/audio-volume-medium.png"
-#define VOL_HIGH_IMAGE IMAGEDIR"/audio-volume-high.png"
+#define VOL_MUTED_IMAGE IMAGEDIR"/audio-volume-muted.svg"
+#define VOL_NONE_IMAGE IMAGEDIR"/audio-volume-none.svg"
+#define VOL_LOW_IMAGE IMAGEDIR"/audio-volume-low.svg"
+#define VOL_MEDIUM_IMAGE IMAGEDIR"/audio-volume-medium.svg"
+#define VOL_HIGH_IMAGE IMAGEDIR"/audio-volume-high.svg"
 
 class ConfigSettings {
 	public:
