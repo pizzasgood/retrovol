@@ -309,9 +309,15 @@ GtkWidget *get_menubar_menu( GtkWidget  *window, GtkItemFactoryEntry *menu_items
 void set_menu(){
 	//TODO: add stock icons
 	if (settings.enable_tray_menu){
-		GtkWidget *exit_entry = gtk_menu_item_new_with_mnemonic(_("_Exit"));
-		GtkWidget *config_entry = gtk_menu_item_new_with_mnemonic(_("_Config Window"));
-		GtkWidget *show_entry = gtk_menu_item_new_with_mnemonic(_("_Full Window"));
+		GtkWidget *exit_entry = gtk_image_menu_item_new_with_mnemonic(_("_Exit"));
+		GtkWidget *config_entry = gtk_image_menu_item_new_with_mnemonic(_("_Config Window"));
+		GtkWidget *show_entry = gtk_image_menu_item_new_with_mnemonic(_("_Full Window"));
+		GtkWidget *exit_icon = gtk_image_new_from_stock(GTK_STOCK_QUIT, GTK_ICON_SIZE_MENU);
+		GtkWidget *config_icon = gtk_image_new_from_stock(GTK_STOCK_EXECUTE, GTK_ICON_SIZE_MENU);
+		GtkWidget *show_icon = gtk_image_new_from_stock(GTK_STOCK_PREFERENCES, GTK_ICON_SIZE_MENU);
+		gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(exit_entry), exit_icon);
+		gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(config_entry), config_icon);
+		gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(show_entry), show_icon);
 		g_signal_connect(G_OBJECT(exit_entry), "activate", G_CALLBACK(gtk_main_quit), NULL);
 		g_signal_connect(G_OBJECT(config_entry), "activate", G_CALLBACK(configure), NULL);
 		g_signal_connect(G_OBJECT(show_entry), "activate", G_CALLBACK(open_window), NULL);
