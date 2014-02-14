@@ -4,5 +4,5 @@
         points="10 60,  10 40,  20 40,  40 25, 40 75, 20 60, 10 60"
         style="fill: black; fill-opacity: 0.5; stroke: black;
             stroke-width: 2;"/> 
-    <path d="m 55,27 c 24,23 0,48 0,48" style="fill:none;stroke:#000000;stroke-width:7"/>
+    <path d="m 55,27 c 24,23 0,48 0,48" style="fill:none;stroke:#FFCC00;stroke-width:7"/>
 </svg>
