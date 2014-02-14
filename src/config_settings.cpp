@@ -44,13 +44,13 @@ ConfigSettings::ConfigSettings(){
 	_d_border_color[1]=0.0;
 	_d_border_color[2]=0.0;
 	
-	_d_unlit_color[0]=0.8;
-	_d_unlit_color[1]=0.8;
-	_d_unlit_color[2]=0.8;
+	_d_unlit_color[0]=0.6;
+	_d_unlit_color[1]=0.2;
+	_d_unlit_color[2]=0.0;
 	
-	_d_lit_color[0]=0.0;
-	_d_lit_color[1]=0.7;
-	_d_lit_color[2]=1.0;
+	_d_lit_color[0]=1.0;
+	_d_lit_color[1]=0.8;
+	_d_lit_color[2]=0.0;
 	
 	_d_enable_tray_icon = true;
 	_d_enable_tray_menu = true;
