@@ -523,14 +523,14 @@ bool loop(int argc, char** argv) {
 	//define the menu
 	GtkItemFactoryEntry menu_items_1[] = {
 		{ (gchar*)_("/_File"),           NULL,              NULL,                      0, (gchar*)"<Branch>" },
-		{ (gchar*)_("/File/_Configure"), (gchar*)"<CTRL>C", G_CALLBACK(configure),     0, (gchar*)"<StockItem>", GTK_STOCK_NEW },
+		{ (gchar*)_("/File/_Configure"), (gchar*)"<CTRL>C", G_CALLBACK(configure),     0, (gchar*)"<StockItem>", GTK_STOCK_EXECUTE },
 		{ (gchar*)_("/File/_Quit"),      (gchar*)"<CTRL>Q", G_CALLBACK(close_window),  0, (gchar*)"<StockItem>", GTK_STOCK_QUIT },
 	};
 	gint nmenu_items_1 = sizeof (menu_items_1) / sizeof (menu_items_1[0]);
 	
 	GtkItemFactoryEntry menu_items_2[] = {
 		{ (gchar*)_("/_File"),           NULL,              NULL,                      0, (gchar*)"<Branch>" },
-		{ (gchar*)_("/File/_Configure"), (gchar*)"<CTRL>C", G_CALLBACK(configure),     0, (gchar*)"<StockItem>", GTK_STOCK_NEW },
+		{ (gchar*)_("/File/_Configure"), (gchar*)"<CTRL>C", G_CALLBACK(configure),     0, (gchar*)"<StockItem>", GTK_STOCK_EXECUTE },
 		{ (gchar*)_("/File/_Exit completely"),      (gchar*)"<CTRL>E", G_CALLBACK(gtk_main_quit),  0, (gchar*)"<StockItem>", GTK_STOCK_QUIT },
 		{ (gchar*)_("/File/_Quit"),      (gchar*)"<CTRL>Q", G_CALLBACK(close_window),  0, (gchar*)"<StockItem>", GTK_STOCK_QUIT },
 	};
