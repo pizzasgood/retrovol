@@ -1,0 +1,432 @@
+# SOME DESCRIPTIVE TITLE.
+# This file is put in the public domain.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: retrovol\n"
+"Report-Msgid-Bugs-To: pizzasgood@gmail.com\n"
+"POT-Creation-Date: 2013-05-14 21:09-0400\n"
+"PO-Revision-Date: 2015-04-09 21:25+0100\n"
+"Language: hu_HU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Last-Translator: Kiss Attila <attus@enterpriseforever.com>\n"
+"Language-Team: ubk <attus@enterpriseforever.com>\n"
+"X-Generator: Poedit 1.7.5\n"
+
+#: src/main.cpp:176
+#, c-format
+msgid "Volume: %d%%"
+msgstr "Hangerő: %d%%"
+
+#: src/main.cpp:183
+#, c-format
+msgid "Volume: Muted"
+msgstr "Hangerő: Néma"
+
+#: src/main.cpp:312
+msgid "_Exit"
+msgstr "_Kilép"
+
+#: src/main.cpp:313
+msgid "_Config Window"
+msgstr "_Beállító ablak"
+
+#: src/main.cpp:314
+msgid "_Full Window"
+msgstr "_Teljes ablak"
+
+#: src/main.cpp:464
+#, c-format
+msgid "Error:  Failed to set background color to %s\n"
+msgstr "Hiba:  Háttérszín nem állítható erre: %s\n"
+
+#: src/main.cpp:519 src/main.cpp:526
+msgid "/_File"
+msgstr "/_Fájl"
+
+#: src/main.cpp:520 src/main.cpp:527
+msgid "/File/_Configure"
+msgstr "/Fájl/_Beállítás"
+
+#: src/main.cpp:521 src/main.cpp:529
+msgid "/File/_Quit"
+msgstr "/Fájl/_Kilép"
+
+#: src/main.cpp:528
+msgid "/File/_Exit completely"
+msgstr "/Fájl/_Teljesen kilép"
+
+#: src/main.cpp:723
+#, c-format
+msgid ""
+"ERROR:  The -bg option requires a color to be supplied in the format "
+"#rrggbb\n"
+msgstr "HIBA: A -bg opció szín formátuma ilyen legyen: #rrggbb\n"
+
+#: src/main.cpp:731
+#, c-format
+msgid "Usage: %s [-bg #rrggbb] [-hide]\n"
+msgstr "Használat: %s [-bg #rrggbb] [-hide]\n"
+
+#: src/main.cpp:732
+#, c-format
+msgid "Volume mixer with bargraph style sliders.\n"
+msgstr "Hangszabályzó vonalas csúszkával.\n"
+
+#: src/main.cpp:733
+#, c-format
+msgid ""
+"Reads ~/.retrovolrc for configuration options.  Additionally, the "
+"following\n"
+"options may be given on the commandline:\n"
+msgstr ""
+"Konfiguráció a ~/.retrovolrc fájlból van olvasva.  Ezen felül a következők\n"
+"adhatók meg parancssorban:\n"
+
+#: src/main.cpp:734
+#, c-format
+msgid "\t-v              print the version number and exit\n"
+msgstr "\t-v              verzióközlés és kilépés\n"
+
+#: src/main.cpp:735
+#, c-format
+msgid "\t-bg #rrggbb     specify the background color of the tray icon\n"
+msgstr "\t-bg #rrggbb     A tálcaikon háttérszíne\n"
+
+#: src/main.cpp:736
+#, c-format
+msgid "\t-hide           hide the main window initially\n"
+msgstr "\t-hide           indulási ablak kiiktatása\n"
+
+#: src/main.cpp:764
+#, c-format
+msgid "Error: could not create %s\n"
+msgstr "Hiba: %s létrehozhatatlan\n"
+
+#: src/config_settings.cpp:216
+#, c-format
+msgid ""
+"Cannot read file: %s\n"
+"Using defaults...\n"
+msgstr ""
+"Olvashatatlan fájl: %s\n"
+"Alapértékek élnek...\n"
+
+#: src/config_settings.cpp:336
+#, c-format
+msgid ""
+"Cannot open file: %s\n"
+" for writing\n"
+msgstr "Írásra nyithatatlan fájl: %s\n"
+
+#: src/config_settings.cpp:340
+msgid "# Config file for retrovol\n"
+msgstr "# Retrovol beállító fájl\n"
+
+#: src/config_settings.cpp:341
+msgid ""
+"# This file should reside in the user's home directory and be named ."
+"retrovolrc\n"
+msgstr "# Ennek a fájlnak a home mappában .retrovolrc néven kell lennie\n"
+
+#: src/config_settings.cpp:344
+msgid ""
+"\n"
+"# Which soundcard to use\n"
+msgstr ""
+"\n"
+"# Használandó hangkártya\n"
+
+#: src/config_settings.cpp:348
+msgid ""
+"\n"
+"# Set this to 0-2 to define a linear, logarithmic, or exponential volume "
+"scale, respectively\n"
+msgstr ""
+"\n"
+"# Lneáris, logaritmikus, vagy exponenciális skálához 0-3 közé állítandó.\n"
+
+#: src/config_settings.cpp:351
+msgid ""
+"\n"
+"# Set this to 1 to make the volume automatically mute when set to 0%, or 0 "
+"to keep it unmuted at 0%\n"
+msgstr ""
+"\n"
+"# 1 -nél a hangerő 0% -nál elnémul, 0 -nál nem némul el\n"
+
+#: src/config_settings.cpp:355
+msgid ""
+"\n"
+"# Set this to 1 to make the sliders vertical, or 0 for horizontal (only "
+"applies to the main window)\n"
+msgstr ""
+"\n"
+"# 1 -nél függőleges, 0 -nál vízszintes a csúszka (csak az ablakban)\n"
+
+#: src/config_settings.cpp:359
+msgid ""
+"\n"
+"# Window position\n"
+msgstr ""
+"\n"
+"# Ablak helyzet\n"
+
+#: src/config_settings.cpp:365
+msgid ""
+"\n"
+"# Window dimensions\n"
+msgstr ""
+"\n"
+"# Ablak méret\n"
+
+#: src/config_settings.cpp:371
+msgid ""
+"\n"
+"# Slider dimensions\n"
+msgstr ""
+"\n"
+"# Csúszka méret\n"
+
+#: src/config_settings.cpp:383
+msgid ""
+"\n"
+"# Slider colorscheme\n"
+msgstr ""
+"\n"
+"# Csúszka színséma\n"
+
+#: src/config_settings.cpp:401
+msgid ""
+"\n"
+"# Enable the tray_icon\n"
+msgstr ""
+"\n"
+"# Tálcaikon engedélyezés\n"
+
+#: src/config_settings.cpp:405
+msgid ""
+"\n"
+"# Enable the tray_menu\n"
+msgstr ""
+"\n"
+"# Tálcamenü engedélyezés\n"
+
+#: src/config_settings.cpp:409
+msgid ""
+"\n"
+"# Background color of tray_icon (default is default GTK background color).  "
+"Note:  the commandline -bg option overrides this\n"
+msgstr ""
+"\n"
+"# Tálcaikon háttérszíne (lapértelmezett a GTK beállításé).  A -bg "
+"parancssorral ez felülbírálható.\n"
+
+#: src/config_settings.cpp:415
+msgid ""
+"\n"
+"# Set this to 1 to make the slider on the tray_icon vertical, or 0 for "
+"horizontal\n"
+msgstr ""
+"\n"
+"# 1 -nél függőleges, 0 -nál vízszintes a tálcaikon csúszkája.\n"
+
+#: src/config_settings.cpp:419
+msgid ""
+"\n"
+"# Tray slider dimensions\n"
+msgstr ""
+"\n"
+"# Tálcacsúszka mérete\n"
+
+#: src/config_settings.cpp:427
+msgid ""
+"\n"
+"# Which slider to link with the tray_icon, identified by numid\n"
+msgstr ""
+"\n"
+"#Ezt sorszámú szabályozót képviseli a tálca csúszkája\n"
+
+#: src/config_settings.cpp:433
+msgid ""
+"\n"
+"# The numids of the sliders to display, in order.  It is okay to have "
+"comments\n"
+"# after the numbers as long as the numbers are the first non-whitespace\n"
+"# characters.  To get a list of the slider numids, run this command:\n"
+"#    amixer controls\n"
+"# NOTE:  This section must go at the end of the file!\n"
+msgstr ""
+"\n"
+"# A szabályozó sorszámok rendezett mutatása.  Ez jó a számokat követő\n"
+"# megjegyzésekhez az első számokat követő első nem alfanumnerikus "
+"karakterig\n"
+"# A csúszkák azonosítóinak megállapítására futtatható a következő parancs:\n"
+"#    amixer controls\n"
+"# MEGJEGYZÉS: Ez a szakasz a fájl végén legyen!\n"
+
+#: src/config_settings.cpp:435
+msgid ""
+"\n"
+"#EXAMPLE:\n"
+msgstr ""
+"\n"
+"#PÉLDA:\n"
+
+#: src/config_window.cpp:82
+msgid ""
+"Below you can chose which sliders to enable and in which order to display "
+"them."
+msgstr "Alább kiválaszthatók a csúszkák és megjelenítési sorrendjük."
+
+#: src/config_window.cpp:117
+msgid "Active Sliders"
+msgstr "Aktív csúszkák"
+
+#: src/config_window.cpp:162
+msgid "Inactive Sliders"
+msgstr "Inaktív csúszkák"
+
+#: src/config_window.cpp:435
+msgid "Linear"
+msgstr "Lineáris"
+
+#: src/config_window.cpp:436
+msgid "Logarithmic"
+msgstr "Logaritmikus"
+
+#: src/config_window.cpp:437
+msgid "Exponential"
+msgstr "Exponenciális"
+
+#: src/config_window.cpp:493
+msgid "Retrovol - Configuration"
+msgstr "Retrovol - Beállítás"
+
+#: src/config_window.cpp:509
+msgid "Main"
+msgstr "Fő"
+
+#: src/config_window.cpp:517
+msgid "Volume Scaling"
+msgstr "Hangerő skála"
+
+#: src/config_window.cpp:518
+msgid "Auto Mute"
+msgstr "Auto némítás"
+
+#: src/config_window.cpp:519
+msgid "Slider Orientation"
+msgstr "Csúszka irány"
+
+#: src/config_window.cpp:519 src/config_window.cpp:546
+msgid "Vertical"
+msgstr "Függőleges"
+
+#: src/config_window.cpp:519 src/config_window.cpp:546
+msgid "Horizontal"
+msgstr "Vízszintes"
+
+#: src/config_window.cpp:520
+msgid "Slider Width"
+msgstr "Csúszkaszélesség"
+
+#: src/config_window.cpp:521
+msgid "Slider Height"
+msgstr "Csúszkamagasság"
+
+#: src/config_window.cpp:522
+msgid "Slider Margins"
+msgstr "Csúszkakeretek"
+
+#: src/config_window.cpp:523
+msgid "Segment Thickness"
+msgstr "Szegmensvastagság"
+
+#: src/config_window.cpp:524
+msgid "Segment Spacing"
+msgstr "Szegmenstávolság"
+
+#: src/config_window.cpp:525
+msgid "Background Color"
+msgstr "Háttérszín"
+
+#: src/config_window.cpp:526
+msgid "Border Color"
+msgstr "Keretszín"
+
+#: src/config_window.cpp:527
+msgid "Unlit Color"
+msgstr "Kikapcsolt szín"
+
+#: src/config_window.cpp:528
+msgid "Lit Color"
+msgstr "Bekapcsolt szín"
+
+#: src/config_window.cpp:535
+msgid "Tray"
+msgstr "Tálca"
+
+#: src/config_window.cpp:540
+msgid "Enable Tray Icon"
+msgstr "Tálcaikon engedélyezés"
+
+#: src/config_window.cpp:541
+msgid "Enable Tray Menu"
+msgstr "Tálcamenü engedélyezés"
+
+#: src/config_window.cpp:542
+msgid "Tray Slider"
+msgstr "Tálcacsúszka"
+
+#: src/config_window.cpp:546
+msgid "Tray Slider Orientation"
+msgstr "Tálcacsúszka helyzet"
+
+#: src/config_window.cpp:547
+msgid "Tray Slider Width"
+msgstr "Tálcacsúszka szélesség"
+
+#: src/config_window.cpp:548
+msgid "Tray Slider Height"
+msgstr "Tálcacsúszka magasság"
+
+#: src/config_window.cpp:549
+msgid "Tray Slider Offset"
+msgstr "Tálcacsúszka eltolás"
+
+#: src/config_window.cpp:550
+msgid "Enable Tray Icon Background Color"
+msgstr "Tálcaikon háttérszín engedélyezés"
+
+#: src/config_window.cpp:551
+msgid "Tray Icon Background Color"
+msgstr "Tálcaikon háttérszín"
+
+#: src/config_window.cpp:558
+msgid "Hardware"
+msgstr "Hardver"
+
+#: src/config_window.cpp:563
+msgid "Sound Card"
+msgstr "Hangkártya"
+
+#: src/alsa_classes.cpp:85 src/alsa_classes.cpp:268 src/alsa_classes.cpp:318
+#: src/alsa_classes.cpp:362
+#, c-format
+msgid "Control %s open error: %s\n"
+msgstr ""
+
+#: src/alsa_classes.cpp:440
+#, c-format
+msgid "Unable to open card %s: %s\n"
+msgstr ""
+
+#: src/alsa_classes.cpp:445
+#, c-format
+msgid "Unable to load control for card %s: %s\n"
+msgstr ""
