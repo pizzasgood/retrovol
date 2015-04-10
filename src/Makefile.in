@@ -100,7 +100,9 @@ am_retrovol_OBJECTS = alsa_classes.$(OBJEXT) config_settings.$(OBJEXT) \
 	config_window.$(OBJEXT) eggtrayicon.$(OBJEXT) main.$(OBJEXT) \
 	retro_slider.$(OBJEXT)
 retrovol_OBJECTS = $(am_retrovol_OBJECTS)
-retrovol_DEPENDENCIES =
+am__DEPENDENCIES_1 =
+retrovol_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -170,6 +172,8 @@ ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
+ALSA_CFLAGS = @ALSA_CFLAGS@
+ALSA_LIBS = @ALSA_LIBS@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AUTOCONF = @AUTOCONF@
@@ -190,8 +194,12 @@ ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EXEEXT = @EXEEXT@
+GLIB_CFLAGS = @GLIB_CFLAGS@
+GLIB_LIBS = @GLIB_LIBS@
 GMSGFMT = @GMSGFMT@
 GMSGFMT_015 = @GMSGFMT_015@
+GTK2_CFLAGS = @GTK2_CFLAGS@
+GTK2_LIBS = @GTK2_LIBS@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
@@ -221,12 +229,17 @@ PACKAGE_TARNAME = @PACKAGE_TARNAME@
 PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
+PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POSUB = @POSUB@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 STRIP = @STRIP@
 USE_NLS = @USE_NLS@
 VERSION = @VERSION@
+X11_CFLAGS = @X11_CFLAGS@
+X11_LIBS = @X11_LIBS@
 XGETTEXT = @XGETTEXT@
 XGETTEXT_015 = @XGETTEXT_015@
 abs_builddir = @abs_builddir@
@@ -283,11 +296,10 @@ top_srcdir = @top_srcdir@
 imagedir = $(pkgdatadir)/images
 LDADD = @LIBINTL@
 AM_CPPFLAGS = -DLOCALEDIR=\"$(localedir)\" \
-	-DIMAGEDIR="\"$(imagedir)\"" `pkg-config --cflags gtk+-2.0`
+	-DIMAGEDIR="\"$(imagedir)\"" $(ALSA_CFLAGS) $(GTK2_CFLAGS) \
+	$(GLIB_CFLAGS) $(X11_CFLAGS)
 retrovol_SOURCES = alsa_classes.cpp alsa_classes.h config_settings.cpp config_settings.h config_window.cpp config_window.h eggtrayicon.c eggtrayicon.h main.cpp main.h retro_slider.cpp retro_slider.h gettext.h
-
-#retrovol_LDADD = -lasound `pkg-config --libs gtk+-2.0`
-retrovol_LDADD = -lasound -lX11 -lgtk-x11-2.0 -lgdk-x11-2.0 -latk-1.0 -lgdk_pixbuf-2.0 -lpangocairo-1.0 -lpango-1.0 -lcairo -lgobject-2.0 -lgmodule-2.0 -ldl -lglib-2.0
+retrovol_LDADD = $(ALSA_LIBS) $(GTK2_LIBS) $(GLIB_LIBS) $(X11_LIBS)
 all: all-am
 
 .SUFFIXES:
