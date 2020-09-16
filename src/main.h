@@ -44,7 +44,7 @@ GtkWidget *get_menubar_menu( GtkWidget  *window, GtkItemFactoryEntry *menu_items
 void set_menu();
 
 //save the position and dimensions of the window
-gboolean save_posdim(GtkWidget *widget, GdkEventConfigure *event, gpointer data);
+void save_posdim(GtkWidget *widget, GdkEventConfigure *event, gpointer data);
 
 //restore the position and dimensions of the window
 void restore_posdim();

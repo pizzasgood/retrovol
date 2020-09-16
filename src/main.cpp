@@ -366,7 +366,7 @@ void set_menu(){
 }
 
 //save the position and dimensions of the window
-gboolean save_posdim(GtkWidget *widget, GdkEventConfigure *event, gpointer data){
+void save_posdim(GtkWidget *widget, GdkEventConfigure *event, gpointer data){
 	settings.window_x = event->x;
 	settings.window_y = event->y;
 	settings.window_width = event->width;
