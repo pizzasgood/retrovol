@@ -346,13 +346,9 @@ gboolean retro_slider::configure_event_callback (GtkWidget *widget, GdkEventConf
 	slider->height = widget->allocation.height;
 	
 	//need to find out how many segments will be used
-	if (slider->vertical){
-		slider->num_segs = (slider->height - 2*slider->margin + slider->seg_spacing) / slider->seg_offset;
-		slider->slider_height = slider->num_segs * slider->seg_offset;
-	} else {
-		slider->num_segs = (slider->width - 2*slider->margin + slider->seg_spacing) / slider->seg_offset;
-		slider->slider_height = slider->num_segs * slider->seg_offset;
-	}
+	int size = slider->vertical ? slider->height : slider->width;
+	slider->num_segs = (size - 2*slider->margin + slider->seg_spacing) / slider->seg_offset;
+	slider->num_segs = slider->num_segs > 0 ? slider->num_segs : 1;
 	
 	//and find how much value each segment is worth
 	slider->val_per_seg = 100/((float)slider->num_segs);

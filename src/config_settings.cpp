@@ -261,10 +261,12 @@ void ConfigSettings::parse_config(char *config_file){
 			slider_margin=atoi(tmpptr);
 		} else if (strcmp(tmpptr, "seg_thickness")==0){
 			tmpptr=strtok(NULL, "=\n");
-			seg_thickness=atoi(tmpptr);
+			int val = atoi(tmpptr);
+			seg_thickness = val >= 1 ? val : 1;
 		} else if (strcmp(tmpptr, "seg_spacing")==0){
 			tmpptr=strtok(NULL, "=\n");
-			seg_spacing=atoi(tmpptr);
+			int val = atoi(tmpptr);
+			seg_spacing = val >= 0 ? val : 0;
 		} else if (strcmp(tmpptr, "background_color")==0){
 			tmpptr=strtok(NULL, "=\n");
 			htonf(background_color, tmpptr);
