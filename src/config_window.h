@@ -60,10 +60,10 @@ GtkWidget *tab_init(GtkWidget *notebook, const char *label_text);
 static void update_int(GtkWidget *widget, gpointer data);
 
 //create an entry to edit an unsigned int value w/ spinbutton
-GtkAdjustment *add_entry_uint(GtkWidget *vbox, const char *label_text, int *item);
+GtkAdjustment *add_entry_uint(GtkWidget *vbox, const char *label_text, int *item, unsigned int min, unsigned int max);
 
 //create an entry to edit an int value w/ spinbutton
-GtkAdjustment *add_entry_int(GtkWidget *vbox, const char *label_text, int *item);
+GtkAdjustment *add_entry_int(GtkWidget *vbox, const char *label_text, int *item, int min, int max);
 
 //update the string pointed to by the data pointer with the value contained by the widget
 static void update_txt_d(GtkWidget *widget, GtkDeleteType arg1, int arg2, gpointer data);

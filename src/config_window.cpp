@@ -296,12 +296,12 @@ static void update_int(GtkWidget *widget, gpointer data){
 }
 
 //create an entry to edit an unsigned int value w/ spinbutton
-GtkAdjustment *add_entry_uint(GtkWidget *vbox, const char *label_text, int *item){
+GtkAdjustment *add_entry_uint(GtkWidget *vbox, const char *label_text, int *item, unsigned int min=0, unsigned int max=9999){
 	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 	GtkWidget *label = gtk_label_new(label_text);
 	gtk_container_add(GTK_CONTAINER(hbox), label);
-	GtkObject *adjustment = gtk_adjustment_new(*item, 0, 9999, 1, 10, 0);
+	GtkObject *adjustment = gtk_adjustment_new(*item, min, max, 1, 10, 0);
 	GtkWidget *spin = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), 1, 0);
 	gtk_container_add(GTK_CONTAINER(hbox), spin);
 	g_signal_connect(adjustment, "value-changed", G_CALLBACK(update_int), item);
@@ -309,12 +309,12 @@ GtkAdjustment *add_entry_uint(GtkWidget *vbox, const char *label_text, int *item
 }
 
 //create an entry to edit an int value w/ spinbutton
-GtkAdjustment *add_entry_int(GtkWidget *vbox, const char *label_text, int *item){
+GtkAdjustment *add_entry_int(GtkWidget *vbox, const char *label_text, int *item, int min=-9999, int max=9999){
 	GtkWidget *hbox = gtk_hbox_new(TRUE, 2);
 	gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, TRUE, 0);
 	GtkWidget *label = gtk_label_new(label_text);
 	gtk_container_add(GTK_CONTAINER(hbox), label);
-	GtkObject *adjustment = gtk_adjustment_new(*item, -9999, 9999, 1, 10, 0);
+	GtkObject *adjustment = gtk_adjustment_new(*item, min, max, 1, 10, 0);
 	GtkWidget *spin = gtk_spin_button_new(GTK_ADJUSTMENT(adjustment), 1, 0);
 	gtk_container_add(GTK_CONTAINER(hbox), spin);
 	g_signal_connect(adjustment, "value-changed", G_CALLBACK(update_int), item);
@@ -520,7 +520,7 @@ void build_config_window(ConfigSettings *settings){
 		slider_swap_struc.adj_A = add_entry_uint(vbox, _("Slider Width"), slider_swap_struc.iA);
 		slider_swap_struc.adj_B = add_entry_uint(vbox, _("Slider Height"), slider_swap_struc.iB);
 		add_entry_uint(vbox, _("Slider Margins"), &tmp_settings.slider_margin);
-		add_entry_uint(vbox, _("Segment Thickness"), &tmp_settings.seg_thickness);
+		add_entry_uint(vbox, _("Segment Thickness"), &tmp_settings.seg_thickness, 1);
 		add_entry_uint(vbox, _("Segment Spacing"), &tmp_settings.seg_spacing);
 		add_entry_color(vbox, _("Background Color"), tmp_settings.background_color);
 		add_entry_color(vbox, _("Border Color"), tmp_settings.border_color);
